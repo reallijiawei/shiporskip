@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import getOpenRouter, { MODELS } from '@/lib/openrouter';
 import { DEEP_VALIDATION_SYSTEM_PROMPT, buildDeepValidationPrompt } from '@/lib/prompts';
-import { checkQuota, incrementUsage } from '@/lib/quota';
-import { createDeepReportCheckout } from '@/lib/lemonsqueezy';
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,9 +16,10 @@ export async function POST(request: NextRequest) {
     const { ideaId } = body;
 
     if (!ideaId) {
-      return NextResponse.json({ error: 'Idea ID is required' }, { status: 400 });
+      return NextResponse.json({ error: 'ideaId is required' }, { status: 400 });
     }
 
+    // Verify this idea belongs to the user
     const { data: idea, error: ideaError } = await supabase
       .from('ideas')
       .select('*')
@@ -32,35 +31,35 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Idea not found' }, { status: 404 });
     }
 
+    // Check if already has a deep validation report
     const { data: existingReport } = await supabase
       .from('reports')
-      .select('*')
+      .select('id')
       .eq('idea_id', ideaId)
       .eq('report_type', 'deep_validation')
       .single();
 
     if (existingReport) {
-      return NextResponse.json({ report: existingReport });
+      return NextResponse.json({ report: { id: existingReport.id } });
     }
 
-    const { data: payment } = await supabase
-      .from('payments')
-      .select('*')
+    // Check if user has paid (has deep_validation credits)
+    const { data: quota } = await supabase
+      .from('usage_quotas')
+      .select('deep_validation_limit')
       .eq('user_id', user.id)
-      .eq('status', 'paid')
+      .order('created_at', { ascending: false })
       .limit(1)
       .single();
 
-    if (!payment) {
-      const checkoutUrl = await createDeepReportCheckout(user.id, ideaId);
-      return NextResponse.json({ requiresPayment: true, checkoutUrl });
+    if (!quota || quota.deep_validation_limit <= 0) {
+      return NextResponse.json(
+        { error: 'Deep Validation requires payment', needsPayment: true },
+        { status: 402 }
+      );
     }
 
-    const quota = await checkQuota(user.id, 'deep_validation');
-    if (!quota.allowed) {
-      return NextResponse.json({ error: 'Monthly quota exceeded. Upgrade to continue.' }, { status: 429 });
-    }
-
+    // Call OpenRouter with the stronger model
     const openrouter = getOpenRouter();
     const completion = await openrouter.chat.completions.create({
       model: MODELS.deep_validation,
@@ -70,53 +69,50 @@ export async function POST(request: NextRequest) {
           role: 'user',
           content: buildDeepValidationPrompt(
             idea.description,
-            idea.target_user,
-            idea.product_type,
-            idea.monetization_plan,
-            idea.distribution_plan,
-            idea.mvp_timeline
+            idea.target_user || undefined,
+            idea.product_type || undefined,
+            idea.monetization_plan || undefined,
+            idea.distribution_plan || undefined,
+            idea.mvp_timeline || undefined
           ),
         },
       ],
       response_format: { type: 'json_object' },
       temperature: 0.7,
-      max_tokens: 4000,
     });
 
     const content = completion.choices[0]?.message?.content;
     if (!content) {
-      return NextResponse.json({ error: 'Failed to generate validation' }, { status: 500 });
+      return NextResponse.json({ error: 'AI returned empty response' }, { status: 500 });
     }
 
-    let reportContent;
+    let parsed;
     try {
-      reportContent = JSON.parse(content);
+      parsed = JSON.parse(content);
     } catch {
-      return NextResponse.json({ error: 'Invalid response format' }, { status: 500 });
+      return NextResponse.json({ error: 'AI returned invalid JSON' }, { status: 500 });
     }
 
     const { data: report, error: reportError } = await supabase
       .from('reports')
       .insert({
-        idea_id: idea.id,
+        idea_id: ideaId,
         report_type: 'deep_validation',
-        verdict: reportContent.verdict,
-        overall_score: reportContent.overall_score,
-        scores: reportContent.score_breakdown,
-        content_json: reportContent,
+        verdict: parsed.verdict,
+        overall_score: parsed.overall_score,
+        scores: parsed.score_breakdown,
+        content_json: parsed,
       })
       .select()
       .single();
 
-    if (reportError) {
+    if (reportError || !report) {
       return NextResponse.json({ error: 'Failed to save report' }, { status: 500 });
     }
 
-    await incrementUsage(user.id, 'deep_validation');
-
-    return NextResponse.json({ report });
+    return NextResponse.json({ report: { id: report.id } });
   } catch (error) {
-    console.error('Deep validation error:', error);
+    console.error('Deep validation API error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

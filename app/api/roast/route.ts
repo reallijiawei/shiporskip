@@ -13,39 +13,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const quota = await checkQuota(user.id, 'basic_roast');
+    if (!quota.allowed) {
+      return NextResponse.json(
+        { error: 'Monthly free roast limit reached. Upgrade for more.' },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { description, targetUser, productType } = body;
 
-    if (!description || description.trim().length === 0) {
+    if (!description?.trim()) {
       return NextResponse.json({ error: 'Description is required' }, { status: 400 });
-    }
-
-    if (description.length > 2000) {
-      return NextResponse.json({ error: 'Description must be 2000 characters or less' }, { status: 400 });
-    }
-
-    const quota = await checkQuota(user.id, 'basic_roast');
-    if (!quota.allowed) {
-      return NextResponse.json({ error: 'Monthly quota exceeded. Upgrade to continue.' }, { status: 429 });
-    }
-
-    const title = description.slice(0, 100).trim();
-
-    const { data: idea, error: ideaError } = await supabase
-      .from('ideas')
-      .insert({
-        user_id: user.id,
-        title,
-        description,
-        target_user: targetUser,
-        product_type: productType,
-        status: 'validating',
-      })
-      .select()
-      .single();
-
-    if (ideaError) {
-      return NextResponse.json({ error: 'Failed to create idea' }, { status: 500 });
     }
 
     const openrouter = getOpenRouter();
@@ -57,19 +37,37 @@ export async function POST(request: NextRequest) {
       ],
       response_format: { type: 'json_object' },
       temperature: 0.7,
-      max_tokens: 2000,
     });
 
     const content = completion.choices[0]?.message?.content;
     if (!content) {
-      return NextResponse.json({ error: 'Failed to generate roast' }, { status: 500 });
+      return NextResponse.json({ error: 'AI returned empty response' }, { status: 500 });
     }
 
-    let reportContent;
+    let parsed;
     try {
-      reportContent = JSON.parse(content);
+      parsed = JSON.parse(content);
     } catch {
-      return NextResponse.json({ error: 'Invalid response format' }, { status: 500 });
+      return NextResponse.json({ error: 'AI returned invalid JSON' }, { status: 500 });
+    }
+
+    const title = description.slice(0, 100).replace(/\n/g, ' ').trim();
+
+    const { data: idea, error: ideaError } = await supabase
+      .from('ideas')
+      .insert({
+        user_id: user.id,
+        title,
+        description,
+        target_user: targetUser || null,
+        product_type: productType || null,
+        status: 'validating',
+      })
+      .select()
+      .single();
+
+    if (ideaError || !idea) {
+      return NextResponse.json({ error: 'Failed to save idea' }, { status: 500 });
     }
 
     const { data: report, error: reportError } = await supabase
@@ -77,23 +75,23 @@ export async function POST(request: NextRequest) {
       .insert({
         idea_id: idea.id,
         report_type: 'basic_roast',
-        verdict: reportContent.verdict,
-        overall_score: reportContent.overall_score,
-        scores: reportContent.score_breakdown,
-        content_json: reportContent,
+        verdict: parsed.verdict,
+        overall_score: parsed.overall_score,
+        scores: parsed.score_breakdown,
+        content_json: parsed,
       })
       .select()
       .single();
 
-    if (reportError) {
+    if (reportError || !report) {
       return NextResponse.json({ error: 'Failed to save report' }, { status: 500 });
     }
 
     await incrementUsage(user.id, 'basic_roast');
 
-    return NextResponse.json({ report, idea });
+    return NextResponse.json({ report: { id: report.id } });
   } catch (error) {
-    console.error('Roast error:', error);
+    console.error('Roast API error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

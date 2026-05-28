@@ -1,62 +1,69 @@
 'use client';
 
 import { useState } from 'react';
-import { Lock, Loader2 } from 'lucide-react';
+import { Loader2, Sparkles } from 'lucide-react';
 
 interface DeepValidationCTAProps {
   reportId: string;
+  ideaId: string;
 }
 
-export default function DeepValidationCTA({ reportId }: DeepValidationCTAProps) {
-  const [isLoading, setIsLoading] = useState(false);
+export default function DeepValidationCTA({ reportId, ideaId }: DeepValidationCTAProps) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleUpgrade = async () => {
-    setIsLoading(true);
+    setLoading(true);
+    setError('');
+
     try {
-      const response = await fetch('/api/deep-validation', {
+      const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ideaId: reportId }),
+        body: JSON.stringify({ ideaId }),
       });
 
-      const data = await response.json();
+      const data = await res.json();
 
-      if (data.requiresPayment && data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
-      } else if (data.report) {
-        window.location.reload();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to create checkout');
       }
-    } catch (error) {
-      console.error('Failed to start deep validation:', error);
-    } finally {
-      setIsLoading(false);
+
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong');
+      setLoading(false);
     }
   };
 
   return (
-    <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-8 text-center">
-      <Lock className="mx-auto h-12 w-12 text-gray-400" />
-      <h3 className="mt-4 text-xl font-semibold text-gray-900">
-        Unlock Deep Validation
-      </h3>
+    <div className="rounded-2xl border border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50 p-8 text-center">
+      <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
+        <Sparkles className="h-6 w-6 text-purple-600" />
+      </div>
+      <h3 className="text-xl font-bold text-gray-900">Unlock Deep Validation</h3>
       <p className="mt-2 text-gray-600">
-        Get founder-inspired critique lenses, failure pattern detection, a 7-day validation sprint,
-        and launch angles for Reddit, X, Product Hunt, and SEO.
+        Get founder-inspired lenses, failure pattern analysis, a 7-day validation sprint,
+        and launch angles — powered by Claude Sonnet.
       </p>
+      <p className="mt-1 text-2xl font-bold text-purple-600">$9</p>
       <button
         onClick={handleUpgrade}
-        disabled={isLoading}
-        className="mt-6 inline-flex items-center gap-2 rounded-lg bg-gray-900 px-6 py-3 text-base font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+        disabled={loading}
+        className="mt-4 inline-flex items-center gap-2 rounded-lg bg-purple-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {isLoading ? (
+        {loading ? (
           <>
             <Loader2 className="h-4 w-4 animate-spin" />
-            Processing...
+            Creating checkout...
           </>
         ) : (
-          'Unlock for $9'
+          'Get Deep Validation — $9'
         )}
       </button>
+      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
     </div>
   );
 }

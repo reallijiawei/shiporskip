@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { createClient } from '@/lib/supabase';
 import VerdictCard from '@/components/VerdictCard';
 import ScoreBreakdown from '@/components/ScoreBreakdown';
 import FounderLensCard from '@/components/FounderLensCard';
@@ -12,22 +12,33 @@ import LaunchAngles from './LaunchAngles';
 import { Report } from '@/types/report';
 import { Loader2 } from 'lucide-react';
 
-export default function ReportPage() {
-  const params = useParams();
-  const id = params.id as string;
+export default function ReportPage({ params }: { params: Promise<{ id: string }> }) {
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [reportId, setReportId] = useState<string | null>(null);
+
+  useEffect(() => {
+    params.then(({ id }) => setReportId(id));
+  }, [params]);
 
   useEffect(() => {
     async function fetchReport() {
+      if (!reportId) return;
+
       try {
-        const response = await fetch(`/api/report?id=${id}`);
-        if (!response.ok) {
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from('reports')
+          .select('*')
+          .eq('id', reportId)
+          .single();
+
+        if (error || !data) {
           throw new Error('Report not found');
         }
-        const data = await response.json();
-        setReport(data.report);
+
+        setReport(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load report');
       } finally {
@@ -35,10 +46,8 @@ export default function ReportPage() {
       }
     }
 
-    if (id) {
-      fetchReport();
-    }
-  }, [id]);
+    fetchReport();
+  }, [reportId]);
 
   if (loading) {
     return (
@@ -105,7 +114,7 @@ export default function ReportPage() {
 
         {isBasic && (
           <div className="mt-8">
-            <DeepValidationCTA reportId={report.id} />
+            <DeepValidationCTA reportId={report.id} ideaId={report.idea_id} />
           </div>
         )}
 

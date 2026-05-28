@@ -4,13 +4,13 @@ AI 驱动的独立产品想法验证工具。
 
 ## 技术栈
 
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Next.js 16 (App Router)
 - **Styling**: Tailwind CSS
 - **Database**: Supabase (PostgreSQL)
 - **Auth**: Supabase Auth
 - **Payment**: Lemon Squeezy
 - **AI**: OpenRouter API
-- **Deployment**: GitHub + Cloudflare Pages (自动部署)
+- **Deployment**: GitHub + Cloudflare Pages (via @opennextjs/cloudflare)
 
 ## 开发命令
 
@@ -26,6 +26,7 @@ npm run lint         # 运行 ESLint
 /app                    # Next.js App Router 页面
   /api/roast            # Basic Roast API
   /api/deep-validation  # Deep Validation API
+  /api/checkout         # Lemon Squeezy checkout
   /api/webhook          # Lemon Squeezy webhook
 /components             # React 组件
 /lib                    # 工具函数和客户端
@@ -44,6 +45,7 @@ npm run lint         # 运行 ESLint
 - `LEMONSQUEEZY_API_KEY` - Lemon Squeezy API 密钥
 - `LEMONSQUEEZY_STORE_ID` - Lemon Squeezy 商店 ID
 - `LEMONSQUEEZY_WEBHOOK_SECRET` - Lemon Squeezy Webhook 密钥
+- `LEMONSQUEEZY_DEEP_REPORT_VARIANT_ID` - Deep Report 产品变体 ID
 
 ## 数据库设置
 
