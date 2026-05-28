@@ -1,30 +1,62 @@
-import { createClient } from '@/lib/supabase-server';
-import { notFound } from 'next/navigation';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import VerdictCard from '@/components/VerdictCard';
 import ScoreBreakdown from '@/components/ScoreBreakdown';
 import FounderLensCard from '@/components/FounderLensCard';
 import FailurePatterns from '@/components/FailurePatterns';
 import ValidationSprint from '@/components/ValidationSprint';
-import MarketEvidence from '@/components/MarketEvidence';
 import DeepValidationCTA from './DeepValidationCTA';
 import LaunchAngles from './LaunchAngles';
+import { Report } from '@/types/report';
+import { Loader2 } from 'lucide-react';
 
-interface ReportPageProps {
-  params: Promise<{ id: string }>;
-}
+export default function ReportPage() {
+  const params = useParams();
+  const id = params.id as string;
+  const [report, setReport] = useState<Report | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-export default async function ReportPage({ params }: ReportPageProps) {
-  const { id } = await params;
-  const supabase = await createClient();
+  useEffect(() => {
+    async function fetchReport() {
+      try {
+        const response = await fetch(`/api/report?id=${id}`);
+        if (!response.ok) {
+          throw new Error('Report not found');
+        }
+        const data = await response.json();
+        setReport(data.report);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load report');
+      } finally {
+        setLoading(false);
+      }
+    }
 
-  const { data: report } = await supabase
-    .from('reports')
-    .select('*')
-    .eq('id', id)
-    .single();
+    if (id) {
+      fetchReport();
+    }
+  }, [id]);
 
-  if (!report) {
-    notFound();
+  if (loading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+      </div>
+    );
+  }
+
+  if (error || !report) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900">Report Not Found</h2>
+          <p className="mt-2 text-gray-600">{error || 'This report does not exist.'}</p>
+        </div>
+      </div>
+    );
   }
 
   const content = report.content_json;
