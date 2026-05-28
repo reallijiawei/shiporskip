@@ -63,6 +63,7 @@ export interface ReportContent {
   one_sentence_summary: string;
   score_breakdown: ScoreBreakdown;
   brutal_objections: string[];
+  improvement_suggestions?: string[];
   founder_lenses: FounderLens[];
   market_evidence: MarketEvidence;
   failure_patterns: FailurePattern[];
