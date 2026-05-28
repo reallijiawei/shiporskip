@@ -1,43 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
+import { verifyWebhookSignature } from '@/lib/creem';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.text();
-    const signature = request.headers.get('x-signature') || '';
+    const signature = request.headers.get('creem-signature') || '';
 
-    // Verify webhook signature using HMAC-SHA256
-    const webhookSecret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
+    // Verify webhook signature
+    const webhookSecret = process.env.CREEM_WEBHOOK_SECRET;
     if (webhookSecret) {
-      const encoder = new TextEncoder();
-      const key = await crypto.subtle.importKey(
-        'raw',
-        encoder.encode(webhookSecret),
-        { name: 'HMAC', hash: 'SHA-256' },
-        false,
-        ['sign']
-      );
-      const signatureBuffer = await crypto.subtle.sign('HMAC', key, encoder.encode(body));
-      const expectedSignature = Array.from(new Uint8Array(signatureBuffer))
-        .map((b) => b.toString(16).padStart(2, '0'))
-        .join('');
-
-      if (signature !== expectedSignature) {
+      const valid = verifyWebhookSignature(body, signature, webhookSecret);
+      if (!valid) {
         return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
       }
     }
 
     const payload = JSON.parse(body);
-    const eventName = payload.meta?.event_name;
+    const eventType = payload.eventType;
 
-    if (eventName === 'order_created') {
-      const orderId = payload.data?.id;
-      const userId = payload.data?.attributes?.custom_data?.user_id;
-      const ideaId = payload.data?.attributes?.custom_data?.idea_id;
-      const amount = payload.data?.attributes?.total;
+    if (eventType === 'checkout.completed') {
+      const order = payload.object?.order;
+      const metadata = payload.object?.subscription?.metadata || payload.object?.metadata || {};
+      const userId = metadata.user_id;
+      const ideaId = metadata.idea_id;
+      const orderId = order?.id;
+      const amount = order?.amount;
 
       if (!userId) {
-        return NextResponse.json({ error: 'Missing user_id in custom_data' }, { status: 400 });
+        return NextResponse.json({ error: 'Missing user_id in metadata' }, { status: 400 });
       }
 
       const supabase = await createClient();
@@ -63,7 +54,6 @@ export async function POST(request: NextRequest) {
         .single();
 
       if (existingQuota) {
-        // Add 1 deep_validation and 1 launch_kit credit
         await supabase
           .from('usage_quotas')
           .update({

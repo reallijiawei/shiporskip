@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
-import { createDeepReportCheckout } from '@/lib/lemonsqueezy';
+import { createDeepReportCheckout } from '@/lib/creem';
 
 export async function POST(request: NextRequest) {
   try {
