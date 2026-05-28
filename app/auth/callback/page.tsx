@@ -14,8 +14,20 @@ function CallbackContent() {
 
   useEffect(() => {
     const supabase = createClient();
+    const params = new URLSearchParams(window.location.search);
+    const tokenHash = params.get('token_hash');
+    const type = params.get('type') as 'email' | 'recovery' | null;
 
-    supabase.auth.exchangeCodeForSession(window.location.search).then(({ error }) => {
+    const verify = async () => {
+      if (tokenHash && type) {
+        const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
+        return error;
+      }
+      const { error } = await supabase.auth.exchangeCodeForSession(window.location.search);
+      return error;
+    };
+
+    verify().then((error) => {
       if (error) {
         setStatus('error');
       } else {
