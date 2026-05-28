@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS usage_quotas (
 CREATE TABLE IF NOT EXISTS payments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES users(id),
-  lemonsqueezy_order_id TEXT UNIQUE,
+  creem_order_id TEXT UNIQUE,
   amount INTEGER NOT NULL,
   currency TEXT DEFAULT 'usd',
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'paid', 'failed', 'refunded')),

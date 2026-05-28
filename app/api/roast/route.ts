@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { description, targetUser, productType } = body;
+    const { description, targetUser, productType, monetizationPlan, distributionPlan, mvpTimeline } = body;
 
     if (!description?.trim()) {
       return NextResponse.json({ error: 'Description is required' }, { status: 400 });
@@ -61,6 +61,9 @@ export async function POST(request: NextRequest) {
         description,
         target_user: targetUser || null,
         product_type: productType || null,
+        monetization_plan: monetizationPlan || null,
+        distribution_plan: distributionPlan || null,
+        mvp_timeline: mvpTimeline || null,
         status: 'validating',
       })
       .select()

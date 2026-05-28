@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase';
 import VerdictCard from '@/components/VerdictCard';
 import ScoreBreakdown from '@/components/ScoreBreakdown';
 import FounderLensCard from '@/components/FounderLensCard';
 import FailurePatterns from '@/components/FailurePatterns';
 import ValidationSprint from '@/components/ValidationSprint';
+import MarketEvidence from '@/components/MarketEvidence';
 import DeepValidationCTA from './DeepValidationCTA';
 import LaunchAngles from './LaunchAngles';
 import { Report } from '@/types/report';
@@ -14,45 +15,133 @@ import { Loader2 } from 'lucide-react';
 
 export default function ReportPage({ params }: { params: Promise<{ id: string }> }) {
   const [report, setReport] = useState<Report | null>(null);
+  const [ideaId, setIdeaId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
   const [error, setError] = useState('');
-  const [reportId, setReportId] = useState<string | null>(null);
 
-  useEffect(() => {
-    params.then(({ id }) => setReportId(id));
-  }, [params]);
+  const loadReport = useCallback(async (id: string) => {
+    const supabase = createClient();
 
-  useEffect(() => {
-    async function fetchReport() {
-      if (!reportId) return;
+    // Try as report ID first
+    const { data: reportData } = await supabase
+      .from('reports')
+      .select('*')
+      .eq('id', id)
+      .single();
 
-      try {
-        const supabase = createClient();
-        const { data, error } = await supabase
-          .from('reports')
-          .select('*')
-          .eq('id', reportId)
-          .single();
+    if (reportData) {
+      setReport(reportData);
+      setIdeaId(reportData.idea_id);
+      return true;
+    }
 
-        if (error || !data) {
-          throw new Error('Report not found');
-        }
+    // Try as idea ID — find the basic roast report
+    const { data: idea } = await supabase
+      .from('ideas')
+      .select('id')
+      .eq('id', id)
+      .single();
 
-        setReport(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load report');
-      } finally {
-        setLoading(false);
+    if (idea) {
+      setIdeaId(idea.id);
+      const { data: basicReport } = await supabase
+        .from('reports')
+        .select('*')
+        .eq('idea_id', idea.id)
+        .eq('report_type', 'basic_roast')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (basicReport) {
+        setReport(basicReport);
+        return true;
       }
     }
 
-    fetchReport();
-  }, [reportId]);
+    return false;
+  }, []);
 
-  if (loading) {
+  // Initial load
+  useEffect(() => {
+    params.then(({ id }) => {
+      loadReport(id).then((found) => {
+        if (!found) setError('Report not found');
+        setLoading(false);
+      });
+    });
+  }, [params, loadReport]);
+
+  // After report loads, check if we should auto-generate deep validation
+  useEffect(() => {
+    if (!report || !ideaId || report.report_type !== 'basic_roast') return;
+
+    const checkAndGenerate = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Check if deep validation report already exists
+      const { data: existingDeep } = await supabase
+        .from('reports')
+        .select('*')
+        .eq('idea_id', ideaId)
+        .eq('report_type', 'deep_validation')
+        .single();
+
+      if (existingDeep) {
+        setReport(existingDeep);
+        return;
+      }
+
+      // Check if user has paid credits
+      const { data: quota } = await supabase
+        .from('usage_quotas')
+        .select('deep_validation_limit')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (!quota || quota.deep_validation_limit <= 0) return;
+
+      // Auto-generate deep validation
+      setGenerating(true);
+      try {
+        const res = await fetch('/api/deep-validation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ideaId }),
+        });
+
+        const data = await res.json();
+        if (res.ok && data.report?.id) {
+          const { data: deepReport } = await supabase
+            .from('reports')
+            .select('*')
+            .eq('id', data.report.id)
+            .single();
+
+          if (deepReport) setReport(deepReport);
+        }
+      } catch (err) {
+        console.error('Auto deep validation failed:', err);
+      } finally {
+        setGenerating(false);
+      }
+    };
+
+    checkAndGenerate();
+  }, [report, ideaId]);
+
+  if (loading || generating) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3">
         <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+        {generating && (
+          <p className="text-sm text-gray-500">Generating your Deep Validation report...</p>
+        )}
       </div>
     );
   }
@@ -112,9 +201,15 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           </div>
         )}
 
-        {isBasic && (
+        {isBasic && ideaId && (
           <div className="mt-8">
-            <DeepValidationCTA reportId={report.id} ideaId={report.idea_id} />
+            <DeepValidationCTA reportId={report.id} ideaId={ideaId} />
+          </div>
+        )}
+
+        {!isBasic && content.market_evidence && (
+          <div className="mt-8">
+            <MarketEvidence evidence={content.market_evidence} />
           </div>
         )}
 

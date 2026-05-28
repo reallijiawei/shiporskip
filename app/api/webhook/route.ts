@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
       // Record the payment
       await supabase.from('payments').insert({
         user_id: userId,
-        lemonsqueezy_order_id: orderId,
+        creem_order_id: orderId,
         amount: amount || 900,
         currency: 'usd',
         status: 'paid',

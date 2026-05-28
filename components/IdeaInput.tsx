@@ -84,6 +84,9 @@ export default function IdeaInput({ initialExample }: IdeaInputProps) {
           description: form.description,
           targetUser: form.targetUser || undefined,
           productType: form.productType || undefined,
+          monetizationPlan: form.monetizationPlan || undefined,
+          distributionPlan: form.distributionPlan || undefined,
+          mvpTimeline: form.mvpTimeline || undefined,
         }),
       });
 
