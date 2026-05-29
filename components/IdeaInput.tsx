@@ -43,9 +43,10 @@ const MVP_TIMELINES = [
 
 interface IdeaInputProps {
   initialExample?: string;
+  isLoggedIn?: boolean;
 }
 
-export default function IdeaInput({ initialExample }: IdeaInputProps) {
+export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -92,6 +93,11 @@ export default function IdeaInput({ initialExample }: IdeaInputProps) {
 
       const data = await response.json();
 
+      if (response.status === 401) {
+        router.push('/login?redirectTo=/idea/new');
+        return;
+      }
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to validate idea');
       }
@@ -107,6 +113,11 @@ export default function IdeaInput({ initialExample }: IdeaInputProps) {
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-2xl">
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        {!isLoggedIn && (
+          <div className="mb-4 rounded-lg border border-yellow-200 bg-yellow-50 p-3 text-sm text-yellow-800">
+            You need to <a href="/login?redirectTo=/idea/new" className="font-semibold underline">log in</a> to validate your idea. It&apos;s free!
+          </div>
+        )}
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-gray-700">
             Describe your idea

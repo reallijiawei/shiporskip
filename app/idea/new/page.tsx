@@ -1,4 +1,5 @@
 import IdeaInput from '@/components/IdeaInput';
+import { createClient } from '@/lib/supabase-server';
 
 interface NewIdeaPageProps {
   searchParams: Promise<{ example?: string }>;
@@ -6,6 +7,8 @@ interface NewIdeaPageProps {
 
 export default async function NewIdeaPage({ searchParams }: NewIdeaPageProps) {
   const params = await searchParams;
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
   return (
     <div className="py-12">
@@ -18,7 +21,7 @@ export default async function NewIdeaPage({ searchParams }: NewIdeaPageProps) {
         </div>
 
         <div className="mt-8">
-          <IdeaInput initialExample={params.example} />
+          <IdeaInput initialExample={params.example} isLoggedIn={!!user} />
         </div>
       </div>
     </div>
