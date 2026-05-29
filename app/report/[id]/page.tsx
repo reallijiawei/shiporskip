@@ -78,11 +78,8 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
     if (!report || !ideaId || report.report_type !== 'basic_roast') return;
 
     const checkAndGenerate = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
       // Check if deep validation report already exists
+      const supabase = createClient();
       const { data: existingDeep } = await supabase
         .from('reports')
         .select('*')
@@ -95,19 +92,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
         return;
       }
 
-      // Check if user has paid credits
-      const now = new Date();
-      const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      const { data: quota } = await supabase
-        .from('usage_quotas')
-        .select('deep_validation_limit')
-        .eq('user_id', user.id)
-        .eq('month', currentMonth)
-        .single();
-
-      if (!quota || quota.deep_validation_limit <= 0) return;
-
-      // Auto-generate deep validation
+      // Call API directly — it handles auth, quota check, and generation
       setGenerating(true);
       try {
         const res = await fetch('/api/deep-validation', {
@@ -115,6 +100,11 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ideaId }),
         });
+
+        if (res.status === 402) {
+          // User hasn't paid — show the CTA
+          return;
+        }
 
         const data = await res.json();
         if (res.ok && data.report?.id) {
