@@ -101,12 +101,14 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           body: JSON.stringify({ ideaId }),
         });
 
+        const data = await res.json();
+        console.log('[DeepValidation] response:', res.status, data);
+
         if (res.status === 402) {
           // User hasn't paid — show the CTA
           return;
         }
 
-        const data = await res.json();
         if (res.ok && data.report?.id) {
           const { data: deepReport } = await supabase
             .from('reports')
@@ -117,7 +119,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           if (deepReport) setReport(deepReport);
         }
       } catch (err) {
-        console.error('Auto deep validation failed:', err);
+        console.error('[DeepValidation] failed:', err);
       } finally {
         setGenerating(false);
       }
