@@ -109,7 +109,12 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           return;
         }
 
-        if (res.ok && data.report?.id) {
+        if (!res.ok) {
+          console.error('[DeepValidation] API error:', data);
+          return;
+        }
+
+        if (data.report?.id) {
           const { data: deepReport } = await supabase
             .from('reports')
             .select('*')

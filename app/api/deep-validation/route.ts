@@ -62,25 +62,31 @@ export async function POST(request: NextRequest) {
 
     // Call OpenRouter with the stronger model
     const openrouter = getOpenRouter();
-    const completion = await openrouter.chat.completions.create({
-      model: MODELS.deep_validation,
-      messages: [
-        { role: 'system', content: DEEP_VALIDATION_SYSTEM_PROMPT },
-        {
-          role: 'user',
-          content: buildDeepValidationPrompt(
-            idea.description,
-            idea.target_user || undefined,
-            idea.product_type || undefined,
-            idea.monetization_plan || undefined,
-            idea.distribution_plan || undefined,
-            idea.mvp_timeline || undefined
-          ),
-        },
-      ],
-      response_format: { type: 'json_object' },
-      temperature: 0.7,
-    });
+    let completion;
+    try {
+      completion = await openrouter.chat.completions.create({
+        model: MODELS.deep_validation,
+        messages: [
+          { role: 'system', content: DEEP_VALIDATION_SYSTEM_PROMPT },
+          {
+            role: 'user',
+            content: buildDeepValidationPrompt(
+              idea.description,
+              idea.target_user || undefined,
+              idea.product_type || undefined,
+              idea.monetization_plan || undefined,
+              idea.distribution_plan || undefined,
+              idea.mvp_timeline || undefined
+            ),
+          },
+        ],
+        response_format: { type: 'json_object' },
+        temperature: 0.7,
+      });
+    } catch (aiError: any) {
+      console.error('OpenRouter API error:', aiError?.message || aiError);
+      return NextResponse.json({ error: 'AI API error: ' + (aiError?.message || 'unknown') }, { status: 500 });
+    }
 
     const content = completion.choices[0]?.message?.content;
     if (!content) {
@@ -90,7 +96,8 @@ export async function POST(request: NextRequest) {
     let parsed;
     try {
       parsed = JSON.parse(content);
-    } catch {
+    } catch (parseError) {
+      console.error('JSON parse error, raw content:', content);
       return NextResponse.json({ error: 'AI returned invalid JSON' }, { status: 500 });
     }
 
@@ -112,8 +119,8 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ report: { id: report.id } });
-  } catch (error) {
-    console.error('Deep validation API error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  } catch (error: any) {
+    console.error('Deep validation API error:', error?.message || error);
+    return NextResponse.json({ error: error?.message || 'Internal server error' }, { status: 500 });
   }
 }
