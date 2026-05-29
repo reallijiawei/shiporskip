@@ -20,10 +20,12 @@ function CallbackContent() {
 
     const verify = async () => {
       if (tokenHash && type) {
-        const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
+        const { data, error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
+        console.log('verifyOtp result:', { session: !!data.session, error: error?.message });
         return error;
       }
-      const { error } = await supabase.auth.exchangeCodeForSession(window.location.search);
+      const { data, error } = await supabase.auth.exchangeCodeForSession(window.location.search);
+      console.log('exchangeCode result:', { session: !!data.session, error: error?.message });
       return error;
     };
 
@@ -32,7 +34,10 @@ function CallbackContent() {
         setStatus('error');
       } else {
         setStatus('success');
-        setTimeout(() => router.push(next), 2000);
+        setTimeout(() => {
+          router.push(next);
+          router.refresh();
+        }, 2000);
       }
     });
   }, []);
