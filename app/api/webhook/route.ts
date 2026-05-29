@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase-server';
+import { createServiceClient } from '@/lib/supabase-service';
 import { verifyWebhookSignature } from '@/lib/creem';
 
 export async function POST(request: NextRequest) {
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Missing user_id in metadata' }, { status: 400 });
       }
 
-      const supabase = await createClient();
+      const supabase = createServiceClient();
 
       // Record the payment
       await supabase.from('payments').insert({
