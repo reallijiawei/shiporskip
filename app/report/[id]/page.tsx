@@ -96,12 +96,13 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
       }
 
       // Check if user has paid credits
+      const now = new Date();
+      const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
       const { data: quota } = await supabase
         .from('usage_quotas')
         .select('deep_validation_limit')
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
+        .eq('month', currentMonth)
         .single();
 
       if (!quota || quota.deep_validation_limit <= 0) return;
