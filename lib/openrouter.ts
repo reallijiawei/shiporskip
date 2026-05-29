@@ -15,6 +15,6 @@ function getOpenRouter() {
 export default getOpenRouter;
 
 export const MODELS = {
-  basic_roast: 'openai/gpt-4o-mini',
-  deep_validation: 'anthropic/claude-sonnet-4',
+  basic_roast: 'deepseek/deepseek-v4-pro',
+  deep_validation: 'openai/gpt-5.5',
 } as const;
