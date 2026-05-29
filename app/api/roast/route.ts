@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
-import getOpenRouter, { MODELS } from '@/lib/openrouter';
+import getDeepSeek, { DEEPSEEK_MODEL } from '@/lib/deepseek';
 import { BASIC_ROAST_SYSTEM_PROMPT, buildBasicRoastPrompt } from '@/lib/prompts';
 import { checkQuota, incrementUsage } from '@/lib/quota';
 
@@ -28,9 +28,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Description is required' }, { status: 400 });
     }
 
-    const openrouter = getOpenRouter();
-    const completion = await openrouter.chat.completions.create({
-      model: MODELS.basic_roast,
+    const deepseek = getDeepSeek();
+    const completion = await deepseek.chat.completions.create({
+      model: DEEPSEEK_MODEL,
       messages: [
         { role: 'system', content: BASIC_ROAST_SYSTEM_PROMPT },
         { role: 'user', content: buildBasicRoastPrompt(description, targetUser, productType) },

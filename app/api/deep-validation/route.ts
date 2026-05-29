@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
-import getOpenRouter, { MODELS } from '@/lib/openrouter';
+import getDeepSeek, { DEEPSEEK_MODEL } from '@/lib/deepseek';
 import { DEEP_VALIDATION_SYSTEM_PROMPT, buildDeepValidationPrompt } from '@/lib/prompts';
 
 export async function POST(request: NextRequest) {
@@ -60,12 +60,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Call OpenRouter with the stronger model
-    const openrouter = getOpenRouter();
+    // Call DeepSeek API
+    const deepseek = getDeepSeek();
     let completion;
     try {
-      completion = await openrouter.chat.completions.create({
-        model: MODELS.deep_validation,
+      completion = await deepseek.chat.completions.create({
+        model: DEEPSEEK_MODEL,
         messages: [
           { role: 'system', content: DEEP_VALIDATION_SYSTEM_PROMPT },
           {
