@@ -1,5 +1,6 @@
 import IdeaInput from '@/components/IdeaInput';
 import { createClient } from '@/lib/supabase-server';
+import { redirect } from 'next/navigation';
 
 interface NewIdeaPageProps {
   searchParams: Promise<{ example?: string }>;
@@ -9,6 +10,10 @@ export default async function NewIdeaPage({ searchParams }: NewIdeaPageProps) {
   const params = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect('/login?redirectTo=/idea/new');
+  }
 
   return (
     <div className="py-12">
