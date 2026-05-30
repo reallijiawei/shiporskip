@@ -4,7 +4,7 @@ import Hero from '@/components/Hero';
 import PricingTable from '@/components/PricingTable';
 import Link from 'next/link';
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ArrowRight } from 'lucide-react';
 
 const STEPS = [
   {
@@ -64,7 +64,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
     <div className="border-b-2 border-foreground/10">
       <button
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between py-5 text-left"
+        className="flex w-full items-center justify-between py-4 text-left"
       >
         <span className="font-display text-lg font-semibold text-foreground">{question}</span>
         <ChevronDown
@@ -72,7 +72,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
         />
       </button>
       <div className={`accordion-content ${open ? 'open' : ''}`}>
-        <p className="pb-5 text-muted">{answer}</p>
+        <p className="pb-4 text-muted">{answer}</p>
       </div>
     </div>
   );
@@ -84,30 +84,30 @@ export default function Home() {
       <Hero />
 
       {/* How It Works */}
-      <section id="how-it-works" className="py-24">
+      <section id="how-it-works" className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
-            <h2 className="animate-fade-up font-display text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">
+            <h2 className="animate-fade-up font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               How it works
             </h2>
-            <p className="animate-fade-up delay-100 mt-4 text-lg text-muted">
+            <p className="animate-fade-up delay-100 mt-3 text-base text-muted">
               Stop asking friends if your idea is good. They will be polite. We won&apos;t.
             </p>
           </div>
 
-          <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-3">
+          <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
             {STEPS.map((item, i) => (
               <div
                 key={item.step}
-                className={`animate-fade-up delay-${(i + 2) * 100} accent-bar bg-card p-6 pl-8`}
+                className="animate-fade-up accent-bar bg-card p-5 pl-7"
               >
-                <span className="font-display text-6xl font-extrabold text-foreground/5">
+                <span className="font-display text-5xl font-bold text-foreground/5">
                   {item.step}
                 </span>
-                <h3 className="mt-2 font-display text-xl font-bold text-foreground">
+                <h3 className="mt-1 font-display text-lg font-bold text-foreground">
                   {item.title}
                 </h3>
-                <p className="mt-2 text-muted">{item.description}</p>
+                <p className="mt-2 text-sm text-muted">{item.description}</p>
               </div>
             ))}
           </div>
@@ -115,33 +115,33 @@ export default function Home() {
       </section>
 
       {/* What You Get */}
-      <section className="noise border-y-2 border-foreground/10 bg-foreground py-24">
+      <section className="noise border-y-2 border-foreground/10 bg-foreground py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-display text-4xl font-extrabold tracking-tight text-background sm:text-5xl">
+            <h2 className="font-display text-3xl font-bold tracking-tight text-background sm:text-4xl">
               What you get
             </h2>
           </div>
 
-          <div className="mt-16 grid grid-cols-1 gap-12 sm:grid-cols-2 max-w-4xl mx-auto">
+          <div className="mt-10 grid grid-cols-1 gap-10 sm:grid-cols-2 max-w-4xl mx-auto">
             <div>
-              <h3 className="font-display text-xl font-bold text-accent">Included</h3>
-              <ul className="mt-6 space-y-4">
+              <h3 className="font-display text-lg font-bold text-accent">Included</h3>
+              <ul className="mt-5 space-y-3">
                 {INCLUDED.map((item) => (
                   <li key={item} className="flex items-start gap-3">
-                    <span className="mt-1 h-3 w-3 shrink-0 bg-accent" />
-                    <span className="text-background/80">{item}</span>
+                    <span className="mt-1.5 h-2.5 w-2.5 shrink-0 bg-accent" />
+                    <span className="text-sm text-background/80">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
             <div>
-              <h3 className="font-display text-xl font-bold text-background/40">Not included</h3>
-              <ul className="mt-6 space-y-4">
+              <h3 className="font-display text-lg font-bold text-background/40">Not included</h3>
+              <ul className="mt-5 space-y-3">
                 {EXCLUDED.map((item) => (
                   <li key={item} className="flex items-start gap-3">
-                    <span className="mt-1 h-3 w-3 shrink-0 border-2 border-background/20" />
-                    <span className="text-background/30 line-through">{item}</span>
+                    <span className="mt-1.5 h-2.5 w-2.5 shrink-0 border-2 border-background/20" />
+                    <span className="text-sm text-background/30 line-through">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -151,18 +151,18 @@ export default function Home() {
       </section>
 
       {/* Pricing */}
-      <section className="py-24">
+      <section className="py-16">
         <PricingTable />
       </section>
 
       {/* FAQ */}
-      <section className="border-y-2 border-foreground/10 py-24">
+      <section className="border-y-2 border-foreground/10 py-16">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <h2 className="font-display text-4xl font-extrabold tracking-tight text-foreground">
+          <h2 className="font-display text-3xl font-bold tracking-tight text-foreground">
             Questions
           </h2>
 
-          <div className="mt-12">
+          <div className="mt-8">
             {FAQ.map((faq) => (
               <FAQItem key={faq.question} question={faq.question} answer={faq.answer} />
             ))}
@@ -171,17 +171,17 @@ export default function Home() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="noise bg-foreground py-24">
+      <section className="noise bg-foreground py-16">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="font-display text-4xl font-extrabold tracking-tight text-background sm:text-5xl">
+          <h2 className="font-display text-3xl font-bold tracking-tight text-background sm:text-4xl">
             Stop guessing. Start validating.
           </h2>
-          <p className="mt-4 text-lg text-background/60">
+          <p className="mt-3 text-base text-background/60">
             Get a brutal, honest verdict on your indie product idea in under 2 minutes.
           </p>
           <Link
             href="/idea/new"
-            className="mt-10 inline-flex items-center gap-2 bg-accent px-10 py-4 text-lg font-bold tracking-tight text-foreground transition-transform hover:scale-105 hover:bg-accent-hover"
+            className="mt-8 inline-flex items-center gap-2 bg-accent px-10 py-3.5 text-base font-bold tracking-tight text-foreground transition-transform hover:scale-105 hover:bg-accent-hover"
           >
             Validate Your Idea Now
             <ArrowRight className="h-5 w-5" />
@@ -191,6 +191,3 @@ export default function Home() {
     </>
   );
 }
-
-// Need to import ArrowRight for the CTA
-import { ArrowRight } from 'lucide-react';

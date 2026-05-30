@@ -1,19 +1,19 @@
 import type { Metadata } from 'next';
-import { Syne, DM_Sans } from 'next/font/google';
+import { Space_Grotesk, DM_Sans } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-const syne = Syne({
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  variable: '--font-syne',
-  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-display',
+  weight: ['500', '600', '700'],
 });
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
-  variable: '--font-dm-sans',
+  variable: '--font-body',
   weight: ['400', '500', '600', '700'],
 });
 
@@ -29,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`h-full antialiased ${syne.variable} ${dmSans.variable}`}>
+    <html lang="en" className={`h-full antialiased ${spaceGrotesk.variable} ${dmSans.variable}`}>
       <head>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-KCX8SSKHC6"

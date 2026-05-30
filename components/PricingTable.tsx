@@ -68,10 +68,10 @@ export default function PricingTable() {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl text-center">
-        <h2 className="font-display text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">
+        <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
           Simple, transparent pricing
         </h2>
-        <p className="mt-4 text-lg text-muted">
+        <p className="mt-3 text-base text-muted">
           Start free. Upgrade when you need deeper validation.
         </p>
       </div>

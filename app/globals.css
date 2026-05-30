@@ -20,8 +20,8 @@
   --color-card: var(--card);
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
-  --font-display: var(--font-syne);
-  --font-body: var(--font-dm-sans);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
 }
 
 /* Noise texture overlay */
