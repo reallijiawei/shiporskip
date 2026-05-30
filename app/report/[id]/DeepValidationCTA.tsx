@@ -51,7 +51,7 @@ export default function DeepValidationCTA({ reportId, ideaId }: DeepValidationCT
       <button
         onClick={handleUpgrade}
         disabled={loading}
-        className="mt-6 inline-flex items-center gap-2 bg-accent px-8 py-4 text-base font-bold tracking-tight text-foreground transition-transform hover:scale-105 hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-6 inline-flex items-center gap-2 bg-accent px-8 py-4 text-base font-bold tracking-tight text-white transition-transform hover:scale-105 hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? (
           <>

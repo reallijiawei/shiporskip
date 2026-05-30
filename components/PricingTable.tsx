@@ -119,7 +119,7 @@ export default function PricingTable() {
               className={cn(
                 'mt-6 block w-full py-2.5 text-center text-sm font-bold transition-all',
                 plan.highlighted
-                  ? 'bg-accent text-foreground hover:bg-accent-hover hover:scale-105'
+                  ? 'bg-accent text-white hover:bg-accent-hover hover:scale-105'
                   : 'border-2 border-foreground/20 text-foreground hover:border-foreground/40'
               )}
             >

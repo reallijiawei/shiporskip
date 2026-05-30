@@ -3,9 +3,9 @@
 :root {
   --background: #FAFAFA;
   --foreground: #0D0D0D;
-  --accent: #FACC15;
-  --accent-hover: #EAB308;
-  --muted: #737373;
+  --accent: #2563EB;
+  --accent-hover: #1D4ED8;
+  --muted: #6B7280;
   --card: #FFFFFF;
   --border: #E5E5E5;
   --border-strong: #0D0D0D;
@@ -128,10 +128,10 @@ h1, h2, h3, h4, h5, h6 {
   border-left: 4px solid var(--accent);
 }
 
-/* Yellow pill */
+/* Accent pill */
 .pill-accent {
   background: var(--accent);
-  color: var(--foreground);
+  color: #fff;
   font-weight: 700;
   padding: 0.125rem 0.625rem;
   font-size: 0.75rem;

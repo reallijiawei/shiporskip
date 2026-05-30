@@ -84,7 +84,7 @@ export default function Home() {
       <Hero />
 
       {/* How It Works */}
-      <section id="how-it-works" className="py-16">
+      <section id="how-it-works" className="pt-8 pb-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
             <h2 className="animate-fade-up font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
@@ -181,7 +181,7 @@ export default function Home() {
           </p>
           <Link
             href="/idea/new"
-            className="mt-8 inline-flex items-center gap-2 bg-accent px-10 py-3.5 text-base font-bold tracking-tight text-foreground transition-transform hover:scale-105 hover:bg-accent-hover"
+            className="mt-8 inline-flex items-center gap-2 bg-accent px-10 py-3.5 text-base font-bold tracking-tight text-white transition-transform hover:scale-105 hover:bg-accent-hover"
           >
             Validate Your Idea Now
             <ArrowRight className="h-5 w-5" />

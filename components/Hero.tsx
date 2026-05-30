@@ -3,12 +3,12 @@ import { ArrowRight } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <section className="noise relative overflow-hidden bg-background py-16 sm:py-24">
+    <section className="noise relative overflow-hidden bg-background pt-16 pb-10 sm:pt-24 sm:pb-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <div className="animate-fade-up mx-auto mb-6 flex items-center justify-center gap-3">
             <span className="h-px w-12 bg-foreground/20" />
-            <span className="pill-accent">BRUTAL HONESTY</span>
+            <span className="pill-accent">AI-POWERED VERDICT</span>
             <span className="h-px w-12 bg-foreground/20" />
           </div>
 
@@ -28,7 +28,7 @@ export default function Hero() {
           <div className="animate-fade-up delay-400 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/idea/new"
-              className="inline-flex items-center gap-2 bg-accent px-8 py-3.5 text-base font-bold tracking-tight text-foreground transition-transform hover:scale-105 hover:bg-accent-hover"
+              className="inline-flex items-center gap-2 bg-accent px-8 py-3.5 text-base font-bold tracking-tight text-white transition-transform hover:scale-105 hover:bg-accent-hover"
             >
               Validate Your Idea
               <ArrowRight className="h-4 w-4" />

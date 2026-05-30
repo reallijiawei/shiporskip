@@ -220,7 +220,7 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
         <button
           type="submit"
           disabled={isSubmitting}
-          className="mt-8 w-full bg-accent py-4 text-base font-bold tracking-tight text-foreground transition-all hover:bg-accent-hover hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-8 w-full bg-accent py-4 text-base font-bold tracking-tight text-white transition-all hover:bg-accent-hover hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isSubmitting ? (
             <span className="flex items-center justify-center gap-2">

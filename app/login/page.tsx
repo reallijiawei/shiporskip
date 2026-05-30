@@ -130,7 +130,7 @@ function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-accent py-3 text-sm font-bold tracking-tight text-foreground transition-all hover:bg-accent-hover hover:scale-[1.02] disabled:opacity-50"
+          className="w-full bg-accent py-3 text-sm font-bold tracking-tight text-white transition-all hover:bg-accent-hover hover:scale-[1.02] disabled:opacity-50"
         >
           {loading ? 'Loading...' : mode === 'login' ? 'Log In' : 'Sign Up'}
         </button>

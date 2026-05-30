@@ -35,7 +35,7 @@ export default async function DashboardPage() {
           </div>
           <Link
             href="/idea/new"
-            className="inline-flex items-center gap-2 bg-accent px-5 py-2.5 text-sm font-bold tracking-tight text-foreground transition-transform hover:scale-105 hover:bg-accent-hover"
+            className="inline-flex items-center gap-2 bg-accent px-5 py-2.5 text-sm font-bold tracking-tight text-white transition-transform hover:scale-105 hover:bg-accent-hover"
           >
             <Plus className="h-4 w-4" />
             New Idea
@@ -101,7 +101,7 @@ export default async function DashboardPage() {
               <p className="mt-2 text-muted">Start by validating your first idea!</p>
               <Link
                 href="/idea/new"
-                className="mt-6 inline-flex items-center gap-2 bg-accent px-5 py-2.5 text-sm font-bold tracking-tight text-foreground transition-transform hover:scale-105 hover:bg-accent-hover"
+                className="mt-6 inline-flex items-center gap-2 bg-accent px-5 py-2.5 text-sm font-bold tracking-tight text-white transition-transform hover:scale-105 hover:bg-accent-hover"
               >
                 <Plus className="h-4 w-4" />
                 Validate Your First Idea

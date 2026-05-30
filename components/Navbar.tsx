@@ -95,7 +95,7 @@ export default function Navbar() {
 
           <Link
             href="/idea/new"
-            className="inline-flex items-center gap-2 bg-accent px-4 py-2 text-sm font-bold tracking-tight text-foreground transition-transform hover:scale-105 hover:bg-accent-hover"
+            className="inline-flex items-center gap-2 bg-accent px-4 py-2 text-sm font-bold tracking-tight text-white transition-transform hover:scale-105 hover:bg-accent-hover"
           >
             Validate Idea
           </Link>
@@ -145,7 +145,7 @@ export default function Navbar() {
             <Link
               href="/idea/new"
               onClick={() => setMobileOpen(false)}
-              className="mt-2 bg-accent px-4 py-2 text-center text-sm font-bold text-foreground"
+              className="mt-2 bg-accent px-4 py-2 text-center text-sm font-bold text-white"
             >
               Validate Idea
             </Link>
