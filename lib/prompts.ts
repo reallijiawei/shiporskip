@@ -136,3 +136,34 @@ ${mvpTimeline ? `MVP Timeline: ${mvpTimeline}` : ''}
 
 Provide a complete validation with founder-inspired lenses, failure patterns, and a 7-day validation sprint. Return JSON only.`;
 }
+
+export function buildExpertEvaluationPrompt(
+  description: string,
+  targetUser?: string,
+  productType?: string,
+  monetizationPlan?: string,
+  distributionPlan?: string,
+  mvpTimeline?: string
+) {
+  return `Evaluate this indie product idea from your unique perspective:
+
+Description: ${description}
+${targetUser ? `Target User: ${targetUser}` : ''}
+${productType ? `Product Type: ${productType}` : ''}
+${monetizationPlan ? `Monetization Plan: ${monetizationPlan}` : ''}
+${distributionPlan ? `Distribution Plan: ${distributionPlan}` : ''}
+${mvpTimeline ? `MVP Timeline: ${mvpTimeline}` : ''}
+
+Give your honest, opinionated verdict. Use your own thinking framework — not generic advice.
+
+You must return a JSON object with this exact structure:
+{
+  "verdict": "build_now" | "validate_first" | "pivot" | "skip" | "too_crowded",
+  "confidence": "high" | "medium" | "low",
+  "one_line_take": "Your core judgment in one sentence, in your voice",
+  "key_arguments": ["argument 1", "argument 2", "argument 3"],
+  "blind_spot": "A risk others might miss"
+}
+
+Be specific to this idea. Be opinionated. Sound like yourself.`;
+}

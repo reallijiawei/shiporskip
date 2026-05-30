@@ -44,6 +44,17 @@ export interface MVPScope {
   cut_for_v1: string[];
 }
 
+export interface ExpertOpinion {
+  expert_id: string;
+  expert_name: string;
+  expert_title: string;
+  verdict: Verdict;
+  confidence: 'high' | 'medium' | 'low';
+  one_line_take: string;
+  key_arguments: string[];
+  blind_spot: string;
+}
+
 export interface ReportContent {
   verdict: Verdict;
   overall_score: number;
@@ -56,6 +67,7 @@ export interface ReportContent {
   failure_patterns: FailurePattern[];
   best_version_of_idea: string;
   mvp_scope: MVPScope;
+  expert_panel?: ExpertOpinion[];
 }
 
 export interface Report {

@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import getDeepSeek, { DEEPSEEK_MODEL } from '@/lib/deepseek';
-import { DEEP_VALIDATION_SYSTEM_PROMPT, buildDeepValidationPrompt } from '@/lib/prompts';
+import { DEEP_VALIDATION_SYSTEM_PROMPT, buildDeepValidationPrompt, buildExpertEvaluationPrompt } from '@/lib/prompts';
+import { EXPERTS } from '@/lib/expert-prompts';
+import type { ExpertOpinion } from '@/types/report';
 
 export async function POST(request: NextRequest) {
   try {
@@ -60,45 +62,93 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Call DeepSeek API
     const deepseek = getDeepSeek();
-    let completion;
-    try {
-      completion = await deepseek.chat.completions.create({
+
+    const ideaArgs = [
+      idea.description,
+      idea.target_user || undefined,
+      idea.product_type || undefined,
+      idea.monetization_plan || undefined,
+      idea.distribution_plan || undefined,
+      idea.mvp_timeline || undefined,
+    ] as const;
+
+    // Run main deep validation + 10 expert evaluations in parallel
+    const [mainResult, ...expertResults] = await Promise.allSettled([
+      // Main Deep Validation
+      deepseek.chat.completions.create({
         model: DEEPSEEK_MODEL,
         messages: [
           { role: 'system', content: DEEP_VALIDATION_SYSTEM_PROMPT },
-          {
-            role: 'user',
-            content: buildDeepValidationPrompt(
-              idea.description,
-              idea.target_user || undefined,
-              idea.product_type || undefined,
-              idea.monetization_plan || undefined,
-              idea.distribution_plan || undefined,
-              idea.mvp_timeline || undefined
-            ),
-          },
+          { role: 'user', content: buildDeepValidationPrompt(...ideaArgs) },
         ],
         response_format: { type: 'json_object' },
         temperature: 0.7,
-      });
-    } catch (aiError: any) {
-      console.error('OpenRouter API error:', aiError?.message || aiError);
-      return NextResponse.json({ error: 'AI API error: ' + (aiError?.message || 'unknown') }, { status: 500 });
+      }),
+      // 10 expert evaluations
+      ...EXPERTS.map((expert) =>
+        deepseek.chat.completions.create({
+          model: DEEPSEEK_MODEL,
+          messages: [
+            { role: 'system', content: expert.systemPrompt },
+            { role: 'user', content: buildExpertEvaluationPrompt(...ideaArgs) },
+          ],
+          response_format: { type: 'json_object' },
+          temperature: 0.7,
+        })
+      ),
+    ]);
+
+    // Parse main result
+    if (mainResult.status === 'rejected') {
+      console.error('Main Deep Validation failed:', mainResult.reason);
+      return NextResponse.json({ error: 'AI API error: ' + (mainResult.reason?.message || 'unknown') }, { status: 500 });
     }
 
-    const content = completion.choices[0]?.message?.content;
-    if (!content) {
+    const mainContent = mainResult.value.choices[0]?.message?.content;
+    if (!mainContent) {
       return NextResponse.json({ error: 'AI returned empty response' }, { status: 500 });
     }
 
     let parsed;
     try {
-      parsed = JSON.parse(content);
+      parsed = JSON.parse(mainContent);
     } catch (parseError) {
-      console.error('JSON parse error, raw content:', content);
+      console.error('JSON parse error, raw content:', mainContent);
       return NextResponse.json({ error: 'AI returned invalid JSON' }, { status: 500 });
+    }
+
+    // Parse expert results (non-blocking — failures are tolerated)
+    const expertPanel: ExpertOpinion[] = [];
+    expertResults.forEach((result, i) => {
+      const expert = EXPERTS[i];
+      if (result.status === 'rejected') {
+        console.error(`Expert ${expert.name} failed:`, result.reason);
+        return;
+      }
+      const content = result.value.choices[0]?.message?.content;
+      if (!content) return;
+      try {
+        const opinion = JSON.parse(content);
+        expertPanel.push({
+          expert_id: expert.id,
+          expert_name: expert.name,
+          expert_title: expert.title,
+          verdict: opinion.verdict,
+          confidence: opinion.confidence,
+          one_line_take: opinion.one_line_take,
+          key_arguments: opinion.key_arguments || [],
+          blind_spot: opinion.blind_spot || '',
+        });
+      } catch (e) {
+        console.error(`Expert ${expert.name} returned invalid JSON:`, content);
+      }
+    });
+
+    // Merge expert panel into content_json
+    const contentJson = { ...parsed };
+    if (expertPanel.length > 0) {
+      contentJson.expert_panel = expertPanel;
     }
 
     const { data: report, error: reportError } = await supabase
@@ -109,7 +159,7 @@ export async function POST(request: NextRequest) {
         verdict: parsed.verdict,
         overall_score: parsed.overall_score,
         scores: parsed.score_breakdown,
-        content_json: parsed,
+        content_json: contentJson,
       })
       .select()
       .single();

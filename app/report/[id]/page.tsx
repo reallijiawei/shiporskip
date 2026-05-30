@@ -8,6 +8,7 @@ import FounderLensCard from '@/components/FounderLensCard';
 import FailurePatterns from '@/components/FailurePatterns';
 import MarketEvidence from '@/components/MarketEvidence';
 import DeepValidationCTA from './DeepValidationCTA';
+import ExpertPanel from '@/components/ExpertPanel';
 import { FounderLens, Report } from '@/types/report';
 import { Loader2 } from 'lucide-react';
 
@@ -247,6 +248,12 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           <div className="mt-8 rounded-[8px] border border-l-4 border-accent border-foreground/10 bg-card/90 p-6 shadow-sm">
             <h3 className="font-display text-xl font-bold text-foreground">Best Version of This Idea</h3>
             <p className="mt-3 text-foreground/80">{content.best_version_of_idea}</p>
+          </div>
+        )}
+
+        {!isBasic && content.expert_panel && content.expert_panel.length > 0 && (
+          <div className="mt-8">
+            <ExpertPanel opinions={content.expert_panel} />
           </div>
         )}
       </div>
