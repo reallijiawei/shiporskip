@@ -61,7 +61,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border-b-2 border-foreground/10">
+    <div className="border-b border-foreground/10">
       <button
         onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between py-4 text-left"
@@ -96,18 +96,18 @@ export default function Home() {
           </div>
 
           <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
-            {STEPS.map((item, i) => (
+            {STEPS.map((item) => (
               <div
                 key={item.step}
-                className="animate-fade-up accent-bar bg-card p-5 pl-7"
+                className="animate-fade-up shell-panel p-6"
               >
-                <span className="font-display text-5xl font-bold text-foreground/5">
+                <span className="rounded-full bg-foreground px-3 py-1 text-xs font-bold text-background">
                   {item.step}
                 </span>
-                <h3 className="mt-1 font-display text-lg font-bold text-foreground">
+                <h3 className="mt-5 font-display text-xl font-bold text-foreground">
                   {item.title}
                 </h3>
-                <p className="mt-2 text-sm text-muted">{item.description}</p>
+                <p className="mt-3 text-sm leading-6 text-muted">{item.description}</p>
               </div>
             ))}
           </div>
@@ -115,7 +115,7 @@ export default function Home() {
       </section>
 
       {/* What You Get */}
-      <section className="noise border-y-2 border-foreground/10 bg-foreground py-16">
+      <section className="border-y border-foreground/10 bg-foreground py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="font-display text-3xl font-bold tracking-tight text-background sm:text-4xl">
@@ -123,8 +123,8 @@ export default function Home() {
             </h2>
           </div>
 
-          <div className="mt-10 grid grid-cols-1 gap-10 sm:grid-cols-2 max-w-4xl mx-auto">
-            <div>
+          <div className="mx-auto mt-10 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="rounded-[8px] border border-background/10 bg-background/5 p-6">
               <h3 className="font-display text-lg font-bold text-accent">Included</h3>
               <ul className="mt-5 space-y-3">
                 {INCLUDED.map((item) => (
@@ -135,7 +135,7 @@ export default function Home() {
                 ))}
               </ul>
             </div>
-            <div>
+            <div className="rounded-[8px] border border-background/10 bg-background/5 p-6">
               <h3 className="font-display text-lg font-bold text-background/40">Not included</h3>
               <ul className="mt-5 space-y-3">
                 {EXCLUDED.map((item) => (
@@ -156,7 +156,7 @@ export default function Home() {
       </section>
 
       {/* FAQ */}
-      <section className="border-y-2 border-foreground/10 py-16">
+      <section className="border-y border-foreground/10 py-16">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <h2 className="font-display text-3xl font-bold tracking-tight text-foreground">
             Questions
@@ -171,7 +171,7 @@ export default function Home() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="noise bg-foreground py-16">
+      <section className="bg-foreground py-16">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="font-display text-3xl font-bold tracking-tight text-background sm:text-4xl">
             Stop guessing. Start validating.
@@ -181,7 +181,7 @@ export default function Home() {
           </p>
           <Link
             href="/idea/new"
-            className="mt-8 inline-flex items-center gap-2 bg-accent px-10 py-3.5 text-base font-bold tracking-tight text-white transition-transform hover:scale-105 hover:bg-accent-hover"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-10 py-3.5 text-base font-bold tracking-tight text-white transition-transform hover:-translate-y-0.5 hover:bg-accent-hover"
           >
             Validate Your Idea Now
             <ArrowRight className="h-5 w-5" />

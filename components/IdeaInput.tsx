@@ -112,10 +112,10 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto max-w-2xl">
-      <div className="border-2 border-foreground/10 bg-card p-6">
+    <form onSubmit={handleSubmit} className="mx-auto max-w-3xl">
+      <div className="shell-panel p-5 sm:p-7">
         {!isLoggedIn && (
-          <div className="mb-6 border-l-4 border-accent bg-accent/10 p-4 text-sm text-foreground">
+          <div className="mb-6 rounded-[8px] border border-accent/25 bg-accent/10 p-4 text-sm text-foreground">
             You need to <a href="/login?redirectTo=/idea/new" className="font-bold underline">log in</a> to validate your idea. It&apos;s free!
           </div>
         )}
@@ -128,7 +128,7 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
             id="description"
             rows={5}
             maxLength={2000}
-            className="mt-2 block w-full border-b-2 border-foreground/15 bg-transparent py-3 text-foreground focus:border-accent focus:outline-none resize-none"
+            className="field-surface mt-2 block w-full resize-none px-4 py-3 text-foreground"
             placeholder="I want to build a..."
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -146,7 +146,7 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
             <input
               type="text"
               id="targetUser"
-              className="mt-2 block w-full border-b-2 border-foreground/15 bg-transparent py-2.5 text-foreground focus:border-accent focus:outline-none"
+              className="field-surface mt-2 block w-full px-4 py-3 text-foreground"
               placeholder="Indie hackers, developers..."
               value={form.targetUser}
               onChange={(e) => setForm({ ...form, targetUser: e.target.value })}
@@ -159,7 +159,7 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
             </label>
             <select
               id="productType"
-              className="mt-2 block w-full border-b-2 border-foreground/15 bg-transparent py-2.5 text-foreground focus:border-accent focus:outline-none"
+              className="field-surface mt-2 block w-full px-4 py-3 text-foreground"
               value={form.productType}
               onChange={(e) => setForm({ ...form, productType: e.target.value })}
             >
@@ -175,7 +175,7 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
 
         <button
           type="button"
-          className="mt-5 flex items-center gap-1.5 text-sm font-medium text-muted hover:text-foreground"
+          className="mt-5 flex items-center gap-1.5 rounded-full px-1 text-sm font-bold text-muted hover:text-foreground"
           onClick={() => setShowAdvanced(!showAdvanced)}
         >
           <ChevronDown className={cn('h-4 w-4 transition-transform', showAdvanced && 'rotate-180')} />
@@ -195,7 +195,7 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
                 </label>
                 <select
                   id={field.id}
-                  className="mt-2 block w-full border-b-2 border-foreground/15 bg-transparent py-2.5 text-foreground focus:border-accent focus:outline-none"
+                  className="field-surface mt-2 block w-full px-3 py-3 text-foreground"
                   value={form[field.id as keyof typeof form]}
                   onChange={(e) => setForm({ ...form, [field.id]: e.target.value })}
                 >
@@ -212,7 +212,7 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
         )}
 
         {error && (
-          <p className="mt-4 border-l-4 border-red-500 bg-red-50 px-3 py-2 text-sm text-red-600">
+          <p className="mt-4 rounded-[8px] border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
             {error}
           </p>
         )}
@@ -220,7 +220,7 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
         <button
           type="submit"
           disabled={isSubmitting}
-          className="mt-8 w-full bg-accent py-4 text-base font-bold tracking-tight text-white transition-all hover:bg-accent-hover hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
+          className="btn-primary mt-8 w-full py-4 text-base font-bold tracking-tight disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isSubmitting ? (
             <span className="flex items-center justify-center gap-2">

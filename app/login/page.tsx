@@ -49,8 +49,8 @@ function LoginForm() {
 
   if (signupSuccess) {
     return (
-      <div className="w-full max-w-md border-2 border-foreground/10 bg-card p-8 text-center">
-        <span className="inline-block h-8 w-8 bg-accent" />
+      <div className="shell-panel w-full max-w-md p-8 text-center">
+        <span className="mx-auto grid h-10 w-10 place-items-center rounded-[8px] bg-accent font-black text-white">S</span>
         <h2 className="mt-4 font-display text-2xl font-extrabold text-foreground">Check your email</h2>
         <p className="mt-2 text-sm text-muted">
           We sent a confirmation link to <strong className="text-foreground">{email}</strong>. Click the link to activate your account.
@@ -60,9 +60,9 @@ function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-md border-2 border-foreground/10 bg-card p-8">
+    <div className="shell-panel w-full max-w-md p-8">
       <div className="text-center">
-        <span className="inline-block h-8 w-8 bg-accent" />
+        <span className="mx-auto grid h-10 w-10 place-items-center rounded-[8px] bg-accent font-black text-white">S</span>
         <h2 className="mt-4 font-display text-2xl font-extrabold text-foreground">
           {mode === 'login' ? 'Welcome back' : 'Create your account'}
         </h2>
@@ -71,7 +71,7 @@ function LoginForm() {
         </p>
       </div>
 
-      <div className="mt-6 flex border-2 border-foreground/10 p-1">
+      <div className="mt-6 flex rounded-full border border-foreground/10 bg-background/70 p-1">
         {(['login', 'signup'] as const).map((m) => (
           <button
             key={m}
@@ -80,7 +80,7 @@ function LoginForm() {
             className={cn(
               'flex-1 py-2 text-sm font-bold transition-colors',
               mode === m
-                ? 'bg-foreground text-background'
+                ? 'rounded-full bg-foreground text-background'
                 : 'text-muted hover:text-foreground'
             )}
           >
@@ -100,7 +100,7 @@ function LoginForm() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-2 block w-full border-b-2 border-foreground/15 bg-transparent py-2.5 text-foreground focus:border-accent focus:outline-none"
+            className="field-surface mt-2 block w-full px-4 py-3 text-foreground"
             placeholder="you@example.com"
           />
         </div>
@@ -116,13 +116,13 @@ function LoginForm() {
             minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-2 block w-full border-b-2 border-foreground/15 bg-transparent py-2.5 text-foreground focus:border-accent focus:outline-none"
+            className="field-surface mt-2 block w-full px-4 py-3 text-foreground"
             placeholder="At least 6 characters"
           />
         </div>
 
         {error && (
-          <p className="border-l-4 border-red-500 bg-red-50 px-3 py-2 text-sm text-red-600">
+          <p className="rounded-[8px] border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
             {error}
           </p>
         )}
@@ -130,7 +130,7 @@ function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-accent py-3 text-sm font-bold tracking-tight text-white transition-all hover:bg-accent-hover hover:scale-[1.02] disabled:opacity-50"
+          className="btn-primary w-full py-3 text-sm font-bold tracking-tight disabled:opacity-50"
         >
           {loading ? 'Loading...' : mode === 'login' ? 'Log In' : 'Sign Up'}
         </button>
@@ -141,7 +141,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="noise flex min-h-[60vh] items-center justify-center px-4">
+    <div className="flex min-h-[66vh] items-center justify-center px-4 py-12">
       <Suspense>
         <LoginForm />
       </Suspense>

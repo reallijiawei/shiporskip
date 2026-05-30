@@ -25,9 +25,9 @@ function getVerdictIcon(verdict: Verdict) {
 
 export default function VerdictCard({ verdict, overallScore, oneSentenceSummary }: VerdictCardProps) {
   return (
-    <div className={cn('overflow-hidden border-2', getVerdictColor(verdict))}>
+    <div className={cn('overflow-hidden rounded-[8px] border shadow-xl', getVerdictColor(verdict))}>
       {/* Verdict banner */}
-      <div className="flex items-center gap-4 px-8 py-6">
+      <div className="flex flex-col gap-4 px-6 py-6 sm:flex-row sm:items-center sm:px-8">
         {getVerdictIcon(verdict)}
         <div>
           <h2 className="font-display text-3xl font-extrabold tracking-tight">
@@ -38,7 +38,7 @@ export default function VerdictCard({ verdict, overallScore, oneSentenceSummary 
       </div>
 
       {/* Score strip */}
-      <div className="flex items-end gap-3 border-t-2 border-current/10 px-8 py-6">
+      <div className="flex items-end gap-3 border-t border-current/10 bg-card/45 px-6 py-6 sm:px-8">
         <span className={cn('font-display text-8xl font-extrabold leading-none', getScoreColor(overallScore))}>
           {overallScore}
         </span>

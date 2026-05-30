@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { Menu, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { createClient } from '@/lib/supabase';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
@@ -44,10 +45,12 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 border-b-2 border-foreground/10 bg-background/80 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 border-b border-foreground/10 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2 font-display font-extrabold text-xl tracking-tight">
-          <span className="inline-block h-5 w-5 bg-accent" />
+        <Link href="/" className="flex items-center gap-2 font-display text-xl font-extrabold tracking-tight">
+          <span className="grid h-7 w-7 place-items-center rounded-[8px] bg-foreground text-sm font-black text-background">
+            S
+          </span>
           ShipOrSkip
         </Link>
 
@@ -95,7 +98,7 @@ export default function Navbar() {
 
           <Link
             href="/idea/new"
-            className="inline-flex items-center gap-2 bg-accent px-4 py-2 text-sm font-bold tracking-tight text-white transition-transform hover:scale-105 hover:bg-accent-hover"
+            className="btn-primary inline-flex items-center gap-2 px-4 py-2 text-sm font-bold tracking-tight"
           >
             Validate Idea
           </Link>
@@ -103,19 +106,17 @@ export default function Navbar() {
 
         {/* Mobile hamburger */}
         <button
-          className="flex flex-col gap-1.5 md:hidden"
+          className="btn-secondary grid h-10 w-10 place-items-center md:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Menu"
         >
-          <span className={cn('block h-0.5 w-6 bg-foreground transition-transform', mobileOpen && 'translate-y-2 rotate-45')} />
-          <span className={cn('block h-0.5 w-6 bg-foreground transition-opacity', mobileOpen && 'opacity-0')} />
-          <span className={cn('block h-0.5 w-6 bg-foreground transition-transform', mobileOpen && '-translate-y-2 -rotate-45')} />
+          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="border-t-2 border-foreground/10 bg-background px-4 py-4 md:hidden">
+        <div className="border-t border-foreground/10 bg-background/95 px-4 py-4 backdrop-blur-xl md:hidden">
           <div className="flex flex-col gap-3">
             {navLinks.map((link) => (
               <Link
@@ -145,7 +146,7 @@ export default function Navbar() {
             <Link
               href="/idea/new"
               onClick={() => setMobileOpen(false)}
-              className="mt-2 bg-accent px-4 py-2 text-center text-sm font-bold text-white"
+              className="btn-primary mt-2 px-4 py-2 text-center text-sm font-bold"
             >
               Validate Idea
             </Link>

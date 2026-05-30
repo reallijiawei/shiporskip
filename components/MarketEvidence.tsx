@@ -15,7 +15,7 @@ function SignalBadge({ label, value }: { label: string; value: string }) {
   };
 
   return (
-    <div className="flex items-center justify-between border-b-2 border-foreground/5 py-3">
+    <div className="flex items-center justify-between border-b border-foreground/10 py-3">
       <span className="text-sm text-muted">{label}</span>
       <span className={cn('pill-accent', colorMap[value] || 'bg-foreground/10 text-foreground')}>
         {value}
@@ -26,7 +26,7 @@ function SignalBadge({ label, value }: { label: string; value: string }) {
 
 export default function MarketEvidence({ evidence }: MarketEvidenceProps) {
   return (
-    <div className="border-2 border-foreground/10 bg-card p-6">
+    <div className="shell-panel p-6">
       <h3 className="font-display text-xl font-bold text-foreground">Market Evidence</h3>
 
       <div className="mt-4 flex items-center gap-3">

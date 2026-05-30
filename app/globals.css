@@ -1,14 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FAFAFA;
-  --foreground: #0D0D0D;
-  --accent: #2563EB;
-  --accent-hover: #1D4ED8;
-  --muted: #6B7280;
-  --card: #FFFFFF;
-  --border: #E5E5E5;
-  --border-strong: #0D0D0D;
+  --background: #F5F1E8;
+  --foreground: #161410;
+  --accent: #E44D26;
+  --accent-hover: #C83D18;
+  --muted: #706A5E;
+  --card: #FFFDF7;
+  --border: #DDD4C4;
+  --border-strong: #242018;
+  --ink-soft: #312C24;
+  --lime: #CBEF43;
+  --sky: #80B8FF;
 }
 
 @theme inline {
@@ -106,6 +109,15 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body), sans-serif;
+  background-image:
+    linear-gradient(rgba(22, 20, 16, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(22, 20, 16, 0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+html,
+body {
+  overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -114,13 +126,16 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Brutalist card */
 .card-brutal {
-  border: 2px solid var(--border);
+  border: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent);
+  border-radius: 8px;
   background: var(--card);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 18px 50px rgba(36, 32, 24, 0.08);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 .card-brutal:hover {
   transform: translateY(-2px);
-  box-shadow: 4px 4px 0 0 var(--foreground);
+  border-color: color-mix(in srgb, var(--foreground) 28%, transparent);
+  box-shadow: 0 22px 60px rgba(36, 32, 24, 0.12);
 }
 
 /* Accent bar */
@@ -133,20 +148,68 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--accent);
   color: #fff;
   font-weight: 700;
-  padding: 0.125rem 0.625rem;
-  font-size: 0.75rem;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.7rem;
   line-height: 1.25rem;
+  border-radius: 999px;
+  letter-spacing: 0;
 }
 
 /* Score bar thick */
 .score-bar-track {
-  height: 10px;
-  background: #E5E5E5;
-  border-radius: 5px;
+  height: 12px;
+  background: rgba(22, 20, 16, 0.08);
+  border-radius: 999px;
   overflow: hidden;
 }
 .score-bar-fill {
   height: 100%;
-  border-radius: 5px;
+  border-radius: 999px;
   transition: width 0.6s ease-out;
+}
+
+.shell-panel {
+  border: 1px solid rgba(22, 20, 16, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 253, 247, 0.86);
+  box-shadow: 0 18px 60px rgba(36, 32, 24, 0.08);
+}
+
+.btn-primary {
+  border-radius: 999px;
+  background: var(--foreground);
+  color: var(--background);
+  box-shadow: 0 10px 24px rgba(22, 20, 16, 0.18);
+  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+.btn-primary:hover {
+  background: var(--accent);
+  box-shadow: 0 14px 30px rgba(228, 77, 38, 0.24);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  border: 1px solid rgba(22, 20, 16, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 253, 247, 0.7);
+  color: var(--foreground);
+  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+}
+.btn-secondary:hover {
+  border-color: rgba(22, 20, 16, 0.34);
+  background: #fffdf7;
+  transform: translateY(-1px);
+}
+
+.field-surface {
+  border: 1px solid rgba(22, 20, 16, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 253, 247, 0.86);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+.field-surface:focus {
+  border-color: rgba(228, 77, 38, 0.75);
+  background: #fffdf7;
+  box-shadow: 0 0 0 4px rgba(228, 77, 38, 0.11);
+  outline: none;
 }

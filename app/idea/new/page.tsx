@@ -16,16 +16,19 @@ export default async function NewIdeaPage({ searchParams }: NewIdeaPageProps) {
   }
 
   return (
-    <div className="py-12">
+    <div className="py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <h1 className="text-3xl font-bold text-gray-900">Validate Your Idea</h1>
-          <p className="mt-2 text-gray-600">
+        <div className="mx-auto max-w-3xl text-center">
+          <span className="pill-accent">Idea intake</span>
+          <h1 className="mt-4 font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+            Validate Your Idea
+          </h1>
+          <p className="mt-3 text-lg text-muted">
             Describe your indie product idea and get a brutal, honest evaluation.
           </p>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-10">
           <IdeaInput initialExample={params.example} isLoggedIn={!!user} />
         </div>
       </div>

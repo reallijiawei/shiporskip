@@ -35,7 +35,7 @@ export default async function DashboardPage() {
           </div>
           <Link
             href="/idea/new"
-            className="inline-flex items-center gap-2 bg-accent px-5 py-2.5 text-sm font-bold tracking-tight text-white transition-transform hover:scale-105 hover:bg-accent-hover"
+            className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold tracking-tight"
           >
             <Plus className="h-4 w-4" />
             New Idea
@@ -51,7 +51,7 @@ export default async function DashboardPage() {
                   <Link
                     key={idea.id}
                     href={report ? `/report/${report.id}` : '#'}
-                    className="group block border-2 border-foreground/10 bg-card p-5 transition-all hover:border-foreground/25 hover:shadow-[4px_4px_0_0_rgba(13,13,13,0.1)]"
+                    className="group block rounded-[8px] border border-foreground/10 bg-card/90 p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-foreground/25 hover:shadow-xl"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0 flex-1">
@@ -96,12 +96,12 @@ export default async function DashboardPage() {
               })}
             </div>
           ) : (
-            <div className="border-2 border-dashed border-foreground/15 py-16 text-center">
+            <div className="rounded-[8px] border border-dashed border-foreground/20 bg-card/60 py-16 text-center">
               <p className="font-display text-2xl font-bold text-foreground/20">No ideas yet</p>
               <p className="mt-2 text-muted">Start by validating your first idea!</p>
               <Link
                 href="/idea/new"
-                className="mt-6 inline-flex items-center gap-2 bg-accent px-5 py-2.5 text-sm font-bold tracking-tight text-white transition-transform hover:scale-105 hover:bg-accent-hover"
+                className="btn-primary mt-6 inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold tracking-tight"
               >
                 <Plus className="h-4 w-4" />
                 Validate Your First Idea

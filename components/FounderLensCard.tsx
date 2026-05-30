@@ -8,7 +8,7 @@ interface FounderLensCardProps {
 
 export default function FounderLensCard({ lens }: FounderLensCardProps) {
   return (
-    <div className="border-2 border-foreground/10 bg-card">
+    <div className="overflow-hidden rounded-[8px] border border-foreground/10 bg-card shadow-sm">
       {/* Accent bar top */}
       <div className="h-1 bg-accent" />
 

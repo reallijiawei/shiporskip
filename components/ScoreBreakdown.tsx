@@ -17,7 +17,7 @@ const SCORE_LABELS: Record<keyof ScoreBreakdownType, string> = {
 
 export default function ScoreBreakdown({ scores }: ScoreBreakdownProps) {
   return (
-    <div className="border-2 border-foreground/10 bg-card p-6">
+    <div className="shell-panel p-6">
       <h3 className="font-display text-xl font-bold text-foreground">Score Breakdown</h3>
       <div className="mt-6 space-y-5">
         {(Object.entries(scores) as [keyof ScoreBreakdownType, number][]).map(([key, value], i) => (
@@ -32,7 +32,7 @@ export default function ScoreBreakdown({ scores }: ScoreBreakdownProps) {
             </div>
             <div className="score-bar-track">
               <div
-                className="score-bar-fill bg-foreground"
+                className="score-bar-fill bg-accent"
                 style={{ width: `${value * 10}%` }}
               />
             </div>

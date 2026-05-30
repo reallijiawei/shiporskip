@@ -76,20 +76,20 @@ export default function PricingTable() {
         </p>
       </div>
 
-      <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 items-start">
+      <div className="mt-12 grid grid-cols-1 items-start gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {plans.map((plan) => (
           <div
             key={plan.name}
             className={cn(
-              'relative border-2 p-6 transition-transform',
+              'relative rounded-[8px] border p-6 transition-all',
               plan.highlighted
-                ? 'border-foreground bg-foreground text-background scale-105 shadow-2xl z-10'
-                : 'border-foreground/15 bg-card hover:border-foreground/30'
+                ? 'z-10 border-foreground bg-foreground text-background shadow-2xl lg:-translate-y-3'
+                : 'border-foreground/10 bg-card/85 shadow-sm hover:-translate-y-1 hover:border-foreground/25 hover:shadow-xl'
             )}
           >
             {plan.highlighted && (
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <span className="pill-accent">POPULAR</span>
+              <div className="absolute -top-3 left-6">
+                <span className="pill-accent">BEST DEFAULT</span>
               </div>
             )}
 
@@ -119,8 +119,8 @@ export default function PricingTable() {
               className={cn(
                 'mt-6 block w-full py-2.5 text-center text-sm font-bold transition-all',
                 plan.highlighted
-                  ? 'bg-accent text-white hover:bg-accent-hover hover:scale-105'
-                  : 'border-2 border-foreground/20 text-foreground hover:border-foreground/40'
+                  ? 'rounded-full bg-accent text-white hover:bg-accent-hover'
+                  : 'rounded-full border border-foreground/20 text-foreground hover:border-foreground/40 hover:bg-foreground/5'
               )}
             >
               {plan.cta}

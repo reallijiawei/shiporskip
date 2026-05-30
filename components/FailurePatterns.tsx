@@ -31,7 +31,7 @@ function getSeverityBadge(severity: string) {
 export default function FailurePatterns({ patterns }: FailurePatternsProps) {
   if (!patterns || patterns.length === 0) {
     return (
-      <div className="border-2 border-foreground/10 bg-card p-6">
+      <div className="shell-panel p-6">
         <h3 className="font-display text-xl font-bold text-foreground">Failure Patterns</h3>
         <p className="mt-2 text-muted">No major failure patterns detected.</p>
       </div>
@@ -39,14 +39,14 @@ export default function FailurePatterns({ patterns }: FailurePatternsProps) {
   }
 
   return (
-    <div className="border-2 border-foreground/10 bg-card p-6">
+    <div className="shell-panel p-6">
       <h3 className="font-display text-xl font-bold text-foreground">Failure Patterns Detected</h3>
       <div className="mt-6 space-y-4">
         {patterns.map((pattern, index) => (
           <div
             key={index}
             className={cn(
-              'border-l-4 border-2 border-foreground/5 bg-card p-5',
+              'rounded-[8px] border border-l-4 border-foreground/10 bg-card p-5',
               getSeverityBorder(pattern.severity)
             )}
           >

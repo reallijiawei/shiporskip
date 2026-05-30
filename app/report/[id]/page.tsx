@@ -8,7 +8,7 @@ import FounderLensCard from '@/components/FounderLensCard';
 import FailurePatterns from '@/components/FailurePatterns';
 import MarketEvidence from '@/components/MarketEvidence';
 import DeepValidationCTA from './DeepValidationCTA';
-import { Report } from '@/types/report';
+import { FounderLens, Report } from '@/types/report';
 import { Loader2 } from 'lucide-react';
 
 export default function ReportPage({ params }: { params: Promise<{ id: string }> }) {
@@ -147,7 +147,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
   const isBasic = report.report_type === 'basic_roast';
 
   return (
-    <div className="py-12">
+    <div className="py-12 sm:py-16">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <VerdictCard
           verdict={report.verdict}
@@ -160,7 +160,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
         </div>
 
         {content.brutal_objections && content.brutal_objections.length > 0 && (
-          <div className="mt-8 border-l-4 border-red-500 border-2 border-foreground/5 bg-card p-6">
+          <div className="mt-8 rounded-[8px] border border-l-4 border-red-500 border-foreground/10 bg-card/90 p-6 shadow-sm">
             <h3 className="font-display text-xl font-bold text-red-600">Brutal Objections</h3>
             <ul className="mt-4 space-y-3">
               {content.brutal_objections.map((objection: string, i: number) => (
@@ -174,7 +174,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
         )}
 
         {isBasic && content.improvement_suggestions && (
-          <div className="mt-8 border-l-4 border-green-500 border-2 border-foreground/5 bg-card p-6">
+          <div className="mt-8 rounded-[8px] border border-l-4 border-green-500 border-foreground/10 bg-card/90 p-6 shadow-sm">
             <h3 className="font-display text-xl font-bold text-green-600">Improvement Suggestions</h3>
             <ul className="mt-4 space-y-3">
               {content.improvement_suggestions.map((suggestion: string, i: number) => (
@@ -203,7 +203,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           <div className="mt-8">
             <h3 className="mb-4 font-display text-xl font-bold text-foreground">Founder-Inspired Lenses</h3>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              {content.founder_lenses.map((lens: any, i: number) => (
+              {content.founder_lenses.map((lens: FounderLens, i: number) => (
                 <FounderLensCard key={i} lens={lens} />
               ))}
             </div>
@@ -217,7 +217,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
         )}
 
         {!isBasic && content.mvp_scope && (
-          <div className="mt-8 border-2 border-foreground/10 bg-card p-6">
+          <div className="shell-panel mt-8 p-6">
             <h3 className="font-display text-xl font-bold text-foreground">MVP Scope</h3>
             <div className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-3">
               {[
@@ -244,7 +244,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
         )}
 
         {!isBasic && content.best_version_of_idea && (
-          <div className="mt-8 border-l-4 border-accent border-2 border-foreground/5 bg-card p-6">
+          <div className="mt-8 rounded-[8px] border border-l-4 border-accent border-foreground/10 bg-card/90 p-6 shadow-sm">
             <h3 className="font-display text-xl font-bold text-foreground">Best Version of This Idea</h3>
             <p className="mt-3 text-foreground/80">{content.best_version_of_idea}</p>
           </div>
