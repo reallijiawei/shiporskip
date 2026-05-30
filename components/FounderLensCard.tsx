@@ -1,6 +1,6 @@
 import { FounderLens } from '@/types/report';
 import { getScoreColor } from '@/lib/utils';
-import { Lightbulb, Scissors, Target } from 'lucide-react';
+import { Scissors, Target } from 'lucide-react';
 
 interface FounderLensCardProps {
   lens: FounderLens;
@@ -8,30 +8,35 @@ interface FounderLensCardProps {
 
 export default function FounderLensCard({ lens }: FounderLensCardProps) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5">
-      <div className="flex items-center justify-between">
-        <h4 className="font-semibold text-gray-900">{lens.name}</h4>
-        <span className={`text-2xl font-bold ${getScoreColor(lens.score)}`}>
-          {lens.score}/10
-        </span>
-      </div>
+    <div className="border-2 border-foreground/10 bg-card">
+      {/* Accent bar top */}
+      <div className="h-1 bg-accent" />
 
-      <p className="mt-3 text-sm text-gray-600">{lens.main_critique}</p>
-
-      <div className="mt-4 space-y-3">
-        <div className="flex items-start gap-2">
-          <Scissors className="mt-0.5 h-4 w-4 text-red-500" />
-          <div>
-            <p className="text-xs font-medium text-gray-500">What to Cut</p>
-            <p className="text-sm text-gray-700">{lens.what_to_cut}</p>
-          </div>
+      <div className="p-5">
+        <div className="flex items-center justify-between">
+          <h4 className="font-display text-lg font-bold text-foreground">{lens.name}</h4>
+          <span className={`font-display text-3xl font-extrabold ${getScoreColor(lens.score)}`}>
+            {lens.score}<span className="text-base font-bold opacity-40">/10</span>
+          </span>
         </div>
 
-        <div className="flex items-start gap-2">
-          <Target className="mt-0.5 h-4 w-4 text-green-500" />
-          <div>
-            <p className="text-xs font-medium text-gray-500">Better Positioning</p>
-            <p className="text-sm text-gray-700">{lens.better_positioning}</p>
+        <p className="mt-3 text-sm text-muted">{lens.main_critique}</p>
+
+        <div className="mt-5 space-y-4">
+          <div className="flex items-start gap-3">
+            <Scissors className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-red-500">What to Cut</p>
+              <p className="mt-1 text-sm text-foreground/80">{lens.what_to_cut}</p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <Target className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-green-600">Better Positioning</p>
+              <p className="mt-1 text-sm text-foreground/80">{lens.better_positioning}</p>
+            </div>
           </div>
         </div>
       </div>

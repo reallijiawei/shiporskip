@@ -1,31 +1,32 @@
 import Link from 'next/link';
-import { Ship } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="border-t bg-gray-50">
+    <footer className="bg-foreground">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
           <div className="flex items-center gap-2">
-            <Ship className="h-5 w-5" />
-            <span className="font-semibold">ShipOrSkip</span>
+            <span className="inline-block h-4 w-4 bg-accent" />
+            <span className="font-display text-lg font-extrabold tracking-tight text-background">
+              ShipOrSkip
+            </span>
           </div>
 
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-background/40">
             Brutally validate your indie product idea before you waste weeks building it.
           </p>
 
           <div className="flex gap-6">
-            <Link href="/pricing" className="text-sm text-gray-500 hover:text-gray-900">
+            <Link href="/pricing" className="text-sm text-background/50 transition-colors hover:text-accent">
               Pricing
             </Link>
-            <Link href="/dashboard" className="text-sm text-gray-500 hover:text-gray-900">
+            <Link href="/dashboard" className="text-sm text-background/50 transition-colors hover:text-accent">
               Dashboard
             </Link>
           </div>
         </div>
 
-        <div className="mt-8 text-center text-xs text-gray-400">
+        <div className="mt-8 border-t border-background/10 pt-6 text-center text-xs text-background/30">
           © {new Date().getFullYear()} ShipOrSkip. Not for VC pitch decks. Not for vague startup theory.
         </div>
       </div>

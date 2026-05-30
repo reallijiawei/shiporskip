@@ -25,23 +25,24 @@ function getVerdictIcon(verdict: Verdict) {
 
 export default function VerdictCard({ verdict, overallScore, oneSentenceSummary }: VerdictCardProps) {
   return (
-    <div className={cn('rounded-2xl border-2 p-8', getVerdictColor(verdict))}>
-      <div className="flex items-center gap-4">
+    <div className={cn('overflow-hidden border-2', getVerdictColor(verdict))}>
+      {/* Verdict banner */}
+      <div className="flex items-center gap-4 px-8 py-6">
         {getVerdictIcon(verdict)}
         <div>
-          <h2 className="text-3xl font-bold">{getVerdictLabel(verdict)}</h2>
-          <p className="mt-1 text-lg opacity-90">{oneSentenceSummary}</p>
+          <h2 className="font-display text-3xl font-extrabold tracking-tight">
+            {getVerdictLabel(verdict)}
+          </h2>
+          <p className="mt-1 text-lg opacity-80">{oneSentenceSummary}</p>
         </div>
       </div>
 
-      <div className="mt-6 flex items-center gap-4">
-        <div className="text-center">
-          <p className="text-sm font-medium opacity-75">Overall Score</p>
-          <p className={cn('text-5xl font-bold', getScoreColor(overallScore))}>
-            {overallScore}
-          </p>
-          <p className="text-sm opacity-75">/ 100</p>
-        </div>
+      {/* Score strip */}
+      <div className="flex items-end gap-3 border-t-2 border-current/10 px-8 py-6">
+        <span className={cn('font-display text-8xl font-extrabold leading-none', getScoreColor(overallScore))}>
+          {overallScore}
+        </span>
+        <span className="pb-2 text-2xl font-bold opacity-40">/100</span>
       </div>
     </div>
   );

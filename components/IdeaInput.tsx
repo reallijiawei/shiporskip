@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2, ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const PRODUCT_TYPES = [
   { value: 'website', label: 'Website' },
@@ -112,39 +113,40 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
 
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-2xl">
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="border-2 border-foreground/10 bg-card p-6">
         {!isLoggedIn && (
-          <div className="mb-4 rounded-lg border border-yellow-200 bg-yellow-50 p-3 text-sm text-yellow-800">
-            You need to <a href="/login?redirectTo=/idea/new" className="font-semibold underline">log in</a> to validate your idea. It&apos;s free!
+          <div className="mb-6 border-l-4 border-accent bg-accent/10 p-4 text-sm text-foreground">
+            You need to <a href="/login?redirectTo=/idea/new" className="font-bold underline">log in</a> to validate your idea. It&apos;s free!
           </div>
         )}
+
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="description" className="block text-xs font-bold uppercase tracking-wider text-muted">
             Describe your idea
           </label>
           <textarea
             id="description"
-            rows={4}
+            rows={5}
             maxLength={2000}
-            className="mt-2 block w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 shadow-sm focus:border-gray-900 focus:ring-gray-900"
+            className="mt-2 block w-full border-b-2 border-foreground/15 bg-transparent py-3 text-foreground focus:border-accent focus:outline-none resize-none"
             placeholder="I want to build a..."
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
           />
-          <p className="mt-1 text-right text-xs text-gray-400">
+          <p className="mt-1 text-right text-xs text-muted">
             {form.description.length}/2000
           </p>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
           <div>
-            <label htmlFor="targetUser" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="targetUser" className="block text-xs font-bold uppercase tracking-wider text-muted">
               Target user (optional)
             </label>
             <input
               type="text"
               id="targetUser"
-              className="mt-2 block w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 shadow-sm focus:border-gray-900 focus:ring-gray-900"
+              className="mt-2 block w-full border-b-2 border-foreground/15 bg-transparent py-2.5 text-foreground focus:border-accent focus:outline-none"
               placeholder="Indie hackers, developers..."
               value={form.targetUser}
               onChange={(e) => setForm({ ...form, targetUser: e.target.value })}
@@ -152,12 +154,12 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
           </div>
 
           <div>
-            <label htmlFor="productType" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="productType" className="block text-xs font-bold uppercase tracking-wider text-muted">
               Product type (optional)
             </label>
             <select
               id="productType"
-              className="mt-2 block w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 shadow-sm focus:border-gray-900 focus:ring-gray-900"
+              className="mt-2 block w-full border-b-2 border-foreground/15 bg-transparent py-2.5 text-foreground focus:border-accent focus:outline-none"
               value={form.productType}
               onChange={(e) => setForm({ ...form, productType: e.target.value })}
             >
@@ -173,82 +175,52 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
 
         <button
           type="button"
-          className="mt-4 flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
+          className="mt-5 flex items-center gap-1.5 text-sm font-medium text-muted hover:text-foreground"
           onClick={() => setShowAdvanced(!showAdvanced)}
         >
-          <ChevronDown className={`h-4 w-4 transition-transform ${showAdvanced ? 'rotate-180' : ''}`} />
+          <ChevronDown className={cn('h-4 w-4 transition-transform', showAdvanced && 'rotate-180')} />
           Advanced options
         </button>
 
         {showAdvanced && (
-          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div>
-              <label htmlFor="monetizationPlan" className="block text-sm font-medium text-gray-700">
-                Monetization
-              </label>
-              <select
-                id="monetizationPlan"
-                className="mt-2 block w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 shadow-sm focus:border-gray-900 focus:ring-gray-900"
-                value={form.monetizationPlan}
-                onChange={(e) => setForm({ ...form, monetizationPlan: e.target.value })}
-              >
-                <option value="">Select...</option>
-                {MONETIZATION_PLANS.map((plan) => (
-                  <option key={plan.value} value={plan.value}>
-                    {plan.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="distributionPlan" className="block text-sm font-medium text-gray-700">
-                Distribution
-              </label>
-              <select
-                id="distributionPlan"
-                className="mt-2 block w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 shadow-sm focus:border-gray-900 focus:ring-gray-900"
-                value={form.distributionPlan}
-                onChange={(e) => setForm({ ...form, distributionPlan: e.target.value })}
-              >
-                <option value="">Select...</option>
-                {DISTRIBUTION_PLANS.map((plan) => (
-                  <option key={plan.value} value={plan.value}>
-                    {plan.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="mvpTimeline" className="block text-sm font-medium text-gray-700">
-                MVP Timeline
-              </label>
-              <select
-                id="mvpTimeline"
-                className="mt-2 block w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 shadow-sm focus:border-gray-900 focus:ring-gray-900"
-                value={form.mvpTimeline}
-                onChange={(e) => setForm({ ...form, mvpTimeline: e.target.value })}
-              >
-                <option value="">Select...</option>
-                {MVP_TIMELINES.map((timeline) => (
-                  <option key={timeline.value} value={timeline.value}>
-                    {timeline.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+            {[
+              { id: 'monetizationPlan', label: 'Monetization', options: MONETIZATION_PLANS },
+              { id: 'distributionPlan', label: 'Distribution', options: DISTRIBUTION_PLANS },
+              { id: 'mvpTimeline', label: 'MVP Timeline', options: MVP_TIMELINES },
+            ].map((field) => (
+              <div key={field.id}>
+                <label htmlFor={field.id} className="block text-xs font-bold uppercase tracking-wider text-muted">
+                  {field.label}
+                </label>
+                <select
+                  id={field.id}
+                  className="mt-2 block w-full border-b-2 border-foreground/15 bg-transparent py-2.5 text-foreground focus:border-accent focus:outline-none"
+                  value={form[field.id as keyof typeof form]}
+                  onChange={(e) => setForm({ ...form, [field.id]: e.target.value })}
+                >
+                  <option value="">Select...</option>
+                  {field.options.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ))}
           </div>
         )}
 
         {error && (
-          <p className="mt-4 text-sm text-red-600">{error}</p>
+          <p className="mt-4 border-l-4 border-red-500 bg-red-50 px-3 py-2 text-sm text-red-600">
+            {error}
+          </p>
         )}
 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="mt-6 w-full rounded-lg bg-gray-900 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-8 w-full bg-accent py-4 text-base font-bold tracking-tight text-foreground transition-all hover:bg-accent-hover hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isSubmitting ? (
             <span className="flex items-center justify-center gap-2">

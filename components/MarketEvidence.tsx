@@ -1,5 +1,4 @@
 import { MarketEvidence as MarketEvidenceType } from '@/types/report';
-import { Search, MessageCircle, TrendingUp, DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MarketEvidenceProps {
@@ -8,17 +7,17 @@ interface MarketEvidenceProps {
 
 function SignalBadge({ label, value }: { label: string; value: string }) {
   const colorMap: Record<string, string> = {
-    weak: 'bg-red-100 text-red-800',
-    medium: 'bg-yellow-100 text-yellow-800',
-    strong: 'bg-green-100 text-green-800',
-    low: 'bg-green-100 text-green-800',
-    high: 'bg-red-100 text-red-800',
+    weak: 'bg-red-500 text-white',
+    medium: 'bg-yellow-500 text-foreground',
+    strong: 'bg-green-600 text-white',
+    low: 'bg-green-600 text-white',
+    high: 'bg-red-500 text-white',
   };
 
   return (
-    <div className="flex items-center justify-between rounded-lg border border-gray-100 px-4 py-3">
-      <span className="text-sm text-gray-600">{label}</span>
-      <span className={cn('rounded-full px-2.5 py-0.5 text-xs font-medium', colorMap[value] || 'bg-gray-100 text-gray-800')}>
+    <div className="flex items-center justify-between border-b-2 border-foreground/5 py-3">
+      <span className="text-sm text-muted">{label}</span>
+      <span className={cn('pill-accent', colorMap[value] || 'bg-foreground/10 text-foreground')}>
         {value}
       </span>
     </div>
@@ -27,23 +26,26 @@ function SignalBadge({ label, value }: { label: string; value: string }) {
 
 export default function MarketEvidence({ evidence }: MarketEvidenceProps) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6">
-      <h3 className="text-lg font-semibold text-gray-900">Market Evidence</h3>
+    <div className="border-2 border-foreground/10 bg-card p-6">
+      <h3 className="font-display text-xl font-bold text-foreground">Market Evidence</h3>
 
-      <div className="mt-2 flex items-center gap-2">
-        <span className="text-sm text-gray-500">Evidence Strength:</span>
+      <div className="mt-4 flex items-center gap-3">
+        <span className="text-sm font-medium text-muted">Evidence Strength:</span>
         <div className="flex-1">
-          <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+          <div className="score-bar-track">
             <div
-              className="h-full rounded-full bg-gray-900"
-              style={{ width: `${evidence.evidence_strength * 10}%` }}
+              className="score-bar-fill"
+              style={{
+                width: `${evidence.evidence_strength * 10}%`,
+                background: `linear-gradient(90deg, #ef4444 0%, #eab308 50%, #22c55e 100%)`,
+              }}
             />
           </div>
         </div>
-        <span className="font-semibold">{evidence.evidence_strength}/10</span>
+        <span className="font-display text-lg font-bold">{evidence.evidence_strength}/10</span>
       </div>
 
-      <div className="mt-4 space-y-2">
+      <div className="mt-4">
         <SignalBadge label="Search Demand" value={evidence.search_demand_signal} />
         <SignalBadge label="Community Discussion" value={evidence.community_discussion_signal} />
         <SignalBadge label="Competition" value={evidence.competition_signal} />
@@ -51,11 +53,14 @@ export default function MarketEvidence({ evidence }: MarketEvidenceProps) {
       </div>
 
       {evidence.notable_competitors && evidence.notable_competitors.length > 0 && (
-        <div className="mt-4">
-          <h4 className="text-sm font-medium text-gray-700">Notable Competitors</h4>
-          <ul className="mt-2 space-y-1">
+        <div className="mt-6">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-muted">Notable Competitors</h4>
+          <ul className="mt-3 space-y-2">
             {evidence.notable_competitors.map((competitor, i) => (
-              <li key={i} className="text-sm text-gray-600">• {competitor}</li>
+              <li key={i} className="flex items-center gap-2 text-sm text-foreground/80">
+                <span className="h-1.5 w-1.5 bg-foreground/20" />
+                {competitor}
+              </li>
             ))}
           </ul>
         </div>

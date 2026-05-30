@@ -21,7 +21,6 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
   const loadReport = useCallback(async (id: string) => {
     const supabase = createClient();
 
-    // Try as report ID first
     const { data: reportData } = await supabase
       .from('reports')
       .select('*')
@@ -34,7 +33,6 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
       return true;
     }
 
-    // Try as idea ID — find the basic roast report
     const { data: idea } = await supabase
       .from('ideas')
       .select('id')
@@ -61,7 +59,6 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
     return false;
   }, []);
 
-  // Initial load
   useEffect(() => {
     params.then(({ id }) => {
       loadReport(id).then((found) => {
@@ -71,12 +68,10 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
     });
   }, [params, loadReport]);
 
-  // After report loads, check if we should auto-generate deep validation
   useEffect(() => {
     if (!report || !ideaId || report.report_type !== 'basic_roast') return;
 
     const checkAndGenerate = async () => {
-      // Check if deep validation report already exists
       const supabase = createClient();
       const { data: existingDeep } = await supabase
         .from('reports')
@@ -90,7 +85,6 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
         return;
       }
 
-      // Call API directly — it handles auth, quota check, and generation
       setGenerating(true);
       try {
         const res = await fetch('/api/deep-validation', {
@@ -100,12 +94,8 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
         });
 
         const data = await res.json();
-        console.log('[DeepValidation] response:', res.status, data);
 
-        if (res.status === 402) {
-          // User hasn't paid — show the CTA
-          return;
-        }
+        if (res.status === 402) return;
 
         if (!res.ok) {
           console.error('[DeepValidation] API error:', data);
@@ -133,10 +123,10 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
 
   if (loading || generating) {
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
+        <Loader2 className="h-8 w-8 animate-spin text-muted" />
         {generating && (
-          <p className="text-sm text-gray-500">Generating your Deep Validation report...</p>
+          <p className="text-sm text-muted">Generating your Deep Validation report...</p>
         )}
       </div>
     );
@@ -146,8 +136,8 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Report Not Found</h2>
-          <p className="mt-2 text-gray-600">{error || 'This report does not exist.'}</p>
+          <h2 className="font-display text-3xl font-extrabold text-foreground">Report Not Found</h2>
+          <p className="mt-2 text-muted">{error || 'This report does not exist.'}</p>
         </div>
       </div>
     );
@@ -170,12 +160,12 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
         </div>
 
         {content.brutal_objections && content.brutal_objections.length > 0 && (
-          <div className="mt-8 rounded-2xl border border-red-200 bg-red-50 p-6">
-            <h3 className="text-lg font-semibold text-red-900">Brutal Objections</h3>
+          <div className="mt-8 border-l-4 border-red-500 border-2 border-foreground/5 bg-card p-6">
+            <h3 className="font-display text-xl font-bold text-red-600">Brutal Objections</h3>
             <ul className="mt-4 space-y-3">
               {content.brutal_objections.map((objection: string, i: number) => (
-                <li key={i} className="flex items-start gap-2 text-red-800">
-                  <span className="font-bold">{i + 1}.</span>
+                <li key={i} className="flex items-start gap-3 text-foreground/80">
+                  <span className="font-display font-bold text-red-400">{i + 1}.</span>
                   {objection}
                 </li>
               ))}
@@ -184,12 +174,12 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
         )}
 
         {isBasic && content.improvement_suggestions && (
-          <div className="mt-8 rounded-2xl border border-green-200 bg-green-50 p-6">
-            <h3 className="text-lg font-semibold text-green-900">Improvement Suggestions</h3>
+          <div className="mt-8 border-l-4 border-green-500 border-2 border-foreground/5 bg-card p-6">
+            <h3 className="font-display text-xl font-bold text-green-600">Improvement Suggestions</h3>
             <ul className="mt-4 space-y-3">
               {content.improvement_suggestions.map((suggestion: string, i: number) => (
-                <li key={i} className="flex items-start gap-2 text-green-800">
-                  <span className="font-bold">{i + 1}.</span>
+                <li key={i} className="flex items-start gap-3 text-foreground/80">
+                  <span className="font-display font-bold text-green-400">{i + 1}.</span>
                   {suggestion}
                 </li>
               ))}
@@ -211,8 +201,8 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
 
         {!isBasic && content.founder_lenses && (
           <div className="mt-8">
-            <h3 className="mb-4 text-lg font-semibold text-gray-900">Founder-Inspired Lenses</h3>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <h3 className="mb-4 font-display text-xl font-bold text-foreground">Founder-Inspired Lenses</h3>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               {content.founder_lenses.map((lens: any, i: number) => (
                 <FounderLensCard key={i} lens={lens} />
               ))}
@@ -227,44 +217,38 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
         )}
 
         {!isBasic && content.mvp_scope && (
-          <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-6">
-            <h3 className="text-lg font-semibold text-gray-900">MVP Scope</h3>
-            <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-3">
-              <div>
-                <h4 className="text-sm font-medium text-green-700">Must Have</h4>
-                <ul className="mt-2 space-y-1">
-                  {content.mvp_scope.must_have.map((item: string, i: number) => (
-                    <li key={i} className="text-sm text-gray-600">• {item}</li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-sm font-medium text-yellow-700">Nice to Have</h4>
-                <ul className="mt-2 space-y-1">
-                  {content.mvp_scope.nice_to_have.map((item: string, i: number) => (
-                    <li key={i} className="text-sm text-gray-600">• {item}</li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-sm font-medium text-red-700">Cut for V1</h4>
-                <ul className="mt-2 space-y-1">
-                  {content.mvp_scope.cut_for_v1.map((item: string, i: number) => (
-                    <li key={i} className="text-sm text-gray-600">• {item}</li>
-                  ))}
-                </ul>
-              </div>
+          <div className="mt-8 border-2 border-foreground/10 bg-card p-6">
+            <h3 className="font-display text-xl font-bold text-foreground">MVP Scope</h3>
+            <div className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-3">
+              {[
+                { label: 'Must Have', color: 'text-green-600', items: content.mvp_scope.must_have },
+                { label: 'Nice to Have', color: 'text-yellow-600', items: content.mvp_scope.nice_to_have },
+                { label: 'Cut for V1', color: 'text-red-500', items: content.mvp_scope.cut_for_v1 },
+              ].map((col) => (
+                <div key={col.label}>
+                  <h4 className={`text-xs font-bold uppercase tracking-wider ${col.color}`}>
+                    {col.label}
+                  </h4>
+                  <ul className="mt-3 space-y-2">
+                    {col.items.map((item: string, i: number) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-foreground/80">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 bg-foreground/15" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
           </div>
         )}
 
         {!isBasic && content.best_version_of_idea && (
-          <div className="mt-8 rounded-2xl border border-blue-200 bg-blue-50 p-6">
-            <h3 className="text-lg font-semibold text-blue-900">Best Version of This Idea</h3>
-            <p className="mt-2 text-blue-800">{content.best_version_of_idea}</p>
+          <div className="mt-8 border-l-4 border-accent border-2 border-foreground/5 bg-card p-6">
+            <h3 className="font-display text-xl font-bold text-foreground">Best Version of This Idea</h3>
+            <p className="mt-3 text-foreground/80">{content.best_version_of_idea}</p>
           </div>
         )}
-
       </div>
     </div>
   );

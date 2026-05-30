@@ -26,105 +26,82 @@ export default async function DashboardPage() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-            <p className="mt-2 text-gray-600">
-              View your validated ideas and reports.
+            <h1 className="font-display text-4xl font-extrabold tracking-tight text-foreground">
+              Dashboard
+            </h1>
+            <p className="mt-2 text-muted">
+              Your validated ideas and reports.
             </p>
           </div>
           <Link
             href="/idea/new"
-            className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
+            className="inline-flex items-center gap-2 bg-accent px-5 py-2.5 text-sm font-bold tracking-tight text-foreground transition-transform hover:scale-105 hover:bg-accent-hover"
           >
             <Plus className="h-4 w-4" />
             New Idea
           </Link>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-10">
           {ideas && ideas.length > 0 ? (
-            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
-                      Idea
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
-                      Verdict
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
-                      Score
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
-                      Date
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase text-gray-500">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
-                  {ideas.map((idea) => {
-                    const report = idea.reports?.[0];
-                    return (
-                      <tr key={idea.id}>
-                        <td className="px-6 py-4">
-                          <p className="font-medium text-gray-900">{idea.title}</p>
-                          <p className="mt-1 text-sm text-gray-500 line-clamp-1">
-                            {idea.description}
-                          </p>
-                        </td>
-                        <td className="px-6 py-4">
-                          {report?.verdict ? (
-                            <span
-                              className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${getVerdictColor(report.verdict)}`}
-                            >
-                              {getVerdictLabel(report.verdict)}
-                            </span>
-                          ) : (
-                            <span className="text-sm text-gray-400">—</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4">
-                          {report?.overall_score ? (
-                            <span className="font-semibold">{report.overall_score}</span>
-                          ) : (
-                            <span className="text-sm text-gray-400">—</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="text-sm text-gray-600 capitalize">{idea.status}</span>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
+            <div className="space-y-4">
+              {ideas.map((idea) => {
+                const report = idea.reports?.[0];
+                return (
+                  <Link
+                    key={idea.id}
+                    href={report ? `/report/${report.id}` : '#'}
+                    className="group block border-2 border-foreground/10 bg-card p-5 transition-all hover:border-foreground/25 hover:shadow-[4px_4px_0_0_rgba(13,13,13,0.1)]"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-display text-lg font-bold text-foreground truncate">
+                          {idea.title}
+                        </p>
+                        <p className="mt-1 text-sm text-muted line-clamp-1">
+                          {idea.description}
+                        </p>
+                      </div>
+
+                      <div className="flex shrink-0 items-center gap-4">
+                        {report?.verdict ? (
+                          <span
+                            className={`pill-accent ${getVerdictColor(report.verdict)}`}
+                          >
+                            {getVerdictLabel(report.verdict)}
+                          </span>
+                        ) : null}
+
+                        {report?.overall_score ? (
+                          <span className="font-display text-2xl font-extrabold text-foreground">
+                            {report.overall_score}
+                          </span>
+                        ) : null}
+
+                        <span className="text-xs text-muted">
                           {formatDate(idea.created_at)}
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          {report ? (
-                            <Link
-                              href={`/report/${report.id}`}
-                              className="text-sm font-medium text-gray-900 hover:text-gray-700"
-                            >
-                              View Report →
-                            </Link>
-                          ) : (
-                            <span className="text-sm text-gray-400">No report</span>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                        </span>
+
+                        {report ? (
+                          <span className="text-sm font-medium text-foreground/50 transition-colors group-hover:text-accent">
+                            View →
+                          </span>
+                        ) : (
+                          <span className="text-sm text-muted">No report</span>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           ) : (
-            <div className="rounded-xl border-2 border-dashed border-gray-200 py-12 text-center">
-              <p className="text-gray-500">No ideas yet. Start by validating your first idea!</p>
+            <div className="border-2 border-dashed border-foreground/15 py-16 text-center">
+              <p className="font-display text-2xl font-bold text-foreground/20">No ideas yet</p>
+              <p className="mt-2 text-muted">Start by validating your first idea!</p>
               <Link
                 href="/idea/new"
-                className="mt-4 inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
+                className="mt-6 inline-flex items-center gap-2 bg-accent px-5 py-2.5 text-sm font-bold tracking-tight text-foreground transition-transform hover:scale-105 hover:bg-accent-hover"
               >
                 <Plus className="h-4 w-4" />
                 Validate Your First Idea

@@ -17,25 +17,28 @@ const SCORE_LABELS: Record<keyof ScoreBreakdownType, string> = {
 
 export default function ScoreBreakdown({ scores }: ScoreBreakdownProps) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6">
-      <h3 className="text-lg font-semibold text-gray-900">Score Breakdown</h3>
-      <div className="mt-4 space-y-4">
-        {(Object.entries(scores) as [keyof ScoreBreakdownType, number][]).map(([key, value]) => (
-          <div key={key} className="flex items-center gap-4">
-            <span className="w-36 text-sm font-medium text-gray-600">
-              {SCORE_LABELS[key]}
-            </span>
-            <div className="flex-1">
-              <div className="h-3 w-full overflow-hidden rounded-full bg-gray-100">
-                <div
-                  className="h-full rounded-full bg-gray-900 transition-all"
-                  style={{ width: `${value * 10}%` }}
-                />
-              </div>
+    <div className="border-2 border-foreground/10 bg-card p-6">
+      <h3 className="font-display text-xl font-bold text-foreground">Score Breakdown</h3>
+      <div className="mt-6 space-y-5">
+        {(Object.entries(scores) as [keyof ScoreBreakdownType, number][]).map(([key, value], i) => (
+          <div key={key}>
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-sm font-medium text-foreground/70">
+                {SCORE_LABELS[key]}
+              </span>
+              <span className={`font-display text-lg font-bold ${getScoreColor(value)}`}>
+                {value}
+              </span>
             </div>
-            <span className={`w-8 text-right font-semibold ${getScoreColor(value)}`}>
-              {value}
-            </span>
+            <div className="score-bar-track">
+              <div
+                className="score-bar-fill bg-foreground"
+                style={{ width: `${value * 10}%` }}
+              />
+            </div>
+            {i < Object.entries(scores).length - 1 && (
+              <div className="mt-5 border-t border-foreground/5" />
+            )}
           </div>
         ))}
       </div>
