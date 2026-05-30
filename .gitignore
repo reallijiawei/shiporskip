@@ -37,6 +37,9 @@ yarn-error.log*
 # open-next build artifacts
 /.open-next/
 
+# wrangler
+.wrangler/
+
 # vercel
 .vercel
 

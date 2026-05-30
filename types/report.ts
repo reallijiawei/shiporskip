@@ -44,19 +44,6 @@ export interface MVPScope {
   cut_for_v1: string[];
 }
 
-export interface ValidationSprintDay {
-  day: number;
-  task: string;
-  deliverable: string;
-}
-
-export interface LaunchAngles {
-  reddit: string[];
-  x_posts: string[];
-  seo_pages: string[];
-  product_hunt_tagline: string;
-}
-
 export interface ReportContent {
   verdict: Verdict;
   overall_score: number;
@@ -69,8 +56,6 @@ export interface ReportContent {
   failure_patterns: FailurePattern[];
   best_version_of_idea: string;
   mvp_scope: MVPScope;
-  validation_sprint: ValidationSprintDay[];
-  launch_angles: LaunchAngles;
 }
 
 export interface Report {

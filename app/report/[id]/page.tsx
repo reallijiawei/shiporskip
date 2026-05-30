@@ -6,10 +6,8 @@ import VerdictCard from '@/components/VerdictCard';
 import ScoreBreakdown from '@/components/ScoreBreakdown';
 import FounderLensCard from '@/components/FounderLensCard';
 import FailurePatterns from '@/components/FailurePatterns';
-import ValidationSprint from '@/components/ValidationSprint';
 import MarketEvidence from '@/components/MarketEvidence';
 import DeepValidationCTA from './DeepValidationCTA';
-import LaunchAngles from './LaunchAngles';
 import { Report } from '@/types/report';
 import { Loader2 } from 'lucide-react';
 
@@ -267,17 +265,6 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           </div>
         )}
 
-        {!isBasic && content.validation_sprint && (
-          <div className="mt-8">
-            <ValidationSprint sprint={content.validation_sprint} />
-          </div>
-        )}
-
-        {!isBasic && content.launch_angles && (
-          <div className="mt-8">
-            <LaunchAngles angles={content.launch_angles} />
-          </div>
-        )}
       </div>
     </div>
   );

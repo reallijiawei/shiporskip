@@ -91,21 +91,6 @@ You must return a JSON object with this exact structure:
     "nice_to_have": ["string"],
     "cut_for_v1": ["string"]
   },
-  "validation_sprint": [
-    {"day": 1, "task": "string", "deliverable": "string"},
-    {"day": 2, "task": "string", "deliverable": "string"},
-    {"day": 3, "task": "string", "deliverable": "string"},
-    {"day": 4, "task": "string", "deliverable": "string"},
-    {"day": 5, "task": "string", "deliverable": "string"},
-    {"day": 6, "task": "string", "deliverable": "string"},
-    {"day": 7, "task": "string", "deliverable": "string"}
-  ],
-  "launch_angles": {
-    "reddit": ["string"],
-    "x_posts": ["string"],
-    "seo_pages": ["string"],
-    "product_hunt_tagline": "string"
-  }
 }
 
 Failure patterns to check against:
