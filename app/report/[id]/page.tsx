@@ -10,7 +10,8 @@ import DeepValidationCTA from './DeepValidationCTA';
 import ExpertPanel from '@/components/ExpertPanel';
 import { Report } from '@/types/report';
 import { getVerdictColor, getVerdictLabel } from '@/lib/utils';
-import { Loader2 } from 'lucide-react';
+import { downloadReportHTML } from '@/lib/download-report';
+import { Loader2, Download } from 'lucide-react';
 
 const GENERATION_STAGES = [
   { label: 'Preparing', estimate: '~5s' },
@@ -206,6 +207,16 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           oneSentenceSummary={content.one_sentence_summary}
         />
 
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={() => downloadReportHTML(report)}
+            className="inline-flex items-center gap-2 text-xs text-muted hover:text-foreground transition-colors"
+          >
+            <Download className="h-3.5 w-3.5" />
+            Download report
+          </button>
+        </div>
+
         {!isBasic && report.scores && (
           <div className="mt-8">
             <ScoreBreakdown scores={report.scores} />
@@ -249,39 +260,39 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           </div>
         )}
 
-        {isBasic && content.teaser_expert && (
+        {isBasic && content.teaser_experts && content.teaser_experts.length > 0 && (
           <div className="mt-8">
-            <div className="rounded-[8px] border border-foreground/10 bg-card/90 shadow-sm overflow-hidden">
-              <div className="h-1 bg-foreground/10" />
-              <div className="p-5">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-display text-base font-bold text-foreground">
-                    {content.teaser_expert.expert_name}'s thinking framework
-                  </h3>
-                  <span className={`pill-accent ${getVerdictColor(content.teaser_expert.verdict)}`}>
-                    {getVerdictLabel(content.teaser_expert.verdict)}
-                  </span>
+            <h3 className="font-display text-xl font-bold text-foreground mb-4">Expert Perspectives</h3>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              {content.teaser_experts.map((opinion: any) => (
+                <div key={opinion.expert_id} className="rounded-[8px] border border-foreground/10 bg-card/90 shadow-sm overflow-hidden">
+                  <div className="h-1 bg-foreground/10" />
+                  <div className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-display text-sm font-bold text-foreground truncate">
+                        {opinion.expert_name}'s thinking framework
+                      </h4>
+                      <span className={`shrink-0 ml-2 pill-accent text-[10px] ${getVerdictColor(opinion.verdict)}`}>
+                        {getVerdictLabel(opinion.verdict)}
+                      </span>
+                    </div>
+                    <p className="text-xs font-medium text-foreground leading-snug">
+                      &ldquo;{opinion.one_line_take}&rdquo;
+                    </p>
+                    <ul className="mt-2 space-y-1">
+                      {opinion.key_arguments.map((arg: string, i: number) => (
+                        <li key={i} className="flex items-start gap-1.5 text-[11px] text-muted">
+                          <span className="mt-1 h-1 w-1 shrink-0 bg-foreground/20" />
+                          <span>{arg}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-                <p className="text-sm font-medium text-foreground leading-snug">
-                  &ldquo;{content.teaser_expert.one_line_take}&rdquo;
-                </p>
-                <ul className="mt-3 space-y-1.5">
-                  {content.teaser_expert.key_arguments.map((arg: string, i: number) => (
-                    <li key={i} className="flex items-start gap-2 text-xs text-muted">
-                      <span className="mt-1 h-1 w-1 shrink-0 bg-foreground/20" />
-                      <span>{arg}</span>
-                    </li>
-                  ))}
-                </ul>
-                {content.teaser_expert.blind_spot && (
-                  <p className="mt-3 text-xs text-orange-600/80 border-t border-foreground/5 pt-2.5">
-                    <span className="font-semibold">Blind spot:</span> {content.teaser_expert.blind_spot}
-                  </p>
-                )}
-              </div>
+              ))}
             </div>
             <p className="mt-3 text-center text-sm text-muted">
-              1 of 10 expert perspectives shown.{' '}
+              3 of 10 expert perspectives shown.{' '}
               <span className="font-semibold text-foreground/70">Unlock Deep Validation to see all 10.</span>
             </p>
           </div>

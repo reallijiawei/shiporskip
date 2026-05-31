@@ -32,11 +32,14 @@ export async function POST(request: NextRequest) {
 
     const deepseek = getDeepSeek();
 
-    // Pick one random expert for teaser
-    const teaserExpert = EXPERTS[Math.floor(Math.random() * EXPERTS.length)];
+    // Pick 3 random experts for teaser
+    const shuffled = [...EXPERTS].sort(() => Math.random() - 0.5);
+    const selectedExperts = shuffled.slice(0, 3);
 
-    // Run basic roast + one expert evaluation in parallel
-    const [roastResult, expertResult] = await Promise.allSettled([
+    const expertSystemSuffix = '\n\nIMPORTANT: You are an AI analyzing this idea through the thinking framework described above — you are NOT impersonating this person. Do not use first person as if you are them. Instead, frame your analysis as: "Through [name]\'s lens..." or "[Name]\'s framework suggests..." when referencing their mental models.';
+
+    // Run basic roast + 3 expert evaluations in parallel
+    const [roastResult, ...expertResults] = await Promise.allSettled([
       deepseek.chat.completions.create({
         model: DEEPSEEK_MODEL,
         messages: [
@@ -46,15 +49,17 @@ export async function POST(request: NextRequest) {
         response_format: { type: 'json_object' },
         temperature: 0.7,
       }),
-      deepseek.chat.completions.create({
-        model: DEEPSEEK_MODEL,
-        messages: [
-          { role: 'system', content: teaserExpert.systemPrompt + '\n\nIMPORTANT: You are an AI analyzing this idea through the thinking framework described above — you are NOT impersonating this person. Do not use first person as if you are them. Instead, frame your analysis as: "Through [name]\'s lens..." or "[Name]\'s framework suggests..." when referencing their mental models.' },
-          { role: 'user', content: buildExpertEvaluationPrompt(description, targetUser, productType) },
-        ],
-        response_format: { type: 'json_object' },
-        temperature: 0.7,
-      }),
+      ...selectedExperts.map((expert) =>
+        deepseek.chat.completions.create({
+          model: DEEPSEEK_MODEL,
+          messages: [
+            { role: 'system', content: expert.systemPrompt + expertSystemSuffix },
+            { role: 'user', content: buildExpertEvaluationPrompt(description, targetUser, productType) },
+          ],
+          response_format: { type: 'json_object' },
+          temperature: 0.7,
+        })
+      ),
     ]);
 
     if (roastResult.status === 'rejected') {
@@ -74,30 +79,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'AI returned invalid JSON' }, { status: 500 });
     }
 
-    // Parse expert teaser (non-blocking)
-    let teaserOpinion: ExpertOpinion | null = null;
-    if (expertResult.status === 'fulfilled') {
-      const expertContent = expertResult.value.choices[0]?.message?.content;
-      if (expertContent) {
-        try {
-          const opinion = JSON.parse(expertContent);
-          teaserOpinion = {
-            expert_id: teaserExpert.id,
-            expert_name: teaserExpert.name,
-            expert_title: teaserExpert.title,
-            archetype: teaserExpert.archetype,
-            archetype_description: teaserExpert.archetypeDescription,
-            verdict: opinion.verdict,
-            confidence: opinion.confidence,
-            one_line_take: opinion.one_line_take,
-            key_arguments: opinion.key_arguments || [],
-            blind_spot: opinion.blind_spot || '',
-          };
-        } catch (e) {
-          console.error('Expert teaser returned invalid JSON:', expertContent);
-        }
+    // Parse expert teasers (non-blocking)
+    const teaserExperts: ExpertOpinion[] = [];
+    expertResults.forEach((result, i) => {
+      const expert = selectedExperts[i];
+      if (result.status === 'rejected') return;
+      const expertContent = result.value.choices[0]?.message?.content;
+      if (!expertContent) return;
+      try {
+        const opinion = JSON.parse(expertContent);
+        teaserExperts.push({
+          expert_id: expert.id,
+          expert_name: expert.name,
+          expert_title: expert.title,
+          archetype: expert.archetype,
+          archetype_description: expert.archetypeDescription,
+          verdict: opinion.verdict,
+          confidence: opinion.confidence,
+          one_line_take: opinion.one_line_take,
+          key_arguments: opinion.key_arguments || [],
+          blind_spot: opinion.blind_spot || '',
+        });
+      } catch (e) {
+        console.error('Expert teaser returned invalid JSON:', expertContent);
       }
-    }
+    });
 
     const title = description.slice(0, 100).replace(/\n/g, ' ').trim();
 
@@ -122,8 +128,8 @@ export async function POST(request: NextRequest) {
     }
 
     const contentJson = { ...parsed };
-    if (teaserOpinion) {
-      contentJson.teaser_expert = teaserOpinion;
+    if (teaserExperts.length > 0) {
+      contentJson.teaser_experts = teaserExperts;
     }
 
     const { data: report, error: reportError } = await supabase
