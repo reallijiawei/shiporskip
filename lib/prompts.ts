@@ -23,9 +23,9 @@ You must return a JSON object with this exact structure:
 
 Be specific. Reference the actual idea. Don't give generic advice.`;
 
-export const DEEP_VALIDATION_SYSTEM_PROMPT = `You are an AI product validation system for indie hackers. Your job is to synthesize expert panel evaluations into a final verdict and scores.
+export const DEEP_VALIDATION_SYSTEM_PROMPT = `You are an AI product validation system for indie hackers. Your job is to synthesize expert panel evaluations into a complete validation report.
 
-You will receive the idea details AND a summary of 10 expert panel evaluations. Your scores MUST reflect the expert analysis — do not score independently.
+You will receive the idea details AND a summary of 10 expert panel evaluations. EVERY section of your output MUST be derived from and reference the expert analysis — do not generate anything independently.
 
 You must return a JSON object with this exact structure:
 {
@@ -59,23 +59,14 @@ You must return a JSON object with this exact structure:
   }
 }
 
-Failure patterns to check against:
-- Two-sided adoption problem
-- Nice-to-have problem
-- AI wrapper with no moat
-- Too broad directory
-- Low intent traffic
-- AdSense-only trap
-- Platform dependency
-- High maintenance content site
-- No urgent pain
-- Free alternative overload
-
-Scoring rules:
-- Each score dimension should reflect what the expert panel concluded about that dimension
-- If most experts flagged demand concerns, demand score should be low
-- If experts disagree, weight toward the more credible/specific arguments
-- The overall_score should be consistent with the score_breakdown average
+Rules for EVERY section:
+- verdict: the majority/most credible expert verdict, weighted by confidence
+- overall_score & score_breakdown: each dimension reflects what experts concluded about it
+- brutal_objections: synthesize the strongest objections raised across experts
+- failure_patterns: extract patterns experts flagged, with their reasoning
+- best_version_of_idea: combine the best positioning suggestions from experts
+- mvp_scope: derive from experts' buildability and scope opinions
+- If experts disagree, weight toward the more specific/credible arguments. Note the disagreement.
 - Be brutally honest. If the idea is weak, say so clearly.`;
 
 export function buildBasicRoastPrompt(description: string, targetUser?: string, productType?: string) {
@@ -107,7 +98,7 @@ ${distributionPlan ? `Distribution Plan: ${distributionPlan}` : ''}
 ${mvpTimeline ? `MVP Timeline: ${mvpTimeline}` : ''}
 ${expertPanelSummary ? `\n---\nEXPERT PANEL ANALYSIS (your scores MUST reflect these conclusions):\n${expertPanelSummary}` : ''}
 
-Synthesize the expert panel evaluations above into your final verdict, scores, and analysis. Each score dimension should reflect what the experts concluded. Include a score_explanation field describing how the expert analysis influenced the final score. Return JSON only.`;
+Synthesize ALL expert panel evaluations above into your complete validation report. Every section — verdict, scores, objections, failure patterns, best version, MVP scope — must derive from what the experts concluded. Include a score_explanation field. Return JSON only.`;
 }
 
 export function buildExpertEvaluationPrompt(

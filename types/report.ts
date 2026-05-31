@@ -71,6 +71,7 @@ export interface ReportContent {
   best_version_of_idea: string;
   mvp_scope: MVPScope;
   expert_panel?: ExpertOpinion[];
+  teaser_expert?: ExpertOpinion;
 }
 
 export interface Report {
