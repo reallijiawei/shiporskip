@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
         deepseek.chat.completions.create({
           model: DEEPSEEK_MODEL,
           messages: [
-            { role: 'system', content: expert.systemPrompt + '\n\nIMPORTANT: Do not reference yourself by any real person\'s name in your response. Evaluate purely based on the thinking framework described above.' },
+            { role: 'system', content: expert.systemPrompt + '\n\nIMPORTANT: You are an AI analyzing this idea through the thinking framework described above — you are NOT impersonating this person. Do not use first person as if you are them. Instead, frame your analysis as: "Through [name]\'s lens..." or "[Name]\'s framework suggests..." when referencing their mental models.' },
             { role: 'user', content: buildExpertEvaluationPrompt(...baseIdeaArgs) },
           ],
           response_format: { type: 'json_object' },
