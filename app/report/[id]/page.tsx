@@ -16,9 +16,8 @@ const GENERATION_STAGES = [
   { label: 'Preparing', estimate: '~10s' },
   { label: 'Running 10 expert analyses in parallel', estimate: '~30s' },
   { label: 'Synthesizing verdict from expert conclusions', estimate: '~20s' },
-  { label: 'Finalizing report', estimate: '' },
+  { label: 'Finalizing report', estimate: '~5s' },
 ];
-const TOTAL_ESTIMATE = 'About 1 minute';
 
 export default function ReportPage({ params }: { params: Promise<{ id: string }> }) {
   const [report, setReport] = useState<Report | null>(null);
@@ -157,7 +156,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           <p className="text-sm font-medium text-foreground">
             {stage < 3 ? GENERATION_STAGES[stage]?.label : 'Finalizing report'}
           </p>
-          <p className="mt-1 text-xs text-muted">{TOTAL_ESTIMATE}</p>
+          <p className="mt-1 text-xs text-muted">Takes about 1 minute total</p>
         </div>
         {/* Stage progress */}
         <div className="w-80 space-y-2">
@@ -304,7 +303,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           </div>
         )}
 
-        {!isBasic && content.mvp_scope && (
+        {!isBasic && content.mvp_scope && (report.verdict === 'build_now' || report.verdict === 'validate_first') && (
           <div className="shell-panel mt-8 p-6">
             <h3 className="font-display text-xl font-bold text-foreground">MVP Scope</h3>
             <div className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-3">
@@ -331,7 +330,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           </div>
         )}
 
-        {!isBasic && content.best_version_of_idea && (
+        {!isBasic && content.best_version_of_idea && (report.verdict === 'build_now' || report.verdict === 'validate_first') && (
           <div className="mt-8 rounded-[8px] border border-l-4 border-accent border-foreground/10 bg-card/90 p-6 shadow-sm">
             <h3 className="font-display text-xl font-bold text-foreground">Best Version of This Idea</h3>
             <p className="mt-3 text-foreground/80">{content.best_version_of_idea}</p>

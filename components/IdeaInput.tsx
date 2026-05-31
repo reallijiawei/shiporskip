@@ -225,7 +225,7 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
           {isSubmitting ? (
             <span className="flex items-center justify-center gap-2">
               <Loader2 className="h-4 w-4 animate-spin" />
-              Analyzing your idea...
+              Analyzing your idea... <span className="text-xs opacity-70">(~15s)</span>
             </span>
           ) : (
             'Get Brutal Roast (Free)'
