@@ -48,6 +48,8 @@ export interface ExpertOpinion {
   expert_id: string;
   expert_name: string;
   expert_title: string;
+  archetype: string;
+  archetype_description: string;
   verdict: Verdict;
   confidence: 'high' | 'medium' | 'low';
   one_line_take: string;

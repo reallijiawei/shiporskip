@@ -1,16 +1,22 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { createClient } from '@/lib/supabase';
 import VerdictCard from '@/components/VerdictCard';
 import ScoreBreakdown from '@/components/ScoreBreakdown';
-import FounderLensCard from '@/components/FounderLensCard';
 import FailurePatterns from '@/components/FailurePatterns';
 import MarketEvidence from '@/components/MarketEvidence';
 import DeepValidationCTA from './DeepValidationCTA';
 import ExpertPanel from '@/components/ExpertPanel';
-import { FounderLens, Report } from '@/types/report';
+import { Report } from '@/types/report';
 import { Loader2 } from 'lucide-react';
+
+const GENERATION_STEPS = [
+  { time: 0, text: 'Generating your Deep Validation report...' },
+  { time: 10, text: 'Running expert panel analysis...' },
+  { time: 25, text: 'Compiling verdicts from 10 perspectives...' },
+  { time: 45, text: 'Almost there — finalizing report...' },
+];
 
 export default function ReportPage({ params }: { params: Promise<{ id: string }> }) {
   const [report, setReport] = useState<Report | null>(null);
@@ -18,6 +24,18 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState('');
+  const [elapsed, setElapsed] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (generating) {
+      setElapsed(0);
+      timerRef.current = setInterval(() => setElapsed((s) => s + 1), 1000);
+    } else {
+      if (timerRef.current) clearInterval(timerRef.current);
+    }
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [generating]);
 
   const loadReport = useCallback(async (id: string) => {
     const supabase = createClient();
@@ -123,12 +141,23 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
   }, [report, ideaId]);
 
   if (loading || generating) {
+    const currentStep = GENERATION_STEPS.filter((s) => s.time <= elapsed).pop()!;
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
-        <Loader2 className="h-8 w-8 animate-spin text-muted" />
-        {generating && (
-          <p className="text-sm text-muted">Generating your Deep Validation report...</p>
-        )}
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 px-4">
+        <Loader2 className="h-8 w-8 animate-spin text-accent" />
+        <div className="text-center">
+          <p className="text-sm font-medium text-foreground">{currentStep.text}</p>
+          <p className="mt-1 text-xs text-muted">{elapsed}s elapsed</p>
+        </div>
+        {/* Progress bar */}
+        <div className="w-64">
+          <div className="h-1.5 bg-foreground/5 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-accent rounded-full transition-all duration-1000"
+              style={{ width: `${Math.min((elapsed / 60) * 100, 95)}%` }}
+            />
+          </div>
+        </div>
       </div>
     );
   }
@@ -197,17 +226,6 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
         {!isBasic && content.market_evidence && (
           <div className="mt-8">
             <MarketEvidence evidence={content.market_evidence} />
-          </div>
-        )}
-
-        {!isBasic && content.founder_lenses && (
-          <div className="mt-8">
-            <h3 className="mb-4 font-display text-xl font-bold text-foreground">Founder-Inspired Lenses</h3>
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              {content.founder_lenses.map((lens: FounderLens, i: number) => (
-                <FounderLensCard key={i} lens={lens} />
-              ))}
-            </div>
           </div>
         )}
 

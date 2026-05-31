@@ -123,7 +123,8 @@ export function buildDeepValidationPrompt(
   productType?: string,
   monetizationPlan?: string,
   distributionPlan?: string,
-  mvpTimeline?: string
+  mvpTimeline?: string,
+  referenceScore?: number
 ) {
   return `Evaluate this indie product idea in depth:
 
@@ -133,6 +134,7 @@ ${productType ? `Product Type: ${productType}` : ''}
 ${monetizationPlan ? `Monetization Plan: ${monetizationPlan}` : ''}
 ${distributionPlan ? `Distribution Plan: ${distributionPlan}` : ''}
 ${mvpTimeline ? `MVP Timeline: ${mvpTimeline}` : ''}
+${referenceScore !== undefined ? `\nThe initial quick evaluation gave this idea an overall score of ${referenceScore}/100. Your deep evaluation should be broadly consistent with this baseline — adjust only if your deeper analysis reveals material information that warrants a shift. Keep your overall_score within ±15 points of this reference unless you have strong justification.` : ''}
 
 Provide a complete validation with founder-inspired lenses, failure patterns, and a 7-day validation sprint. Return JSON only.`;
 }

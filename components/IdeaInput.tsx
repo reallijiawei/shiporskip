@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -47,11 +47,32 @@ interface IdeaInputProps {
   isLoggedIn?: boolean;
 }
 
+const PROGRESS_STEPS = [
+  { time: 0, text: 'Analyzing your idea...' },
+  { time: 5, text: 'Evaluating market potential...' },
+  { time: 10, text: 'Checking competition signals...' },
+  { time: 15, text: 'Generating verdict...' },
+];
+
 export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [error, setError] = useState('');
+  const [elapsed, setElapsed] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (isSubmitting) {
+      setElapsed(0);
+      timerRef.current = setInterval(() => setElapsed((s) => s + 1), 1000);
+    } else {
+      if (timerRef.current) clearInterval(timerRef.current);
+    }
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [isSubmitting]);
+
+  const currentStep = PROGRESS_STEPS.filter((s) => s.time <= elapsed).pop()!;
 
   const [form, setForm] = useState({
     description: initialExample || '',
@@ -225,7 +246,7 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
           {isSubmitting ? (
             <span className="flex items-center justify-center gap-2">
               <Loader2 className="h-4 w-4 animate-spin" />
-              Analyzing your idea...
+              {currentStep.text} ({elapsed}s)
             </span>
           ) : (
             'Get Brutal Roast (Free)'

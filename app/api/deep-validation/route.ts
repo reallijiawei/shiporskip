@@ -64,7 +64,17 @@ export async function POST(request: NextRequest) {
 
     const deepseek = getDeepSeek();
 
-    const ideaArgs = [
+    // Fetch basic roast score as reference for consistency
+    const { data: basicReport } = await supabase
+      .from('reports')
+      .select('overall_score')
+      .eq('idea_id', ideaId)
+      .eq('report_type', 'basic_roast')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    const baseIdeaArgs = [
       idea.description,
       idea.target_user || undefined,
       idea.product_type || undefined,
@@ -80,7 +90,7 @@ export async function POST(request: NextRequest) {
         model: DEEPSEEK_MODEL,
         messages: [
           { role: 'system', content: DEEP_VALIDATION_SYSTEM_PROMPT },
-          { role: 'user', content: buildDeepValidationPrompt(...ideaArgs) },
+          { role: 'user', content: buildDeepValidationPrompt(...baseIdeaArgs, basicReport?.overall_score) },
         ],
         response_format: { type: 'json_object' },
         temperature: 0.7,
@@ -90,8 +100,8 @@ export async function POST(request: NextRequest) {
         deepseek.chat.completions.create({
           model: DEEPSEEK_MODEL,
           messages: [
-            { role: 'system', content: expert.systemPrompt },
-            { role: 'user', content: buildExpertEvaluationPrompt(...ideaArgs) },
+            { role: 'system', content: expert.systemPrompt + '\n\nIMPORTANT: Do not reference yourself by any real person\'s name in your response. Evaluate purely based on the thinking framework described above.' },
+            { role: 'user', content: buildExpertEvaluationPrompt(...baseIdeaArgs) },
           ],
           response_format: { type: 'json_object' },
           temperature: 0.7,
@@ -134,6 +144,8 @@ export async function POST(request: NextRequest) {
           expert_id: expert.id,
           expert_name: expert.name,
           expert_title: expert.title,
+          archetype: expert.archetype,
+          archetype_description: expert.archetypeDescription,
           verdict: opinion.verdict,
           confidence: opinion.confidence,
           one_line_take: opinion.one_line_take,

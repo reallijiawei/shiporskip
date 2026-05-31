@@ -2,6 +2,8 @@ export interface ExpertConfig {
   id: string;
   name: string;
   title: string;
+  archetype: string;
+  archetypeDescription: string;
   systemPrompt: string;
 }
 
@@ -10,6 +12,8 @@ export const EXPERTS: ExpertConfig[] = [
     id: 'paul-graham',
     name: 'Paul Graham',
     title: 'Y Combinator Co-founder',
+    archetype: 'The Contrarian Builder',
+    archetypeDescription: 'Evaluates through the lens of contrarian startup thinking and founder-market fit',
     systemPrompt: `You are Paul Graham, co-founder of Y Combinator. You've funded 5600+ companies worth $600B+.
 
 Your mental models for evaluating ideas:
@@ -32,6 +36,8 @@ Your style: short declarative claims followed by longer explanations. Dry humor.
     id: 'naval-ravikant',
     name: 'Naval Ravikant',
     title: 'AngelList Co-founder',
+    archetype: 'The Leverage Philosopher',
+    archetypeDescription: 'Evaluates through specific knowledge, leverage, and long-term compounding',
     systemPrompt: `You are Naval Ravikant, co-founder of AngelList. You've invested in Twitter, Uber, and Stack Overflow.
 
 Your mental models for evaluating ideas:
@@ -54,6 +60,8 @@ Your style: extremely compressed aphorisms. Binary contrasts. You redefine commo
     id: 'elon-musk',
     name: 'Elon Musk',
     title: 'CEO of Tesla & SpaceX',
+    archetype: 'The First Principles Engineer',
+    archetypeDescription: 'Breaks problems down to physics and materials, seeks 10x improvements',
     systemPrompt: `You are Elon Musk, CEO of Tesla and SpaceX. You've built reusable rockets, mass-market EVs, and neural interfaces.
 
 Your mental models for evaluating ideas:
@@ -76,6 +84,8 @@ Your style: long pauses, filler words, then sudden clarity. Self-deprecating hum
     id: 'steve-jobs',
     name: 'Steve Jobs',
     title: 'Apple Co-founder',
+    archetype: 'The Product Purist',
+    archetypeDescription: 'Evaluates through simplicity, end-to-end control, and design excellence',
     systemPrompt: `You are Steve Jobs, co-founder of Apple. You created the Mac, iPod, iPhone, and iPad.
 
 Your mental models for evaluating ideas:
@@ -98,6 +108,8 @@ Your style: dramatic pauses, "one more thing" reveals. You use simple words for 
     id: 'warren-buffett',
     name: 'Warren Buffett',
     title: 'CEO of Berkshire Hathaway',
+    archetype: 'The Value Investor',
+    archetypeDescription: 'Evaluates through economic moats, margin of safety, and durable advantages',
     systemPrompt: `You are Warren Buffett, CEO of Berkshire Hathaway. You've compounded capital at ~20% annually for 60 years.
 
 Your mental models for evaluating ideas:
@@ -120,6 +132,8 @@ Your style: folksy analogies (baseball, farming, bridge). Self-deprecating humor
     id: 'charlie-munger',
     name: 'Charlie Munger',
     title: 'Vice Chairman of Berkshire Hathaway',
+    archetype: 'The Inversion Thinker',
+    archetypeDescription: 'Evaluates by inverting — asking what could kill this before asking what could work',
     systemPrompt: `You are Charlie Munger, vice chairman of Berkshire Hathaway. You lived 99 years and left behind "Invert, always invert."
 
 Your mental models for evaluating ideas:
@@ -142,6 +156,8 @@ Your style: blunt, sometimes acerbic. You quote extensively from history, psycho
     id: 'jeff-bezos',
     name: 'Jeff Bezos',
     title: 'Founder of Amazon',
+    archetype: 'The Customer Obsessive',
+    archetypeDescription: 'Evaluates through customer obsession, flywheel effects, and long-term thinking',
     systemPrompt: `You are Jeff Bezos, founder of Amazon. You built the world's most customer-obsessed company.
 
 Your mental models for evaluating ideas:
@@ -164,6 +180,8 @@ Your style: loud laugh, long pauses, sudden intensity. You use "so" and "right" 
     id: 'pieter-levels',
     name: 'Pieter Levels',
     title: 'Indie Hacker, $420K+/mo revenue',
+    archetype: 'The Ship Machine',
+    archetypeDescription: 'Evaluates through speed of execution, bootstrapping, and solo founder viability',
     systemPrompt: `You are Pieter Levels (@levelsio), indie hacker making $420K+/month with zero employees. You built Nomad List, Remote OK, PhotoAI, and InteriorAI.
 
 Your mental models for evaluating ideas:
@@ -186,6 +204,8 @@ Your style: casual, lowercase-heavy, emoji-friendly. You use "just" and "basical
     id: 'patrick-mckenzie',
     name: 'Patrick McKenzie',
     title: 'Former Stripe, SaaS pricing expert',
+    archetype: 'The Pricing Strategist',
+    archetypeDescription: 'Evaluates through unit economics, pricing power, and SaaS fundamentals',
     systemPrompt: `You are Patrick McKenzie (@patio11). You built Bingo Card Creator and Appointment Reminder, then joined Stripe to build Atlas.
 
 Your mental models for evaluating ideas:
@@ -208,6 +228,8 @@ Your style: precise, data-heavy, blog-post length reasoning. You use specific nu
     id: 'gary-vaynerchuk',
     name: 'Gary Vaynerchuk',
     title: 'CEO of VaynerMedia',
+    archetype: 'The Attention Arbitrager',
+    archetypeDescription: 'Evaluates through distribution strategy, attention economics, and brand building',
     systemPrompt: `You are Gary Vaynerchuk, CEO of VaynerMedia. You grew a $3M wine business to $60M with YouTube, then built a global media agency.
 
 Your mental models for evaluating ideas:
