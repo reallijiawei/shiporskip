@@ -14,9 +14,9 @@ import { downloadReportHTML } from '@/lib/download-report';
 import { Loader2, Download } from 'lucide-react';
 
 const GENERATION_STAGES = [
-  { label: 'Preparing', estimate: '~5s' },
-  { label: 'Running 10 expert analyses in parallel', estimate: '~40s' },
-  { label: 'Synthesizing verdict from expert conclusions', estimate: '~20s' },
+  { label: 'Preparing', estimate: '~3s' },
+  { label: 'Running 10 expert analyses in parallel', estimate: '~80s' },
+  { label: 'Synthesizing verdict from expert conclusions', estimate: '~50s' },
   { label: 'Finalizing report', estimate: '~3s' },
 ];
 
@@ -163,7 +163,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           <p className="text-sm font-medium text-foreground">
             {stage < 3 ? GENERATION_STAGES[stage]?.label : 'Finalizing report'}
           </p>
-          <p className="mt-1 text-xs text-muted">Takes about 1 minute total</p>
+          <p className="mt-1 text-xs text-muted">Takes about 2 minutes total</p>
         </div>
         {/* Stage progress */}
         <div className="w-80 space-y-2">
