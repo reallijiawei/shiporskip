@@ -252,7 +252,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           </div>
         )}
 
-        {isBasic && content.improvement_suggestions && (
+        {isBasic && content.improvement_suggestions && content.improvement_suggestions.length > 0 && (
           <div className="mt-8 rounded-[8px] border border-l-4 border-green-500 border-foreground/10 bg-card/90 p-6 shadow-sm">
             <h3 className="font-display text-xl font-bold text-green-600">Improvement Suggestions</h3>
             <ul className="mt-4 space-y-3">

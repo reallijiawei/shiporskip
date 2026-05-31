@@ -7,11 +7,13 @@ You must return a JSON object with this exact structure:
   "verdict": "build_now" | "validate_first" | "pivot" | "skip" | "too_crowded" | "good_seo_play" | "good_free_tool_bad_business" | "interesting_but_not_urgent",
   "one_sentence_summary": "string",
   "brutal_objections": ["string", "string", "string"],
-  "improvement_suggestions": ["string", "string", "string"],
+  "improvement_suggestions": ["string", "string", "string"] or [],
   "deserves_deep_validation": true/false
 }
 
-Be specific. Reference the actual idea. Don't give generic advice.`;
+Rules:
+- improvement_suggestions: If the verdict is "skip", "pivot", or "too_crowded" — return an empty array []. Do not suggest improvements for ideas you're telling the user to abandon. Only provide improvement suggestions for verdicts like "build_now", "validate_first", "good_seo_play", etc.
+- Be specific. Reference the actual idea. Don't give generic advice.`;
 
 export const DEEP_VALIDATION_SYSTEM_PROMPT = `You are an AI product validation system for indie hackers. Your job is to synthesize expert panel evaluations into a complete validation report.
 
