@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import getDeepSeek, { DEEPSEEK_MODEL } from '@/lib/deepseek';
-import { DEEP_VALIDATION_SYSTEM_PROMPT, buildDeepValidationPrompt, buildExpertEvaluationPrompt } from '@/lib/prompts';
-import { EXPERTS } from '@/lib/expert-prompts';
+import { DEEP_VALIDATION_SYSTEM_PROMPT, buildDeepValidationPrompt } from '@/lib/prompts';
 import type { ExpertOpinion } from '@/types/report';
 
 export async function POST(request: NextRequest) {
@@ -15,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { ideaId } = body;
+    const { ideaId, expertPanel } = body as { ideaId: string; expertPanel?: ExpertOpinion[] };
 
     if (!ideaId) {
       return NextResponse.json({ error: 'ideaId is required' }, { status: 400 });
@@ -64,16 +63,6 @@ export async function POST(request: NextRequest) {
 
     const deepseek = getDeepSeek();
 
-    // Fetch basic roast score as reference for consistency
-    const { data: basicReport } = await supabase
-      .from('reports')
-      .select('overall_score')
-      .eq('idea_id', ideaId)
-      .eq('report_type', 'basic_roast')
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
-
     const baseIdeaArgs = [
       idea.description,
       idea.target_user || undefined,
@@ -83,58 +72,14 @@ export async function POST(request: NextRequest) {
       idea.mvp_timeline || undefined,
     ] as const;
 
-    // Phase 1: Run 10 expert evaluations in parallel
-    const expertResults = await Promise.allSettled(
-      EXPERTS.map((expert) =>
-        deepseek.chat.completions.create({
-          model: DEEPSEEK_MODEL,
-          messages: [
-            { role: 'system', content: expert.systemPrompt + '\n\nIMPORTANT: You are an AI analyzing this idea through the thinking framework described above — you are NOT impersonating this person. Do not use first person as if you are them. Instead, frame your analysis as: "Through [name]\'s lens..." or "[Name]\'s framework suggests..." when referencing their mental models.' },
-            { role: 'user', content: buildExpertEvaluationPrompt(...baseIdeaArgs) },
-          ],
-          response_format: { type: 'json_object' },
-          temperature: 0.7,
-        })
-      )
-    );
-
-    // Parse expert results
-    const expertPanel: ExpertOpinion[] = [];
-    expertResults.forEach((result, i) => {
-      const expert = EXPERTS[i];
-      if (result.status === 'rejected') {
-        console.error(`Expert ${expert.name} failed:`, result.reason);
-        return;
-      }
-      const content = result.value.choices[0]?.message?.content;
-      if (!content) return;
-      try {
-        const opinion = JSON.parse(content);
-        expertPanel.push({
-          expert_id: expert.id,
-          expert_name: expert.name,
-          expert_title: expert.title,
-          archetype: expert.archetype,
-          archetype_description: expert.archetypeDescription,
-          verdict: opinion.verdict,
-          confidence: opinion.confidence,
-          one_line_take: opinion.one_line_take,
-          key_arguments: opinion.key_arguments || [],
-          blind_spot: opinion.blind_spot || '',
-        });
-      } catch (e) {
-        console.error(`Expert ${expert.name} returned invalid JSON:`, content);
-      }
-    });
-
     // Build expert panel summary for scoring context
-    const expertSummary = expertPanel.length > 0
+    const expertSummary = expertPanel && expertPanel.length > 0
       ? expertPanel.map((ep) =>
           `- ${ep.expert_name} (${ep.archetype}): verdict=${ep.verdict}, confidence=${ep.confidence}\n  "${ep.one_line_take}"\n  Key arguments: ${ep.key_arguments.join('; ')}\n  Blind spot: ${ep.blind_spot}`
         ).join('\n')
       : '';
 
-    // Phase 2: Main Deep Validation — scores derived from expert analysis
+    // Main Deep Validation — scores derived from expert analysis
     const mainResult = await deepseek.chat.completions.create({
       model: DEEPSEEK_MODEL,
       messages: [
@@ -160,7 +105,7 @@ export async function POST(request: NextRequest) {
 
     // Merge expert panel into content_json
     const contentJson = { ...parsed };
-    if (expertPanel.length > 0) {
+    if (expertPanel && expertPanel.length > 0) {
       contentJson.expert_panel = expertPanel;
     }
 

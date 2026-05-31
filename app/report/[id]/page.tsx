@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase';
 import VerdictCard from '@/components/VerdictCard';
 import ScoreBreakdown from '@/components/ScoreBreakdown';
@@ -12,31 +12,21 @@ import { Report } from '@/types/report';
 import { getVerdictColor, getVerdictLabel } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 
-const GENERATION_STEPS = [
-  { time: 0, text: 'Generating your Deep Validation report...' },
-  { time: 10, text: 'Running expert panel analysis...' },
-  { time: 25, text: 'Compiling verdicts from 10 perspectives...' },
-  { time: 45, text: 'Almost there — finalizing report...' },
+const GENERATION_STAGES = [
+  { label: 'Preparing', estimate: '~10s' },
+  { label: 'Running 10 expert analyses in parallel', estimate: '~30s' },
+  { label: 'Synthesizing verdict from expert conclusions', estimate: '~20s' },
+  { label: 'Finalizing report', estimate: '' },
 ];
+const TOTAL_ESTIMATE = 'About 1 minute';
 
 export default function ReportPage({ params }: { params: Promise<{ id: string }> }) {
   const [report, setReport] = useState<Report | null>(null);
   const [ideaId, setIdeaId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [stage, setStage] = useState(0);
   const [error, setError] = useState('');
-  const [elapsed, setElapsed] = useState(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    if (generating) {
-      setElapsed(0);
-      timerRef.current = setInterval(() => setElapsed((s) => s + 1), 1000);
-    } else {
-      if (timerRef.current) clearInterval(timerRef.current);
-    }
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [generating]);
 
   const loadReport = useCallback(async (id: string) => {
     const supabase = createClient();
@@ -106,27 +96,45 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
       }
 
       setGenerating(true);
+      setStage(0);
       try {
-        const res = await fetch('/api/deep-validation', {
+        // Stage 1: Run expert evaluations
+        setStage(1);
+        const expertsRes = await fetch('/api/deep-validation/experts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ideaId }),
         });
 
-        const data = await res.json();
+        if (expertsRes.status === 402) return;
 
-        if (res.status === 402) return;
-
-        if (!res.ok) {
-          console.error('[DeepValidation] API error:', data);
+        const expertsData = await expertsRes.json();
+        if (!expertsRes.ok) {
+          console.error('[Experts] API error:', expertsData);
           return;
         }
 
-        if (data.report?.id) {
+        // Stage 2: Synthesize verdict from expert conclusions
+        setStage(2);
+        const validateRes = await fetch('/api/deep-validation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ideaId, expertPanel: expertsData.expertPanel }),
+        });
+
+        const validateData = await validateRes.json();
+        if (!validateRes.ok) {
+          console.error('[DeepValidation] API error:', validateData);
+          return;
+        }
+
+        // Stage 3: Finalizing
+        setStage(3);
+        if (validateData.report?.id) {
           const { data: deepReport } = await supabase
             .from('reports')
             .select('*')
-            .eq('id', data.report.id)
+            .eq('id', validateData.report.id)
             .single();
 
           if (deepReport) setReport(deepReport);
@@ -142,21 +150,34 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
   }, [report, ideaId]);
 
   if (loading || generating) {
-    const currentStep = GENERATION_STEPS.filter((s) => s.time <= elapsed).pop()!;
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 px-4">
         <Loader2 className="h-8 w-8 animate-spin text-accent" />
         <div className="text-center">
-          <p className="text-sm font-medium text-foreground">{currentStep.text}</p>
-          <p className="mt-1 text-xs text-muted">{elapsed}s elapsed</p>
+          <p className="text-sm font-medium text-foreground">
+            {stage < 3 ? GENERATION_STAGES[stage]?.label : 'Finalizing report'}
+          </p>
+          <p className="mt-1 text-xs text-muted">{TOTAL_ESTIMATE}</p>
         </div>
-        {/* Progress bar */}
-        <div className="w-64">
-          <div className="h-1.5 bg-foreground/5 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-accent rounded-full transition-all duration-1000"
-              style={{ width: `${Math.min((elapsed / 60) * 100, 95)}%` }}
-            />
+        {/* Stage progress */}
+        <div className="w-80 space-y-2">
+          <div className="flex gap-1.5">
+            {GENERATION_STAGES.map((s, i) => (
+              <div key={i} className="flex-1">
+                <div className={`h-1.5 rounded-full transition-all duration-500 ${
+                  i < stage ? 'bg-accent' : i === stage ? 'bg-accent/40 animate-pulse' : 'bg-foreground/5'
+                }`} />
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-between">
+            {GENERATION_STAGES.map((s, i) => (
+              <span key={i} className={`text-[10px] transition-colors ${
+                i <= stage ? 'text-foreground/60' : 'text-foreground/20'
+              }`}>
+                {i < stage ? '✓' : i === stage ? s.estimate : ''}
+              </span>
+            ))}
           </div>
         </div>
       </div>
