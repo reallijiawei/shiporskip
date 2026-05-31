@@ -97,9 +97,11 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
 
       setGenerating(true);
       setStage(0);
+      const tStart = Date.now();
       try {
         // Stage 1: Run expert evaluations
         setStage(1);
+        const t1 = Date.now();
         const expertsRes = await fetch('/api/deep-validation/experts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -109,6 +111,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
         if (expertsRes.status === 402) return;
 
         const expertsData = await expertsRes.json();
+        console.log(`[Timing] Stage 1 (experts): ${((Date.now() - t1) / 1000).toFixed(1)}s`);
         if (!expertsRes.ok) {
           console.error('[Experts] API error:', expertsData);
           return;
@@ -116,6 +119,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
 
         // Stage 2: Synthesize verdict from expert conclusions
         setStage(2);
+        const t2 = Date.now();
         const validateRes = await fetch('/api/deep-validation', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -123,6 +127,8 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
         });
 
         const validateData = await validateRes.json();
+        console.log(`[Timing] Stage 2 (synthesis): ${((Date.now() - t2) / 1000).toFixed(1)}s`);
+        console.log(`[Timing] Total: ${((Date.now() - tStart) / 1000).toFixed(1)}s`);
         if (!validateRes.ok) {
           console.error('[DeepValidation] API error:', validateData);
           return;
