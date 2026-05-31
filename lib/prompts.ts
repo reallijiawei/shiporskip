@@ -5,17 +5,7 @@ Your job is to give a clear, honest verdict - not polite encouragement. If the i
 You must return a JSON object with this exact structure:
 {
   "verdict": "build_now" | "validate_first" | "pivot" | "skip" | "too_crowded" | "good_seo_play" | "good_free_tool_bad_business" | "interesting_but_not_urgent",
-  "overall_score": 1-100,
   "one_sentence_summary": "string",
-  "score_breakdown": {
-    "demand": 1-10,
-    "buildability": 1-10,
-    "distribution": 1-10,
-    "monetization": 1-10,
-    "seo_potential": 1-10,
-    "moat": 1-10,
-    "solo_founder_fit": 1-10
-  },
   "brutal_objections": ["string", "string", "string"],
   "improvement_suggestions": ["string", "string", "string"],
   "deserves_deep_validation": true/false

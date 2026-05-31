@@ -13,10 +13,10 @@ import { getVerdictColor, getVerdictLabel } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 
 const GENERATION_STAGES = [
-  { label: 'Preparing', estimate: '~10s' },
-  { label: 'Running 10 expert analyses in parallel', estimate: '~30s' },
+  { label: 'Preparing', estimate: '~5s' },
+  { label: 'Running 10 expert analyses in parallel', estimate: '~40s' },
   { label: 'Synthesizing verdict from expert conclusions', estimate: '~20s' },
-  { label: 'Finalizing report', estimate: '~5s' },
+  { label: 'Finalizing report', estimate: '~3s' },
 ];
 
 export default function ReportPage({ params }: { params: Promise<{ id: string }> }) {
@@ -202,13 +202,15 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <VerdictCard
           verdict={report.verdict}
-          overallScore={report.overall_score}
+          overallScore={isBasic ? null : report.overall_score}
           oneSentenceSummary={content.one_sentence_summary}
         />
 
-        <div className="mt-8">
-          <ScoreBreakdown scores={report.scores} />
-        </div>
+        {!isBasic && report.scores && (
+          <div className="mt-8">
+            <ScoreBreakdown scores={report.scores} />
+          </div>
+        )}
 
         {!isBasic && content.score_explanation && (
           <div className="mt-3 rounded-[8px] border border-foreground/10 bg-card/90 px-5 py-3 shadow-sm">

@@ -4,7 +4,7 @@ import { ThumbsUp, ThumbsDown, AlertTriangle, Zap } from 'lucide-react';
 
 interface VerdictCardProps {
   verdict: Verdict;
-  overallScore: number;
+  overallScore?: number | null;
   oneSentenceSummary: string;
 }
 
@@ -38,12 +38,14 @@ export default function VerdictCard({ verdict, overallScore, oneSentenceSummary 
       </div>
 
       {/* Score strip */}
-      <div className="flex items-end gap-3 border-t border-current/10 bg-card/45 px-6 py-6 sm:px-8">
-        <span className={cn('font-display text-8xl font-extrabold leading-none', getScoreColor(overallScore))}>
-          {overallScore}
-        </span>
-        <span className="pb-2 text-2xl font-bold opacity-40">/100</span>
-      </div>
+      {overallScore != null && (
+        <div className="flex items-end gap-3 border-t border-current/10 bg-card/45 px-6 py-6 sm:px-8">
+          <span className={cn('font-display text-8xl font-extrabold leading-none', getScoreColor(overallScore))}>
+            {overallScore}
+          </span>
+          <span className="pb-2 text-2xl font-bold opacity-40">/100</span>
+        </div>
+      )}
     </div>
   );
 }

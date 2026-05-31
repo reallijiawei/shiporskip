@@ -132,8 +132,8 @@ export async function POST(request: NextRequest) {
         idea_id: idea.id,
         report_type: 'basic_roast',
         verdict: parsed.verdict,
-        overall_score: parsed.overall_score,
-        scores: parsed.score_breakdown,
+        overall_score: parsed.overall_score || null,
+        scores: parsed.score_breakdown || null,
         content_json: contentJson,
       })
       .select()

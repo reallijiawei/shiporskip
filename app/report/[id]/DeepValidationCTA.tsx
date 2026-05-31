@@ -45,7 +45,7 @@ export default function DeepValidationCTA({ reportId, ideaId }: DeepValidationCT
       </h3>
       <p className="mt-3 text-background/50 max-w-md mx-auto">
         Get founder-inspired lenses, failure pattern analysis,
-        and MVP scope — powered by Claude Sonnet.
+        and MVP scope — powered by GPT 5.5.
       </p>
       <p className="mt-4 font-display text-4xl font-extrabold text-accent">$9</p>
       <button
