@@ -73,6 +73,8 @@ export async function POST(request: NextRequest) {
     ] as const;
 
     // Build expert panel summary for scoring context
+    const t0 = Date.now();
+    console.log('[Validate] Starting main validation synthesis...');
     const expertSummary = expertPanel && expertPanel.length > 0
       ? expertPanel.map((ep) =>
           `- ${ep.expert_name} (${ep.archetype}): verdict=${ep.verdict}, confidence=${ep.confidence}\n  "${ep.one_line_take}"\n  Key arguments: ${ep.key_arguments.join('; ')}\n  Blind spot: ${ep.blind_spot}`
@@ -102,6 +104,8 @@ export async function POST(request: NextRequest) {
       console.error('JSON parse error, raw content:', mainContent);
       return NextResponse.json({ error: 'AI returned invalid JSON' }, { status: 500 });
     }
+
+    console.log(`[Validate] Synthesis completed in ${Date.now() - t0}ms`);
 
     // Merge expert panel into content_json
     const contentJson = { ...parsed };

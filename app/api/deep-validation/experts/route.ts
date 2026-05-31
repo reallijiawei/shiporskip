@@ -60,6 +60,8 @@ export async function POST(request: NextRequest) {
     ] as const;
 
     // Run 10 expert evaluations in parallel
+    const t0 = Date.now();
+    console.log('[Experts] Starting 10 parallel expert calls...');
     const expertResults = await Promise.allSettled(
       EXPERTS.map((expert) =>
         deepseek.chat.completions.create({
@@ -102,6 +104,7 @@ export async function POST(request: NextRequest) {
       }
     });
 
+    console.log(`[Experts] Completed ${expertPanel.length}/10 experts in ${Date.now() - t0}ms`);
     return NextResponse.json({ expertPanel });
   } catch (error: any) {
     console.error('Expert evaluations API error:', error?.message || error);
