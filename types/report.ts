@@ -61,6 +61,7 @@ export interface ReportContent {
   verdict: Verdict;
   overall_score: number;
   one_sentence_summary: string;
+  score_explanation?: string;
   score_breakdown: ScoreBreakdown;
   brutal_objections: string[];
   improvement_suggestions?: string[];

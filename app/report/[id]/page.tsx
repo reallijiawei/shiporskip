@@ -189,6 +189,15 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           <ScoreBreakdown scores={report.scores} />
         </div>
 
+        {!isBasic && content.score_explanation && (
+          <div className="mt-3 rounded-[8px] border border-foreground/10 bg-card/90 px-5 py-3 shadow-sm">
+            <p className="text-xs text-muted leading-relaxed">
+              <span className="font-semibold text-foreground/60">Scoring methodology:</span>{' '}
+              {content.score_explanation}
+            </p>
+          </div>
+        )}
+
         {content.brutal_objections && content.brutal_objections.length > 0 && (
           <div className="mt-8 rounded-[8px] border border-l-4 border-red-500 border-foreground/10 bg-card/90 p-6 shadow-sm">
             <h3 className="font-display text-xl font-bold text-red-600">Brutal Objections</h3>

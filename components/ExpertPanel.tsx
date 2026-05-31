@@ -92,10 +92,10 @@ export default function ExpertPanel({ opinions }: ExpertPanelProps) {
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <h4 className="font-display text-base font-bold text-foreground truncate">
-                    {opinion.archetype}
+                    {opinion.expert_name}'s thinking framework
                   </h4>
                   <p className="text-xs text-muted truncate">
-                    {opinion.expert_name}'s thinking framework
+                    {opinion.archetype_description}
                   </p>
                 </div>
                 <span className={`shrink-0 pill-accent ${getVerdictColor(opinion.verdict)}`}>

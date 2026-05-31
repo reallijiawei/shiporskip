@@ -23,13 +23,16 @@ You must return a JSON object with this exact structure:
 
 Be specific. Reference the actual idea. Don't give generic advice.`;
 
-export const DEEP_VALIDATION_SYSTEM_PROMPT = `You are an AI product validation system for indie hackers. You evaluate ideas using multiple founder-inspired critique lenses and provide market analysis.
+export const DEEP_VALIDATION_SYSTEM_PROMPT = `You are an AI product validation system for indie hackers. Your job is to synthesize expert panel evaluations into a final verdict and scores.
+
+You will receive the idea details AND a summary of 10 expert panel evaluations. Your scores MUST reflect the expert analysis — do not score independently.
 
 You must return a JSON object with this exact structure:
 {
   "verdict": "build_now" | "validate_first" | "pivot" | "skip" | "too_crowded" | "good_seo_play" | "good_free_tool_bad_business" | "interesting_but_not_urgent",
   "overall_score": 1-100,
   "one_sentence_summary": "string",
+  "score_explanation": "Brief explanation of how the expert panel analysis influenced the final score",
   "score_breakdown": {
     "demand": 1-10,
     "buildability": 1-10,
@@ -40,43 +43,6 @@ You must return a JSON object with this exact structure:
     "solo_founder_fit": 1-10
   },
   "brutal_objections": ["string", "string", "string"],
-  "founder_lenses": [
-    {
-      "name": "Jobs-inspired Product Lens",
-      "score": 1-10,
-      "main_critique": "string",
-      "what_to_cut": "string",
-      "better_positioning": "string"
-    },
-    {
-      "name": "Bezos-inspired Customer Lens",
-      "score": 1-10,
-      "main_critique": "string",
-      "what_to_cut": "string",
-      "better_positioning": "string"
-    },
-    {
-      "name": "Buffett-inspired Business Lens",
-      "score": 1-10,
-      "main_critique": "string",
-      "what_to_cut": "string",
-      "better_positioning": "string"
-    },
-    {
-      "name": "Naval-inspired Leverage Lens",
-      "score": 1-10,
-      "main_critique": "string",
-      "what_to_cut": "string",
-      "better_positioning": "string"
-    },
-    {
-      "name": "YC-inspired Validation Lens",
-      "score": 1-10,
-      "main_critique": "string",
-      "what_to_cut": "string",
-      "better_positioning": "string"
-    }
-  ],
   "failure_patterns": [
     {
       "pattern": "string",
@@ -90,7 +56,7 @@ You must return a JSON object with this exact structure:
     "must_have": ["string"],
     "nice_to_have": ["string"],
     "cut_for_v1": ["string"]
-  },
+  }
 }
 
 Failure patterns to check against:
@@ -105,7 +71,12 @@ Failure patterns to check against:
 - No urgent pain
 - Free alternative overload
 
-Be brutally honest. If the idea is weak, say so clearly. Don't be polite - be useful.`;
+Scoring rules:
+- Each score dimension should reflect what the expert panel concluded about that dimension
+- If most experts flagged demand concerns, demand score should be low
+- If experts disagree, weight toward the more credible/specific arguments
+- The overall_score should be consistent with the score_breakdown average
+- Be brutally honest. If the idea is weak, say so clearly.`;
 
 export function buildBasicRoastPrompt(description: string, targetUser?: string, productType?: string) {
   return `Evaluate this indie product idea:
@@ -124,7 +95,7 @@ export function buildDeepValidationPrompt(
   monetizationPlan?: string,
   distributionPlan?: string,
   mvpTimeline?: string,
-  referenceScore?: number
+  expertPanelSummary?: string
 ) {
   return `Evaluate this indie product idea in depth:
 
@@ -134,9 +105,9 @@ ${productType ? `Product Type: ${productType}` : ''}
 ${monetizationPlan ? `Monetization Plan: ${monetizationPlan}` : ''}
 ${distributionPlan ? `Distribution Plan: ${distributionPlan}` : ''}
 ${mvpTimeline ? `MVP Timeline: ${mvpTimeline}` : ''}
-${referenceScore !== undefined ? `\nThe initial quick evaluation gave this idea an overall score of ${referenceScore}/100. Your deep evaluation should be broadly consistent with this baseline — adjust only if your deeper analysis reveals material information that warrants a shift. Keep your overall_score within ±15 points of this reference unless you have strong justification.` : ''}
+${expertPanelSummary ? `\n---\nEXPERT PANEL ANALYSIS (your scores MUST reflect these conclusions):\n${expertPanelSummary}` : ''}
 
-Provide a complete validation with founder-inspired lenses, failure patterns, and a 7-day validation sprint. Return JSON only.`;
+Synthesize the expert panel evaluations above into your final verdict, scores, and analysis. Each score dimension should reflect what the experts concluded. Include a score_explanation field describing how the expert analysis influenced the final score. Return JSON only.`;
 }
 
 export function buildExpertEvaluationPrompt(

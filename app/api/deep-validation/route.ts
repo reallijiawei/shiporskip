@@ -83,20 +83,9 @@ export async function POST(request: NextRequest) {
       idea.mvp_timeline || undefined,
     ] as const;
 
-    // Run main deep validation + 10 expert evaluations in parallel
-    const [mainResult, ...expertResults] = await Promise.allSettled([
-      // Main Deep Validation
-      deepseek.chat.completions.create({
-        model: DEEPSEEK_MODEL,
-        messages: [
-          { role: 'system', content: DEEP_VALIDATION_SYSTEM_PROMPT },
-          { role: 'user', content: buildDeepValidationPrompt(...baseIdeaArgs, basicReport?.overall_score) },
-        ],
-        response_format: { type: 'json_object' },
-        temperature: 0.7,
-      }),
-      // 10 expert evaluations
-      ...EXPERTS.map((expert) =>
+    // Phase 1: Run 10 expert evaluations in parallel
+    const expertResults = await Promise.allSettled(
+      EXPERTS.map((expert) =>
         deepseek.chat.completions.create({
           model: DEEPSEEK_MODEL,
           messages: [
@@ -106,29 +95,10 @@ export async function POST(request: NextRequest) {
           response_format: { type: 'json_object' },
           temperature: 0.7,
         })
-      ),
-    ]);
+      )
+    );
 
-    // Parse main result
-    if (mainResult.status === 'rejected') {
-      console.error('Main Deep Validation failed:', mainResult.reason);
-      return NextResponse.json({ error: 'AI API error: ' + (mainResult.reason?.message || 'unknown') }, { status: 500 });
-    }
-
-    const mainContent = mainResult.value.choices[0]?.message?.content;
-    if (!mainContent) {
-      return NextResponse.json({ error: 'AI returned empty response' }, { status: 500 });
-    }
-
-    let parsed;
-    try {
-      parsed = JSON.parse(mainContent);
-    } catch (parseError) {
-      console.error('JSON parse error, raw content:', mainContent);
-      return NextResponse.json({ error: 'AI returned invalid JSON' }, { status: 500 });
-    }
-
-    // Parse expert results (non-blocking — failures are tolerated)
+    // Parse expert results
     const expertPanel: ExpertOpinion[] = [];
     expertResults.forEach((result, i) => {
       const expert = EXPERTS[i];
@@ -156,6 +126,37 @@ export async function POST(request: NextRequest) {
         console.error(`Expert ${expert.name} returned invalid JSON:`, content);
       }
     });
+
+    // Build expert panel summary for scoring context
+    const expertSummary = expertPanel.length > 0
+      ? expertPanel.map((ep) =>
+          `- ${ep.expert_name} (${ep.archetype}): verdict=${ep.verdict}, confidence=${ep.confidence}\n  "${ep.one_line_take}"\n  Key arguments: ${ep.key_arguments.join('; ')}\n  Blind spot: ${ep.blind_spot}`
+        ).join('\n')
+      : '';
+
+    // Phase 2: Main Deep Validation — scores derived from expert analysis
+    const mainResult = await deepseek.chat.completions.create({
+      model: DEEPSEEK_MODEL,
+      messages: [
+        { role: 'system', content: DEEP_VALIDATION_SYSTEM_PROMPT },
+        { role: 'user', content: buildDeepValidationPrompt(...baseIdeaArgs, expertSummary) },
+      ],
+      response_format: { type: 'json_object' },
+      temperature: 0.7,
+    });
+
+    const mainContent = mainResult.choices[0]?.message?.content;
+    if (!mainContent) {
+      return NextResponse.json({ error: 'AI returned empty response' }, { status: 500 });
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(mainContent);
+    } catch (parseError) {
+      console.error('JSON parse error, raw content:', mainContent);
+      return NextResponse.json({ error: 'AI returned invalid JSON' }, { status: 500 });
+    }
 
     // Merge expert panel into content_json
     const contentJson = { ...parsed };
