@@ -32,13 +32,19 @@ function LoginForm() {
       }
       router.push(redirectTo);
     } else {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}` },
       });
       if (error) {
         setError(error.message);
+        setLoading(false);
+        return;
+      }
+      // Supabase returns user with empty identities if email already exists
+      if (data.user && data.user.identities && data.user.identities.length === 0) {
+        setError('This email is already registered. Please log in instead.');
         setLoading(false);
         return;
       }
