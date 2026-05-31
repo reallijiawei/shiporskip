@@ -63,6 +63,18 @@ export async function POST(request: NextRequest) {
 
     const deepseek = getDeepSeek();
 
+    // Fetch basic roast content for objections consistency
+    const { data: basicReport } = await supabase
+      .from('reports')
+      .select('content_json')
+      .eq('idea_id', ideaId)
+      .eq('report_type', 'basic_roast')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    const basicObjections = (basicReport?.content_json as any)?.brutal_objections || [];
+
     const baseIdeaArgs = [
       idea.description,
       idea.target_user || undefined,
@@ -86,7 +98,7 @@ export async function POST(request: NextRequest) {
       model: DEEPSEEK_MODEL,
       messages: [
         { role: 'system', content: DEEP_VALIDATION_SYSTEM_PROMPT },
-        { role: 'user', content: buildDeepValidationPrompt(...baseIdeaArgs, expertSummary) },
+        { role: 'user', content: buildDeepValidationPrompt(...baseIdeaArgs, expertSummary, basicObjections) },
       ],
       response_format: { type: 'json_object' },
       temperature: 0.7,

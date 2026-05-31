@@ -52,7 +52,7 @@ You must return a JSON object with this exact structure:
 Rules for EVERY section:
 - verdict: the majority/most credible expert verdict, weighted by confidence
 - overall_score & score_breakdown: each dimension reflects what experts concluded about it
-- brutal_objections: synthesize the strongest objections raised across experts
+- brutal_objections: YOU MUST include ALL initial objections listed below verbatim as the first items in the array. Then add any NEW objections raised by experts that aren't already covered. Do not remove, reword, or contradict the initial objections.
 - failure_patterns: extract patterns experts flagged, with their reasoning
 - best_version_of_idea: combine the best positioning suggestions from experts
 - mvp_scope: derive from experts' buildability and scope opinions
@@ -76,7 +76,8 @@ export function buildDeepValidationPrompt(
   monetizationPlan?: string,
   distributionPlan?: string,
   mvpTimeline?: string,
-  expertPanelSummary?: string
+  expertPanelSummary?: string,
+  basicObjections?: string[]
 ) {
   return `Evaluate this indie product idea in depth:
 
@@ -87,6 +88,7 @@ ${monetizationPlan ? `Monetization Plan: ${monetizationPlan}` : ''}
 ${distributionPlan ? `Distribution Plan: ${distributionPlan}` : ''}
 ${mvpTimeline ? `MVP Timeline: ${mvpTimeline}` : ''}
 ${expertPanelSummary ? `\n---\nEXPERT PANEL ANALYSIS (your scores MUST reflect these conclusions):\n${expertPanelSummary}` : ''}
+${basicObjections && basicObjections.length > 0 ? `\n---\nINITIAL OBJECTIONS (from quick evaluation — keep these in your output, add new ones from expert analysis if needed):\n${basicObjections.map((o, i) => `${i + 1}. ${o}`).join('\n')}` : ''}
 
 Synthesize ALL expert panel evaluations above into your complete validation report. Every section — verdict, scores, objections, failure patterns, best version, MVP scope — must derive from what the experts concluded. Include a score_explanation field. Return JSON only.`;
 }
