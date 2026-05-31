@@ -68,8 +68,9 @@ npm run lint         # 运行 ESLint
 
 ## 注意事项
 
-- AI 模型通过 OpenRouter 调用，支持灵活切换
-- 免费用户每月 3 次 Basic Roast
-- Deep Validation 需付费 $9 (一次性)
-- Creem webhook 处理支付回调，签名验证使用 HMAC-SHA256
+- AI 模型通过 DeepSeek API 调用
+- 免费用户每月 5 次 Basic Roast（无 verdict，显示 Quick Assessment）
+- 定价：Free ($0), Starter ($9/mo), Pro ($21/mo), 单次 $3
+- Starter: 10 basic + 4 deep/月, Pro: 30 basic + 10 deep/月
+- Creem 支付集成：单次购买 + 订阅，webhook 处理 checkout.completed 和 subscription.created
 - middleware.ts 处理 Supabase session 刷新
