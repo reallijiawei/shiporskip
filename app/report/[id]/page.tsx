@@ -208,7 +208,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
     <div className="py-12 sm:py-16">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <VerdictCard
-          verdict={report.verdict}
+          verdict={isBasic ? undefined : report.verdict}
           overallScore={isBasic ? null : report.overall_score}
           oneSentenceSummary={content.one_sentence_summary}
         />

@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email TEXT NOT NULL,
-  plan TEXT DEFAULT 'free' CHECK (plan IN ('free', 'deep', 'pro', 'power')),
+  plan TEXT DEFAULT 'free' CHECK (plan IN ('free', 'starter', 'pro')),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS usage_quotas (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
   month TEXT NOT NULL,
-  basic_roast_limit INTEGER DEFAULT 3,
+  basic_roast_limit INTEGER DEFAULT 5,
   basic_roast_used INTEGER DEFAULT 0,
   deep_validation_limit INTEGER DEFAULT 0,
   deep_validation_used INTEGER DEFAULT 0,

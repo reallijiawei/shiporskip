@@ -137,9 +137,9 @@ export async function POST(request: NextRequest) {
       .insert({
         idea_id: idea.id,
         report_type: 'basic_roast',
-        verdict: parsed.verdict,
-        overall_score: parsed.overall_score || null,
-        scores: parsed.score_breakdown || null,
+        verdict: null,
+        overall_score: null,
+        scores: null,
         content_json: contentJson,
       })
       .select()

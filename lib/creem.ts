@@ -23,7 +23,27 @@ export async function createDeepReportCheckout(userId: string, ideaId: string) {
     metadata: {
       user_id: userId,
       idea_id: ideaId,
-      report_type: 'deep_validation',
+      type: 'single',
+    },
+  });
+
+  return checkout.checkoutUrl;
+}
+
+export async function createSubscriptionCheckout(userId: string, plan: 'starter' | 'pro') {
+  const creem = getCreem();
+
+  const productId = plan === 'starter'
+    ? process.env.CREEM_STARTER_PRODUCT_ID!
+    : process.env.CREEM_PRO_PRODUCT_ID!;
+
+  const checkout = await creem.checkouts.create({
+    productId,
+    successUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
+    metadata: {
+      user_id: userId,
+      plan,
+      type: 'subscription',
     },
   });
 

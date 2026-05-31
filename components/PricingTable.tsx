@@ -6,61 +6,46 @@ const plans = [
   {
     name: 'Free',
     price: '$0',
-    description: 'Try it out with a basic roast',
+    description: 'Try it out',
     features: [
-      '3 Basic Roasts per month',
-      'Build / Skip / Validate First verdict',
-      '3 biggest risks',
-      '3 improvement suggestions',
-      'Basic score breakdown',
+      '5 Basic Roasts per month',
+      '3 expert thinking frameworks',
+      'Brutal objections & suggestions',
     ],
     cta: 'Start Free',
     href: '/idea/new',
     highlighted: false,
   },
   {
-    name: 'Deep Report',
+    name: 'Starter',
     price: '$9',
-    description: 'One-time deep validation',
+    period: '/mo',
+    description: 'For serious builders',
     features: [
-      'Everything in Free',
-      'Founder-inspired critique lenses',
-      'Market signal analysis',
-      'Failure pattern detection',
+      '10 Basic Roasts per month',
+      '4 Deep Validations per month',
+      'Full 10-expert panel analysis',
+      'Score breakdown & failure patterns',
       'MVP scope recommendations',
     ],
-    cta: 'Get Deep Report',
+    cta: 'Go Starter',
     href: '/idea/new',
-    highlighted: true,
+    highlighted: false,
   },
   {
     name: 'Pro',
-    price: '$19/mo',
-    description: 'For active indie hackers',
+    price: '$21',
+    period: '/mo',
+    description: 'For serial builders',
     features: [
-      '20 Basic Roasts per month',
-      '5 Deep Validations per month',
-      'Save & access history',
-      'Priority support',
+      '30 Basic Roasts per month',
+      '10 Deep Validations per month',
+      'Everything in Starter',
+      'Best for high-volume validation',
     ],
     cta: 'Go Pro',
     href: '/idea/new',
-    highlighted: false,
-  },
-  {
-    name: 'Power',
-    price: '$49/mo',
-    description: 'For serial builders',
-    features: [
-      '100 Basic Roasts per month',
-      '20 Deep Validations per month',
-      'Deep competitor tracking',
-      'Keyword history tracking',
-      'API access',
-    ],
-    cta: 'Go Power',
-    href: '/idea/new',
-    highlighted: false,
+    highlighted: true,
   },
 ];
 
@@ -76,7 +61,7 @@ export default function PricingTable() {
         </p>
       </div>
 
-      <div className="mt-12 grid grid-cols-1 items-start gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-12 grid grid-cols-1 items-start gap-5 sm:grid-cols-3">
         {plans.map((plan) => (
           <div
             key={plan.name}
@@ -89,7 +74,7 @@ export default function PricingTable() {
           >
             {plan.highlighted && (
               <div className="absolute -top-3 left-6">
-                <span className="pill-accent">BEST DEFAULT</span>
+                <span className="pill-accent">BEST VALUE</span>
               </div>
             )}
 
@@ -98,6 +83,7 @@ export default function PricingTable() {
             </h3>
             <p className={cn('mt-2 font-display text-5xl font-extrabold', plan.highlighted ? 'text-accent' : 'text-foreground')}>
               {plan.price}
+              {plan.period && <span className="text-xl font-bold opacity-50">{plan.period}</span>}
             </p>
             <p className={cn('mt-1 text-sm', plan.highlighted ? 'text-background/50' : 'text-muted')}>
               {plan.description}
@@ -128,6 +114,10 @@ export default function PricingTable() {
           </div>
         ))}
       </div>
+
+      <p className="mt-6 text-center text-sm text-muted">
+        Or pay <span className="font-semibold text-foreground">$3 per Deep Validation</span> — no subscription needed.
+      </p>
     </div>
   );
 }

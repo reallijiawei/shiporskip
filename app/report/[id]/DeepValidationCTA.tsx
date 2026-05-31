@@ -20,7 +20,7 @@ export default function DeepValidationCTA({ reportId, ideaId }: DeepValidationCT
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ideaId }),
+        body: JSON.stringify({ type: 'single', ideaId }),
       });
 
       const data = await res.json();
@@ -44,10 +44,11 @@ export default function DeepValidationCTA({ reportId, ideaId }: DeepValidationCT
         Unlock Deep Validation
       </h3>
       <p className="mt-3 text-background/50 max-w-md mx-auto">
-        Get founder-inspired lenses, failure pattern analysis,
-        and MVP scope — powered by GPT 5.5.
+        Get 10-expert panel analysis, failure patterns,
+        and MVP scope — powered by DeepSeek.
       </p>
-      <p className="mt-4 font-display text-4xl font-extrabold text-accent">$9</p>
+      <p className="mt-4 font-display text-4xl font-extrabold text-accent">$3</p>
+      <p className="mt-1 text-sm text-background/40">one-time per report</p>
       <button
         onClick={handleUpgrade}
         disabled={loading}
@@ -59,7 +60,7 @@ export default function DeepValidationCTA({ reportId, ideaId }: DeepValidationCT
             Creating checkout...
           </>
         ) : (
-          'Get Deep Validation — $9'
+          'Get Deep Validation — $3'
         )}
       </button>
       {error && <p className="mt-3 text-sm text-red-400">{error}</p>}

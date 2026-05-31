@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
-import { createDeepReportCheckout } from '@/lib/creem';
+import { createDeepReportCheckout, createSubscriptionCheckout } from '@/lib/creem';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,13 +12,22 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { ideaId } = body;
+    const { type, ideaId, plan } = body;
 
-    if (!ideaId) {
-      return NextResponse.json({ error: 'ideaId is required' }, { status: 400 });
+    if (type === 'starter' || type === 'pro') {
+      // Subscription checkout
+      const checkoutUrl = await createSubscriptionCheckout(user.id, type);
+      if (!checkoutUrl) {
+        return NextResponse.json({ error: 'Failed to create checkout' }, { status: 500 });
+      }
+      return NextResponse.json({ url: checkoutUrl });
     }
 
-    // Verify this idea belongs to the user
+    // Single deep validation purchase
+    if (!ideaId) {
+      return NextResponse.json({ error: 'ideaId is required for single purchase' }, { status: 400 });
+    }
+
     const { data: idea, error: ideaError } = await supabase
       .from('ideas')
       .select('id')

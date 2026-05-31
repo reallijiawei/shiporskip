@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import getDeepSeek, { DEEPSEEK_MODEL } from '@/lib/deepseek';
 import { DEEP_VALIDATION_SYSTEM_PROMPT, buildDeepValidationPrompt } from '@/lib/prompts';
+import { checkQuota, incrementUsage } from '@/lib/quota';
 import type { ExpertOpinion } from '@/types/report';
 
 export async function POST(request: NextRequest) {
@@ -44,17 +45,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ report: { id: existingReport.id } });
     }
 
-    // Check if user has paid (has deep_validation credits)
-    const now = new Date();
-    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-    const { data: quota } = await supabase
-      .from('usage_quotas')
-      .select('deep_validation_limit')
-      .eq('user_id', user.id)
-      .eq('month', currentMonth)
-      .single();
-
-    if (!quota || quota.deep_validation_limit <= 0) {
+    // Check if user has deep_validation credits
+    const quota = await checkQuota(user.id, 'deep_validation');
+    if (!quota.allowed) {
       return NextResponse.json(
         { error: 'Deep Validation requires payment', needsPayment: true },
         { status: 402 }
@@ -141,6 +134,8 @@ export async function POST(request: NextRequest) {
     if (reportError || !report) {
       return NextResponse.json({ error: 'Failed to save report' }, { status: 500 });
     }
+
+    await incrementUsage(user.id, 'deep_validation');
 
     return NextResponse.json({ report: { id: report.id } });
   } catch (error: any) {

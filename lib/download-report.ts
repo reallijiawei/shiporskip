@@ -38,7 +38,7 @@ export function downloadReportHTML(report: Report) {
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>ShipOrSkip Report — ${getVerdictLabel(report.verdict)}</title>
+<title>ShipOrSkip Report — ${report.verdict ? getVerdictLabel(report.verdict) : 'Quick Assessment'}</title>
 <style>
   body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:720px;margin:0 auto;padding:24px;color:#111;background:#fff;}
   h1{font-size:28px;margin-bottom 4px;}
@@ -60,7 +60,7 @@ export function downloadReportHTML(report: Report) {
   <p style="color:#888;font-size:13px;">Generated ${new Date(report.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
 
   <div style="margin-top:16px;">
-    <span class="verdict" style="background:#e0e7ff;color:#3730a3;">${getVerdictLabel(report.verdict)}</span>
+    <span class="verdict" style="background:#e0e7ff;color:#3730a3;">${report.verdict ? getVerdictLabel(report.verdict) : 'Quick Assessment'}</span>
     ${!isBasic && report.overall_score ? `<span class="score-big" style="margin-left:16px;">${report.overall_score}<span style="font-size:20px;color:#aaa;">/100</span></span>` : ''}
   </div>
 
@@ -132,7 +132,7 @@ export function downloadReportHTML(report: Report) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `shiporskip-report-${report.verdict}.html`;
+  a.download = `shiporskip-report-${report.verdict || 'quick-assessment'}.html`;
   a.click();
   URL.revokeObjectURL(url);
 }

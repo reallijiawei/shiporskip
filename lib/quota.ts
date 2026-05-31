@@ -1,8 +1,18 @@
 import { createClient } from './supabase-server';
 
-export async function getCurrentMonth() {
+export function getCurrentMonth() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+}
+
+const PLAN_LIMITS: Record<string, { basic_roast: number; deep_validation: number }> = {
+  free: { basic_roast: 5, deep_validation: 0 },
+  starter: { basic_roast: 10, deep_validation: 4 },
+  pro: { basic_roast: 30, deep_validation: 10 },
+};
+
+function getPlanLimits(plan: string) {
+  return PLAN_LIMITS[plan] || PLAN_LIMITS.free;
 }
 
 export async function getOrCreateQuota(userId: string) {
@@ -18,17 +28,25 @@ export async function getOrCreateQuota(userId: string) {
 
   if (existing) return existing;
 
+  // Look up user's plan
+  const { data: user } = await supabase
+    .from('users')
+    .select('plan')
+    .eq('id', userId)
+    .single();
+
+  const plan = user?.plan || 'free';
+  const limits = getPlanLimits(plan);
+
   const { data: created } = await supabase
     .from('usage_quotas')
     .insert({
       user_id: userId,
       month,
-      basic_roast_limit: 3,
+      basic_roast_limit: limits.basic_roast,
       basic_roast_used: 0,
-      deep_validation_limit: 0,
+      deep_validation_limit: limits.deep_validation,
       deep_validation_used: 0,
-      launch_kit_limit: 0,
-      launch_kit_used: 0,
     })
     .select()
     .single();
@@ -36,7 +54,7 @@ export async function getOrCreateQuota(userId: string) {
   return created;
 }
 
-export async function checkQuota(userId: string, type: 'basic_roast' | 'deep_validation' | 'launch_kit') {
+export async function checkQuota(userId: string, type: 'basic_roast' | 'deep_validation') {
   const quota = await getOrCreateQuota(userId);
   if (!quota) return { allowed: false, remaining: 0 };
 
@@ -52,7 +70,7 @@ export async function checkQuota(userId: string, type: 'basic_roast' | 'deep_val
   };
 }
 
-export async function incrementUsage(userId: string, type: 'basic_roast' | 'deep_validation' | 'launch_kit') {
+export async function incrementUsage(userId: string, type: 'basic_roast' | 'deep_validation') {
   const supabase = await createClient();
   const month = getCurrentMonth();
   const usedKey = `${type}_used`;

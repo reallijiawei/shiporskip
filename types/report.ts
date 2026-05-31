@@ -58,8 +58,8 @@ export interface ExpertOpinion {
 }
 
 export interface ReportContent {
-  verdict: Verdict;
-  overall_score: number;
+  verdict?: Verdict;
+  overall_score?: number;
   one_sentence_summary: string;
   score_explanation?: string;
   score_breakdown: ScoreBreakdown;
@@ -78,9 +78,9 @@ export interface Report {
   id: string;
   idea_id: string;
   report_type: ReportType;
-  verdict: Verdict;
-  overall_score: number;
-  scores: ScoreBreakdown;
+  verdict?: Verdict;
+  overall_score?: number;
+  scores?: ScoreBreakdown;
   content_json: ReportContent;
   created_at: string;
 }

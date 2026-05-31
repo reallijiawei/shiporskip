@@ -4,6 +4,12 @@ import Link from 'next/link';
 import { formatDate, getVerdictColor, getVerdictLabel } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 
+const PLAN_LABELS: Record<string, string> = {
+  free: 'Free',
+  starter: 'Starter',
+  pro: 'Pro',
+};
+
 export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -12,14 +18,25 @@ export default async function DashboardPage() {
     redirect('/login?redirectTo=/dashboard');
   }
 
-  const { data: ideas } = await supabase
-    .from('ideas')
-    .select(`
-      *,
-      reports (*)
-    `)
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false });
+  // Fetch user plan and quota
+  const now = new Date();
+  const month = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+  const [{ data: userProfile }, { data: quota }, { data: ideas }] = await Promise.all([
+    supabase.from('users').select('plan').eq('id', user.id).single(),
+    supabase.from('usage_quotas').select('*').eq('user_id', user.id).eq('month', month).single(),
+    supabase
+      .from('ideas')
+      .select(`*, reports (*)`)
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false }),
+  ]);
+
+  const plan = userProfile?.plan || 'free';
+  const basicRemaining = quota ? Math.max(0, quota.basic_roast_limit - quota.basic_roast_used) : 5;
+  const basicLimit = quota?.basic_roast_limit ?? 5;
+  const deepRemaining = quota ? Math.max(0, quota.deep_validation_limit - quota.deep_validation_used) : 0;
+  const deepLimit = quota?.deep_validation_limit ?? 0;
 
   return (
     <div className="py-12">
@@ -40,6 +57,38 @@ export default async function DashboardPage() {
             <Plus className="h-4 w-4" />
             New Idea
           </Link>
+        </div>
+
+        {/* Quota bar */}
+        <div className="mt-8 flex flex-wrap gap-4">
+          <div className="rounded-[8px] border border-foreground/10 bg-card/90 px-5 py-3 shadow-sm">
+            <span className="text-xs font-bold uppercase tracking-wider text-muted">Plan</span>
+            <p className="mt-1 font-display text-lg font-extrabold text-foreground">
+              {PLAN_LABELS[plan] || plan}
+            </p>
+          </div>
+          <div className="rounded-[8px] border border-foreground/10 bg-card/90 px-5 py-3 shadow-sm">
+            <span className="text-xs font-bold uppercase tracking-wider text-muted">Basic Roasts</span>
+            <p className="mt-1 font-display text-lg font-extrabold text-foreground">
+              {basicRemaining}<span className="text-sm font-bold text-muted">/{basicLimit}</span>
+              <span className="ml-1 text-xs text-muted">remaining</span>
+            </p>
+          </div>
+          <div className="rounded-[8px] border border-foreground/10 bg-card/90 px-5 py-3 shadow-sm">
+            <span className="text-xs font-bold uppercase tracking-wider text-muted">Deep Validations</span>
+            <p className="mt-1 font-display text-lg font-extrabold text-foreground">
+              {deepRemaining}<span className="text-sm font-bold text-muted">/{deepLimit}</span>
+              <span className="ml-1 text-xs text-muted">remaining</span>
+            </p>
+          </div>
+          {plan === 'free' && (
+            <Link
+              href="/pricing"
+              className="self-center rounded-full border border-foreground/20 px-4 py-2 text-xs font-bold text-foreground transition-colors hover:border-foreground/40 hover:bg-foreground/5"
+            >
+              Upgrade plan →
+            </Link>
+          )}
         </div>
 
         <div className="mt-10">

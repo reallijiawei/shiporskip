@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase-server';
 import getDeepSeek, { DEEPSEEK_MODEL } from '@/lib/deepseek';
 import { buildExpertEvaluationPrompt } from '@/lib/prompts';
 import { EXPERTS } from '@/lib/expert-prompts';
+import { checkQuota } from '@/lib/quota';
 import type { ExpertOpinion } from '@/types/report';
 
 export async function POST(request: NextRequest) {
@@ -32,16 +33,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Idea not found' }, { status: 404 });
     }
 
-    const now = new Date();
-    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-    const { data: quota } = await supabase
-      .from('usage_quotas')
-      .select('deep_validation_limit')
-      .eq('user_id', user.id)
-      .eq('month', currentMonth)
-      .single();
-
-    if (!quota || quota.deep_validation_limit <= 0) {
+    const quota = await checkQuota(user.id, 'deep_validation');
+    if (!quota.allowed) {
       return NextResponse.json(
         { error: 'Deep Validation requires payment', needsPayment: true },
         { status: 402 }
