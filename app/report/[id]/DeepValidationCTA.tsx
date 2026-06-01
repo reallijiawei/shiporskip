@@ -97,8 +97,12 @@ export default function DeepValidationCTA({ reportId, ideaId, hasCredits }: Deep
       }
 
       setStage(3);
-      // Reload the page to show the deep validation report
-      window.location.reload();
+      // Navigate to the new deep validation report
+      if (validateData.report?.id) {
+        window.location.href = `/report/${validateData.report.id}`;
+      } else {
+        window.location.reload();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
       setLoading(false);

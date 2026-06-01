@@ -31,6 +31,22 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
     if (reportData) {
       setReport(reportData);
       setIdeaId(reportData.idea_id);
+
+      // If this is a basic roast, check if deep validation exists and redirect
+      if (reportData.report_type === 'basic_roast') {
+        const { data: deepReport } = await supabase
+          .from('reports')
+          .select('id')
+          .eq('idea_id', reportData.idea_id)
+          .eq('report_type', 'deep_validation')
+          .single();
+
+        if (deepReport) {
+          window.location.href = `/report/${deepReport.id}`;
+          return true;
+        }
+      }
+
       return true;
     }
 
