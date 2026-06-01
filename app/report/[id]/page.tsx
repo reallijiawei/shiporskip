@@ -78,8 +78,9 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
     });
   }, [params, loadReport]);
 
+  // Auto-generate deep validation after basic roast loads (paid users only)
   useEffect(() => {
-    if (!report || !ideaId || report.report_type !== 'basic_roast') return;
+    if (!report || !ideaId || report.report_type !== 'basic_roast' || generating) return;
 
     const checkAndGenerate = async () => {
       const supabase = createClient();
@@ -95,11 +96,11 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
         return;
       }
 
+      // Check if user has deep_validation credits before starting
       setGenerating(true);
       setStage(0);
       const tStart = Date.now();
       try {
-        // Stage 1: Run expert evaluations
         setStage(1);
         const t1 = Date.now();
         const expertsRes = await fetch('/api/deep-validation/experts', {
@@ -108,16 +109,20 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           body: JSON.stringify({ ideaId }),
         });
 
-        if (expertsRes.status === 402) return;
+        if (expertsRes.status === 402) {
+          // No credits — show CTA instead of auto-generating
+          setGenerating(false);
+          return;
+        }
 
         const expertsData = await expertsRes.json();
         console.log(`[Timing] Stage 1 (experts): ${((Date.now() - t1) / 1000).toFixed(1)}s`);
         if (!expertsRes.ok) {
           console.error('[Experts] API error:', expertsData);
+          setGenerating(false);
           return;
         }
 
-        // Stage 2: Synthesize verdict from expert conclusions
         setStage(2);
         const t2 = Date.now();
         const validateRes = await fetch('/api/deep-validation', {
@@ -131,10 +136,10 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
         console.log(`[Timing] Total: ${((Date.now() - tStart) / 1000).toFixed(1)}s`);
         if (!validateRes.ok) {
           console.error('[DeepValidation] API error:', validateData);
+          setGenerating(false);
           return;
         }
 
-        // Stage 3: Finalizing
         setStage(3);
         if (validateData.report?.id) {
           const { data: deepReport } = await supabase
@@ -155,37 +160,10 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
     checkAndGenerate();
   }, [report, ideaId]);
 
-  if (loading || generating) {
+  if (loading) {
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 px-4">
+      <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-accent" />
-        <div className="text-center">
-          <p className="text-sm font-medium text-foreground">
-            {stage < 3 ? GENERATION_STAGES[stage]?.label : 'Finalizing report'}
-          </p>
-          <p className="mt-1 text-xs text-muted">Takes about 2 minutes total</p>
-        </div>
-        {/* Stage progress */}
-        <div className="w-80 space-y-2">
-          <div className="flex gap-1.5">
-            {GENERATION_STAGES.map((s, i) => (
-              <div key={i} className="flex-1">
-                <div className={`h-1.5 rounded-full transition-all duration-500 ${
-                  i < stage ? 'bg-accent' : i === stage ? 'bg-accent/40 animate-pulse' : 'bg-foreground/5'
-                }`} />
-              </div>
-            ))}
-          </div>
-          <div className="flex justify-between">
-            {GENERATION_STAGES.map((s, i) => (
-              <span key={i} className={`text-[10px] transition-colors ${
-                i <= stage ? 'text-foreground/60' : 'text-foreground/20'
-              }`}>
-                {i < stage ? '✓' : i === stage ? s.estimate : ''}
-              </span>
-            ))}
-          </div>
-        </div>
       </div>
     );
   }
@@ -207,6 +185,31 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
   return (
     <div className="py-12 sm:py-16">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+
+        {/* Deep validation progress banner */}
+        {generating && (
+          <div className="mb-8 rounded-[8px] border border-accent/30 bg-accent/5 px-5 py-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <Loader2 className="h-4 w-4 animate-spin text-accent" />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-foreground">
+                  {GENERATION_STAGES[stage]?.label || 'Preparing'}...
+                </p>
+                <p className="mt-0.5 text-xs text-muted">Takes about 2 minutes total</p>
+              </div>
+            </div>
+            <div className="mt-3 flex gap-1.5">
+              {GENERATION_STAGES.map((s, i) => (
+                <div key={i} className="flex-1">
+                  <div className={`h-1.5 rounded-full transition-all duration-500 ${
+                    i < stage ? 'bg-accent' : i === stage ? 'bg-accent/40 animate-pulse' : 'bg-foreground/5'
+                  }`} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <VerdictCard
           verdict={isBasic ? undefined : report.verdict}
           overallScore={isBasic ? null : report.overall_score}
@@ -304,7 +307,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           </div>
         )}
 
-        {isBasic && ideaId && (
+        {isBasic && ideaId && !generating && (
           <div className="mt-8">
             <DeepValidationCTA reportId={report.id} ideaId={ideaId} />
           </div>

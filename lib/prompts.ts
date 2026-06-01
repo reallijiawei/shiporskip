@@ -61,7 +61,14 @@ Rules for EVERY section:
 - best_version_of_idea: combine the best positioning suggestions from experts
 - mvp_scope: derive from experts' buildability and scope opinions
 - If experts disagree, weight toward the more specific/credible arguments. Note the disagreement.
-- Be brutally honest. If the idea is weak, say so clearly.`;
+- Be brutally honest. If the idea is weak, say so clearly.
+
+CRITICAL — Do NOT use expert names (Elon Musk, Steve Jobs, etc.) in your output. Instead, reference their thinking frameworks generically. For example:
+- WRONG: "Elon Musk warns that..."
+- RIGHT: "A first-principles thinking framework suggests..."
+- WRONG: "Naval Ravikant and Steve Jobs both agree..."
+- RIGHT: "Multiple thinking frameworks converge on..."
+This applies to ALL sections: brutal_objections, failure_patterns, best_version_of_idea, mvp_scope, etc.`;
 
 export function buildBasicRoastPrompt(description: string, targetUser?: string, productType?: string) {
   return `Evaluate this indie product idea:
@@ -124,6 +131,11 @@ You must return a JSON object with this exact structure:
   "key_arguments": ["argument 1", "argument 2", "argument 3"],
   "blind_spot": "A risk others might miss"
 }
+
+Confidence criteria:
+- "high": you have strong conviction based on clear signals (market data, proven patterns, direct experience)
+- "medium": reasonable judgment but some uncertainty remains (mixed signals, limited data)
+- "low": highly speculative — the idea is in uncharted territory or you lack relevant domain expertise
 
 Be specific to this idea. Be opinionated. Sound like yourself.`;
 }
