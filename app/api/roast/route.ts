@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { description, targetUser, productType, monetizationPlan, distributionPlan, mvpTimeline } = body;
+    const { description, targetUser, productType, monetizationPlan, distributionPlan, mvpTimeline, deleteAfterReport } = body;
 
     if (!description?.trim()) {
       return NextResponse.json({ error: 'Description is required' }, { status: 400 });
@@ -131,6 +131,16 @@ export async function POST(request: NextRequest) {
       contentJson.teaser_experts = teaserExperts;
     }
 
+    // Store idea details in report so we can delete the idea text later
+    contentJson.idea_details = {
+      description,
+      target_user: targetUser || null,
+      product_type: productType || null,
+      monetization_plan: monetizationPlan || null,
+      distribution_plan: distributionPlan || null,
+      mvp_timeline: mvpTimeline || null,
+    };
+
     const { data: report, error: reportError } = await supabase
       .from('reports')
       .insert({
@@ -149,6 +159,21 @@ export async function POST(request: NextRequest) {
     }
 
     await incrementUsage(user.id, 'basic_roast');
+
+    // If user opted in, scrub the idea text from the ideas table
+    if (deleteAfterReport) {
+      await supabase
+        .from('ideas')
+        .update({
+          description: '[deleted]',
+          target_user: null,
+          product_type: null,
+          monetization_plan: null,
+          distribution_plan: null,
+          mvp_timeline: null,
+        })
+        .eq('id', idea.id);
+    }
 
     return NextResponse.json({ report: { id: report.id } });
   } catch (error) {

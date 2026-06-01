@@ -43,13 +43,42 @@ export async function POST(request: NextRequest) {
 
     const deepseek = getDeepSeek();
 
+    // Fall back to idea_details stored in the basic report if idea text was deleted
+    let ideaDesc = idea.description;
+    let ideaTarget = idea.target_user;
+    let ideaProduct = idea.product_type;
+    let ideaMonetization = idea.monetization_plan;
+    let ideaDistribution = idea.distribution_plan;
+    let ideaTimeline = idea.mvp_timeline;
+
+    if (idea.description === '[deleted]') {
+      const { data: basicReport } = await supabase
+        .from('reports')
+        .select('content_json')
+        .eq('idea_id', ideaId)
+        .eq('report_type', 'basic_roast')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      const saved = (basicReport?.content_json as any)?.idea_details;
+      if (saved) {
+        ideaDesc = saved.description || ideaDesc;
+        ideaTarget = saved.target_user || ideaTarget;
+        ideaProduct = saved.product_type || ideaProduct;
+        ideaMonetization = saved.monetization_plan || ideaMonetization;
+        ideaDistribution = saved.distribution_plan || ideaDistribution;
+        ideaTimeline = saved.mvp_timeline || ideaTimeline;
+      }
+    }
+
     const baseIdeaArgs = [
-      idea.description,
-      idea.target_user || undefined,
-      idea.product_type || undefined,
-      idea.monetization_plan || undefined,
-      idea.distribution_plan || undefined,
-      idea.mvp_timeline || undefined,
+      ideaDesc,
+      ideaTarget || undefined,
+      ideaProduct || undefined,
+      ideaMonetization || undefined,
+      ideaDistribution || undefined,
+      ideaTimeline || undefined,
     ] as const;
 
     // Run 10 expert evaluations in parallel

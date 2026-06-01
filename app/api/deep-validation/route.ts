@@ -66,15 +66,25 @@ export async function POST(request: NextRequest) {
       .limit(1)
       .single();
 
-    const basicObjections = (basicReport?.content_json as any)?.brutal_objections || [];
+    const basicContent = basicReport?.content_json as any;
+    const basicObjections = basicContent?.brutal_objections || [];
+
+    // Fall back to idea_details stored in the basic report if idea text was deleted
+    const savedDetails = basicContent?.idea_details;
+    const ideaDesc = idea.description !== '[deleted]' ? idea.description : (savedDetails?.description || idea.description);
+    const ideaTarget = idea.description !== '[deleted]' ? idea.target_user : (savedDetails?.target_user || idea.target_user);
+    const ideaProduct = idea.description !== '[deleted]' ? idea.product_type : (savedDetails?.product_type || idea.product_type);
+    const ideaMonetization = idea.description !== '[deleted]' ? idea.monetization_plan : (savedDetails?.monetization_plan || idea.monetization_plan);
+    const ideaDistribution = idea.description !== '[deleted]' ? idea.distribution_plan : (savedDetails?.distribution_plan || idea.distribution_plan);
+    const ideaTimeline = idea.description !== '[deleted]' ? idea.mvp_timeline : (savedDetails?.mvp_timeline || idea.mvp_timeline);
 
     const baseIdeaArgs = [
-      idea.description,
-      idea.target_user || undefined,
-      idea.product_type || undefined,
-      idea.monetization_plan || undefined,
-      idea.distribution_plan || undefined,
-      idea.mvp_timeline || undefined,
+      ideaDesc,
+      ideaTarget || undefined,
+      ideaProduct || undefined,
+      ideaMonetization || undefined,
+      ideaDistribution || undefined,
+      ideaTimeline || undefined,
     ] as const;
 
     // Build expert panel summary for scoring context
