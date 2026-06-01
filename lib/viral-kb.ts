@@ -1,67 +1,29 @@
 import { createClient } from './supabase-server';
 
-export interface ViralContext {
-  name: string;
-  url: string;
-  description: string;
-  analysis_json: Record<string, any>;
-}
+export async function getKnowledgeForType(productType?: string): Promise<string> {
+  if (!productType) return '';
 
-export async function getRelevantViralProducts(
-  productType?: string,
-  description?: string,
-  limit: number = 5
-): Promise<ViralContext[]> {
   const supabase = await createClient();
+  const { data } = await supabase
+    .from('viral_knowledge')
+    .select('knowledge_json, source_count')
+    .eq('product_type', productType)
+    .single();
 
-  const { data: allProducts } = await supabase
-    .from('viral_products')
-    .select('name, url, description, product_type, category, tags, analysis_json');
+  if (!data) return '';
 
-  if (!allProducts || allProducts.length === 0) return [];
+  const k = data.knowledge_json as Record<string, string[]>;
+  const sections: string[] = [];
 
-  const scored = allProducts.map((p) => {
-    let score = 0;
+  if (k.growth_patterns?.length) sections.push(`Growth patterns:\n${k.growth_patterns.map((s) => `- ${s}`).join('\n')}`);
+  if (k.design_principles?.length) sections.push(`Design principles:\n${k.design_principles.map((s) => `- ${s}`).join('\n')}`);
+  if (k.monetization_insights?.length) sections.push(`Monetization insights:\n${k.monetization_insights.map((s) => `- ${s}`).join('\n')}`);
+  if (k.distribution_strategies?.length) sections.push(`Distribution strategies:\n${k.distribution_strategies.map((s) => `- ${s}`).join('\n')}`);
+  if (k.common_mistakes?.length) sections.push(`Common mistakes:\n${k.common_mistakes.map((s) => `- ${s}`).join('\n')}`);
+  if (k.what_works?.length) sections.push(`What works:\n${k.what_works.map((s) => `- ${s}`).join('\n')}`);
+  if (k.what_doesnt_work?.length) sections.push(`What doesn't work:\n${k.what_doesnt_work.map((s) => `- ${s}`).join('\n')}`);
 
-    if (productType && p.product_type === productType) score += 3;
+  if (sections.length === 0) return '';
 
-    if (description && p.tags) {
-      const descWords = description.toLowerCase().split(/\s+/);
-      const tagMatches = (p.tags as string[]).filter((tag) =>
-        descWords.some((w) => w.includes(tag) || tag.includes(w))
-      ).length;
-      score += Math.min(tagMatches * 2, 6);
-    }
-
-    score += Math.random() * 0.5;
-
-    return { ...p, score };
-  });
-
-  scored.sort((a, b) => b.score - a.score);
-  return scored.slice(0, limit).map(({ name, url, description, analysis_json }) => ({
-    name,
-    url,
-    description,
-    analysis_json: analysis_json as Record<string, any>,
-  }));
-}
-
-export function formatViralContext(products: ViralContext[]): string {
-  if (products.length === 0) return '';
-
-  const sections = products.map((p) => {
-    const a = p.analysis_json;
-    return `--- ${p.name} (${p.url}) ---
-What it does: ${p.description}
-Why it went viral: ${a.why_it_went_viral}
-Growth channels: ${a.growth_channels?.join(', ')}
-Design patterns: ${a.design_patterns?.join(', ')}
-Monetization: ${a.monetization_model}
-Lessons for indie founders: ${a.lessons_for_indie_founders?.join('; ')}
-Distribution hacks: ${a.distribution_hacks?.join(', ')}
-Pivot potential: ${a.pivot_potential}`;
-  });
-
-  return sections.join('\n\n');
+  return `(Based on analysis of ${data.source_count} viral ${productType} products)\n\n${sections.join('\n\n')}`;
 }

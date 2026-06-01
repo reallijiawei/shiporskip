@@ -1,5 +1,5 @@
 import { ViralInsights as ViralInsightsType } from '@/types/report';
-import { RefreshCw, TrendingUp, ExternalLink } from 'lucide-react';
+import { RefreshCw, TrendingUp } from 'lucide-react';
 
 interface ViralInsightsProps {
   insights: ViralInsightsType;
@@ -28,17 +28,7 @@ export default function ViralInsights({ insights }: ViralInsightsProps) {
       <div className="mt-4 space-y-3">
         {insights.lessons.map((lesson, i) => (
           <div key={i} className="rounded-[8px] border border-foreground/10 bg-card p-4">
-            <div className="flex items-center gap-2">
-              <span className="font-display text-sm font-bold text-foreground">
-                {lesson.product_name}
-              </span>
-              {lesson.product_url && (
-                <a href={lesson.product_url} target="_blank" rel="noopener noreferrer" className="text-muted hover:text-foreground transition-colors">
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              )}
-            </div>
-            <p className="mt-1.5 text-sm text-foreground/80">{lesson.lesson}</p>
+            <p className="text-sm text-foreground/80">{lesson.lesson}</p>
             <p className="mt-1 text-xs text-muted">{lesson.relevance}</p>
           </div>
         ))}

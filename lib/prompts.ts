@@ -14,10 +14,8 @@ You must return a JSON object with this exact structure:
     "intro": "One sentence framing the section",
     "lessons": [
       {
-        "product_name": "string",
-        "product_url": "string",
-        "lesson": "string — specific, actionable advice derived from the viral product",
-        "relevance": "string — why this applies to the user's specific idea"
+        "lesson": "string — a general principle or pattern derived from analyzing viral products in this category",
+        "relevance": "string — how to apply this principle to the user's specific idea"
       }
     ]
   } or null
@@ -27,7 +25,7 @@ Rules:
 - This is a quick assessment. Do NOT give a formal verdict (build_now, skip, etc). That is reserved for the paid Deep Validation.
 - would_likely_verdict: A rough signal — "positive" if you'd likely recommend building, "neutral" if uncertain, "negative" if you'd likely recommend against.
 - improvement_suggestions: If would_likely_verdict is "negative" — return an empty array []. Do not suggest improvements for ideas you're telling the user to abandon.
-- viral_insights: Only include if VIRAL PRODUCT KNOWLEDGE BASE context was provided. If would_likely_verdict is "negative", use section_type "pivot_suggestions" and frame as "If You Insist..." — showing how to pivot toward proven patterns. If "positive", use "optimization_tips" and frame as "What Winners Did Right". Include 2 lessons maximum. Each lesson must reference a specific product from the knowledge base. If no knowledge base was provided, set viral_insights to null.
+- viral_insights: Only include if PRODUCT KNOWLEDGE context was provided. If would_likely_verdict is "negative", use section_type "pivot_suggestions" and frame as "If You Insist..." — showing how to pivot toward proven patterns. If "positive", use "optimization_tips" and frame as "What Winners Did Right". Include 2 lessons maximum. Each lesson must be a general principle from the knowledge base applied to this specific idea. Do NOT reference specific product names. If no knowledge was provided, set viral_insights to null.
 - Be specific. Reference the actual idea. Don't give generic advice.`;
 
 export const DEEP_VALIDATION_SYSTEM_PROMPT = `You are an AI product validation system for indie hackers. Your job is to synthesize expert panel evaluations into a complete validation report.
@@ -69,10 +67,8 @@ You must return a JSON object with this exact structure:
     "intro": "One sentence framing the section",
     "lessons": [
       {
-        "product_name": "string",
-        "product_url": "string",
-        "lesson": "string — specific, actionable advice derived from the viral product",
-        "relevance": "string — why this applies to the user's specific idea"
+        "lesson": "string — a general principle or pattern derived from analyzing viral products in this category",
+        "relevance": "string — how to apply this principle to the user's specific idea"
       }
     ]
   } or null
@@ -85,7 +81,7 @@ Rules for EVERY section:
 - failure_patterns: extract patterns experts flagged, with their reasoning
 - best_version_of_idea: combine the best positioning suggestions from experts
 - mvp_scope: derive from experts' buildability and scope opinions
-- viral_insights: Only include if VIRAL PRODUCT KNOWLEDGE BASE context was provided. For negative verdicts (skip, too_crowded, pivot), use "pivot_suggestions" and frame as "If You Insist...". For positive verdicts (build_now, validate_first), use "optimization_tips" and frame as "What Winners Did Right". Include 2-3 lessons. Each must tie back to a specific viral product from the knowledge base. If no knowledge base was provided, set viral_insights to null.
+- viral_insights: Only include if PRODUCT KNOWLEDGE context was provided. For negative verdicts (skip, too_crowded, pivot), use "pivot_suggestions" and frame as "If You Insist...". For positive verdicts (build_now, validate_first), use "optimization_tips" and frame as "What Winners Did Right". Include 2-3 lessons. Each must be a general principle from the knowledge base applied to this specific idea. Do NOT reference specific product names. If no knowledge was provided, set viral_insights to null.
 - If experts disagree, weight toward the more specific/credible arguments. Note the disagreement.
 - Be brutally honest. If the idea is weak, say so clearly.
 
@@ -102,7 +98,7 @@ export function buildBasicRoastPrompt(description: string, targetUser?: string, 
 Description: ${description}
 ${targetUser ? `Target User: ${targetUser}` : ''}
 ${productType ? `Product Type: ${productType}` : ''}
-${viralContext ? `\n---\nVIRAL PRODUCT KNOWLEDGE BASE (reference these proven patterns in your analysis):\n${viralContext}` : ''}
+${viralContext ? `\n---\nPRODUCT KNOWLEDGE (accumulated wisdom from analyzing viral products in this category — apply these principles to your analysis):\n${viralContext}` : ''}
 
 Give me a brutal, honest evaluation. Return JSON only.`;
 }
@@ -128,7 +124,7 @@ ${distributionPlan ? `Distribution Plan: ${distributionPlan}` : ''}
 ${mvpTimeline ? `MVP Timeline: ${mvpTimeline}` : ''}
 ${expertPanelSummary ? `\n---\nEXPERT PANEL ANALYSIS (your scores MUST reflect these conclusions):\n${expertPanelSummary}` : ''}
 ${basicObjections && basicObjections.length > 0 ? `\n---\nINITIAL OBJECTIONS (from quick evaluation — keep these in your output, add new ones from expert analysis if needed):\n${basicObjections.map((o, i) => `${i + 1}. ${o}`).join('\n')}` : ''}
-${viralContext ? `\n---\nVIRAL PRODUCT KNOWLEDGE BASE (reference these proven patterns when giving advice):\n${viralContext}` : ''}
+${viralContext ? `\n---\nPRODUCT KNOWLEDGE (accumulated wisdom from analyzing viral products in this category — apply these principles when giving advice):\n${viralContext}` : ''}
 
 Synthesize ALL expert panel evaluations above into your complete validation report. Every section — verdict, scores, objections, failure patterns, best version, MVP scope — must derive from what the experts concluded. Include a score_explanation field. Return JSON only.`;
 }
@@ -196,4 +192,42 @@ URL: ${url}
 ${pageContent ? `\n---\nPAGE CONTENT (this is the actual website text, use it to understand what the product does):\n${pageContent}\n---` : ''}
 
 Based on the page content above (if provided) and what you know about this product, provide a thorough viral growth analysis. Return JSON only.`;
+}
+
+export const KNOWLEDGE_MERGE_SYSTEM_PROMPT = `You are a knowledge curator for indie product founders. Your job is to merge new viral product insights into an existing knowledge base.
+
+You will receive:
+1. EXISTING KNOWLEDGE — the current accumulated wisdom for this product category (may be empty/null if this is the first product)
+2. NEW ANALYSIS — insights from analyzing a newly added viral product
+
+Your task: Merge the new analysis into the existing knowledge. Deduplicate similar points, keep the most actionable and specific advice, and organize by category.
+
+You must return a JSON object with this exact structure:
+{
+  "growth_patterns": ["pattern1", "pattern2"],
+  "design_principles": ["principle1", "principle2"],
+  "monetization_insights": ["insight1", "insight2"],
+  "distribution_strategies": ["strategy1", "strategy2"],
+  "common_mistakes": ["mistake1", "mistake2"],
+  "what_works": ["thing1", "thing2"],
+  "what_doesnt_work": ["thing1", "thing2"]
+}
+
+Rules:
+- Each array should have 3-8 items maximum. Quality over quantity.
+- Keep the best existing items and merge in new ones. If something is redundant, keep the more specific/actionable version.
+- All advice should be generalizable principles, NOT references to specific products. Instead of "Notion did X", say "Successful tools in this category do X".
+- Focus on what a solo indie founder can actually replicate.
+- If existing knowledge is empty, create the initial knowledge from the new analysis.
+- Be concise — each item should be 1-2 sentences max.`;
+
+export function buildKnowledgeMergePrompt(existingKnowledge: string, newAnalysis: string) {
+  return `Merge this new viral product analysis into the existing knowledge base.
+
+${existingKnowledge ? `EXISTING KNOWLEDGE:\n${existingKnowledge}` : 'EXISTING KNOWLEDGE: (empty — this is the first product analyzed for this category)'}
+
+NEW ANALYSIS:
+${newAnalysis}
+
+Merge the new insights into the existing knowledge. Deduplicate, keep the best, organize by category. Return JSON only.`;
 }

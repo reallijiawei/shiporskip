@@ -45,8 +45,6 @@ export interface MVPScope {
 }
 
 export interface ViralLesson {
-  product_name: string;
-  product_url: string;
   lesson: string;
   relevance: string;
 }

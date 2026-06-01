@@ -4,7 +4,7 @@ import getDeepSeek, { DEEPSEEK_MODEL } from '@/lib/deepseek';
 import { BASIC_ROAST_SYSTEM_PROMPT, buildBasicRoastPrompt, buildExpertEvaluationPrompt } from '@/lib/prompts';
 import { EXPERTS } from '@/lib/expert-prompts';
 import { checkQuota, incrementUsage } from '@/lib/quota';
-import { getRelevantViralProducts, formatViralContext } from '@/lib/viral-kb';
+import { getKnowledgeForType } from '@/lib/viral-kb';
 import type { ExpertOpinion } from '@/types/report';
 
 export async function POST(request: NextRequest) {
@@ -33,9 +33,8 @@ export async function POST(request: NextRequest) {
 
     const deepseek = getDeepSeek();
 
-    // Fetch relevant viral products for knowledge base context
-    const viralProducts = await getRelevantViralProducts(productType, description);
-    const viralContext = formatViralContext(viralProducts);
+    // Fetch internalized knowledge for this product type
+    const viralContext = await getKnowledgeForType(productType);
 
     // Pick 3 random experts for teaser
     const shuffled = [...EXPERTS].sort(() => Math.random() - 0.5);

@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase-server';
 import getDeepSeek, { DEEPSEEK_MODEL } from '@/lib/deepseek';
 import { DEEP_VALIDATION_SYSTEM_PROMPT, buildDeepValidationPrompt } from '@/lib/prompts';
 import { checkQuota, incrementUsage } from '@/lib/quota';
-import { getRelevantViralProducts, formatViralContext } from '@/lib/viral-kb';
+import { getKnowledgeForType } from '@/lib/viral-kb';
 import type { ExpertOpinion } from '@/types/report';
 
 export async function POST(request: NextRequest) {
@@ -88,9 +88,8 @@ export async function POST(request: NextRequest) {
       ideaTimeline || undefined,
     ] as const;
 
-    // Fetch relevant viral products for knowledge base context
-    const viralProducts = await getRelevantViralProducts(ideaProduct, ideaDesc);
-    const viralContext = formatViralContext(viralProducts);
+    // Fetch internalized knowledge for this product type
+    const viralContext = await getKnowledgeForType(ideaProduct);
 
     // Build expert panel summary for scoring context
     const t0 = Date.now();

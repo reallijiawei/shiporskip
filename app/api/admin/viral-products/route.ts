@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase-service';
 import getDeepSeek, { DEEPSEEK_MODEL } from '@/lib/deepseek';
-import { VIRAL_ANALYSIS_SYSTEM_PROMPT, buildViralAnalysisPrompt } from '@/lib/prompts';
+import { VIRAL_ANALYSIS_SYSTEM_PROMPT, buildViralAnalysisPrompt, KNOWLEDGE_MERGE_SYSTEM_PROMPT, buildKnowledgeMergePrompt } from '@/lib/prompts';
 
 async function fetchPageContent(url: string): Promise<string> {
   try {
@@ -10,14 +10,13 @@ async function fetchPageContent(url: string): Promise<string> {
       signal: AbortSignal.timeout(10000),
     });
     const html = await res.text();
-    // Strip HTML tags, scripts, styles, collapse whitespace
     const text = html
       .replace(/<script[\s\S]*?<\/script>/gi, '')
       .replace(/<style[\s\S]*?<\/style>/gi, '')
       .replace(/<[^>]+>/g, ' ')
       .replace(/\s+/g, ' ')
       .trim()
-      .slice(0, 8000); // Limit to ~8K chars to stay within token budget
+      .slice(0, 8000);
     return text;
   } catch {
     return '';
@@ -36,10 +35,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'URL is required' }, { status: 400 });
   }
 
-  // Fetch actual page content so AI doesn't guess
   const pageContent = await fetchPageContent(url);
-
   const deepseek = getDeepSeek();
+
+  // Step 1: Analyze the viral product
   const result = await deepseek.chat.completions.create({
     model: DEEPSEEK_MODEL,
     messages: [
@@ -63,7 +62,9 @@ export async function POST(request: NextRequest) {
   }
 
   const supabase = createServiceClient();
-  const { data, error } = await supabase
+
+  // Save individual product analysis
+  const { data: product, error: productError } = await supabase
     .from('viral_products')
     .insert({
       url,
@@ -77,12 +78,65 @@ export async function POST(request: NextRequest) {
     .select()
     .single();
 
-  if (error) {
-    console.error('Failed to save viral product:', error);
+  if (productError) {
+    console.error('Failed to save viral product:', productError);
     return NextResponse.json({ error: 'Failed to save' }, { status: 500 });
   }
 
-  return NextResponse.json({ product: data });
+  // Step 2: Merge into viral_knowledge
+  const productType = parsed.product_type || 'other';
+
+  // Read existing knowledge
+  const { data: existing } = await supabase
+    .from('viral_knowledge')
+    .select('knowledge_json, source_count')
+    .eq('product_type', productType)
+    .single();
+
+  const existingKnowledge = existing ? JSON.stringify(existing.knowledge_json) : '';
+  const existingCount = existing?.source_count || 0;
+
+  // AI merges new analysis into existing knowledge
+  const mergeResult = await deepseek.chat.completions.create({
+    model: DEEPSEEK_MODEL,
+    messages: [
+      { role: 'system', content: KNOWLEDGE_MERGE_SYSTEM_PROMPT },
+      { role: 'user', content: buildKnowledgeMergePrompt(existingKnowledge, content) },
+    ],
+    response_format: { type: 'json_object' },
+    temperature: 0.3,
+  });
+
+  const mergeContent = mergeResult.choices[0]?.message?.content;
+  if (mergeContent) {
+    let mergedKnowledge;
+    try {
+      mergedKnowledge = JSON.parse(mergeContent);
+    } catch {
+      mergedKnowledge = null;
+    }
+
+    if (mergedKnowledge) {
+      // Upsert into viral_knowledge
+      const { error: upsertError } = await supabase
+        .from('viral_knowledge')
+        .upsert(
+          {
+            product_type: productType,
+            knowledge_json: mergedKnowledge,
+            source_count: existingCount + 1,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'product_type' }
+        );
+
+      if (upsertError) {
+        console.error('Failed to update viral knowledge:', upsertError);
+      }
+    }
+  }
+
+  return NextResponse.json({ product });
 }
 
 export async function GET(request: NextRequest) {
@@ -93,16 +147,13 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = createServiceClient();
-  const { data, error } = await supabase
-    .from('viral_products')
-    .select('id, name, url, description, product_type, category, tags, analysis_json, created_at')
-    .order('created_at', { ascending: false });
 
-  if (error) {
-    return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
-  }
+  const [{ data: products }, { data: knowledge }] = await Promise.all([
+    supabase.from('viral_products').select('id, name, url, description, product_type, category, tags, analysis_json, created_at').order('created_at', { ascending: false }),
+    supabase.from('viral_knowledge').select('*').order('updated_at', { ascending: false }),
+  ]);
 
-  return NextResponse.json({ products: data });
+  return NextResponse.json({ products: products || [], knowledge: knowledge || [] });
 }
 
 export async function DELETE(request: NextRequest) {

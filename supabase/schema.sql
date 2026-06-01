@@ -141,6 +141,23 @@ CREATE POLICY "Anyone can read viral products" ON viral_products
 CREATE POLICY "Service role can manage viral products" ON viral_products
   FOR ALL USING (true);
 
+-- Internalized viral knowledge (one row per product_type)
+CREATE TABLE IF NOT EXISTS viral_knowledge (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  product_type TEXT UNIQUE NOT NULL,
+  knowledge_json JSONB NOT NULL DEFAULT '{}',
+  source_count INT NOT NULL DEFAULT 0,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE viral_knowledge ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can read viral knowledge" ON viral_knowledge
+  FOR SELECT USING (true);
+
+CREATE POLICY "Service role can manage viral knowledge" ON viral_knowledge
+  FOR ALL USING (true);
+
 -- Function to increment quota
 CREATE OR REPLACE FUNCTION increment_quota(p_user_id UUID, p_month TEXT, p_field TEXT)
 RETURNS VOID AS $$

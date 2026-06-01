@@ -94,8 +94,7 @@ export function downloadReportHTML(report: Report) {
   <p style="font-size:14px;color:#666;margin-bottom:12px;">${c.viral_insights.intro}</p>
   ${c.viral_insights.lessons.map((l) => `
     <div class="section">
-      <strong>${l.product_name}</strong>${l.product_url ? ` <a href="${l.product_url}" target="_blank" style="font-size:12px;">link</a>` : ''}
-      <p style="font-size:13px;margin:4px 0 0;">${l.lesson}</p>
+      <p style="font-size:13px;margin:0;">${l.lesson}</p>
       <p style="font-size:12px;color:#888;margin:4px 0 0;">${l.relevance}</p>
     </div>`).join('')}
   ` : ''}
