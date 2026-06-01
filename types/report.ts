@@ -51,7 +51,6 @@ export interface ExpertOpinion {
   archetype: string;
   archetype_description: string;
   verdict: Verdict;
-  confidence: 'high' | 'medium' | 'low';
   one_line_take: string;
   key_arguments: string[];
   blind_spot: string;

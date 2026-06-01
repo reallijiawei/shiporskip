@@ -6,22 +6,6 @@ interface ExpertPanelProps {
   opinions: ExpertOpinion[];
 }
 
-function getConfidenceWidth(confidence: string) {
-  switch (confidence) {
-    case 'high': return 'w-full';
-    case 'medium': return 'w-2/3';
-    default: return 'w-1/3';
-  }
-}
-
-function getConfidenceLabel(confidence: string) {
-  switch (confidence) {
-    case 'high': return 'High confidence';
-    case 'medium': return 'Medium confidence';
-    default: return 'Low confidence';
-  }
-}
-
 function getConsensus(verdicts: Verdict[]): { label: string; color: string } {
   const counts: Record<string, number> = {};
   verdicts.forEach((v) => { counts[v] = (counts[v] || 0) + 1; });
@@ -39,7 +23,6 @@ export default function ExpertPanel({ opinions }: ExpertPanelProps) {
   const verdicts = opinions.map((o) => o.verdict);
   const consensus = getConsensus(verdicts);
 
-  // Count by verdict
   const verdictCounts: Record<string, number> = {};
   verdicts.forEach((v) => { verdictCounts[v] = (verdictCounts[v] || 0) + 1; });
   const sortedVerdicts = Object.entries(verdictCounts)
@@ -84,11 +67,9 @@ export default function ExpertPanel({ opinions }: ExpertPanelProps) {
             key={opinion.expert_id}
             className="rounded-[8px] border border-foreground/10 bg-card/90 shadow-sm overflow-hidden"
           >
-            {/* Verdict color bar top */}
             <div className={`h-1 ${getVerdictColor(opinion.verdict).split(' ')[0] === 'text-green-700' ? 'bg-green-500' : getVerdictColor(opinion.verdict).split(' ')[0] === 'text-red-700' ? 'bg-red-500' : getVerdictColor(opinion.verdict).split(' ')[0] === 'text-yellow-700' ? 'bg-yellow-500' : getVerdictColor(opinion.verdict).split(' ')[0] === 'text-orange-700' ? 'bg-orange-500' : 'bg-blue-500'}`} />
 
             <div className="p-5">
-              {/* Expert identity + verdict */}
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <h4 className="font-display text-base font-bold text-foreground truncate">
@@ -103,12 +84,10 @@ export default function ExpertPanel({ opinions }: ExpertPanelProps) {
                 </span>
               </div>
 
-              {/* One-line take */}
               <p className="mt-3 text-sm font-medium text-foreground leading-snug">
                 &ldquo;{opinion.one_line_take}&rdquo;
               </p>
 
-              {/* Key arguments */}
               <ul className="mt-3 space-y-1.5">
                 {opinion.key_arguments.map((arg, i) => (
                   <li key={i} className="flex items-start gap-2 text-xs text-muted">
@@ -118,22 +97,11 @@ export default function ExpertPanel({ opinions }: ExpertPanelProps) {
                 ))}
               </ul>
 
-              {/* Blind spot */}
               {opinion.blind_spot && (
                 <p className="mt-3 text-xs text-orange-600/80 border-t border-foreground/5 pt-2.5">
                   <span className="font-semibold">Blind spot:</span> {opinion.blind_spot}
                 </p>
               )}
-
-              {/* Confidence indicator */}
-              <div className="mt-3 flex items-center gap-2">
-                <div className="flex-1 h-1 bg-foreground/5 rounded-full overflow-hidden">
-                  <div className={`h-full bg-foreground/20 rounded-full ${getConfidenceWidth(opinion.confidence)}`} />
-                </div>
-                <span className="text-[10px] text-muted shrink-0">
-                  {getConfidenceLabel(opinion.confidence)}
-                </span>
-              </div>
             </div>
           </div>
         ))}

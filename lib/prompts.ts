@@ -126,16 +126,10 @@ Give your honest, opinionated verdict. Use your own thinking framework — not g
 You must return a JSON object with this exact structure:
 {
   "verdict": "build_now" | "validate_first" | "pivot" | "skip" | "too_crowded",
-  "confidence": "high" | "medium" | "low",
   "one_line_take": "Your core judgment in one sentence, in your voice",
   "key_arguments": ["argument 1", "argument 2", "argument 3"],
   "blind_spot": "A risk others might miss"
 }
-
-Confidence criteria:
-- "high": you have strong conviction based on clear signals (market data, proven patterns, direct experience)
-- "medium": reasonable judgment but some uncertainty remains (mixed signals, limited data)
-- "low": highly speculative — the idea is in uncharted territory or you lack relevant domain expertise
 
 Be specific to this idea. Be opinionated. Sound like yourself.`;
 }

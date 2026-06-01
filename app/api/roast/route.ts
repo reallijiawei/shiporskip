@@ -95,7 +95,6 @@ export async function POST(request: NextRequest) {
           archetype: expert.archetype,
           archetype_description: expert.archetypeDescription,
           verdict: opinion.verdict,
-          confidence: opinion.confidence,
           one_line_take: opinion.one_line_take,
           key_arguments: opinion.key_arguments || [],
           blind_spot: opinion.blind_spot || '',

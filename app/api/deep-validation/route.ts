@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     console.log('[Validate] Starting main validation synthesis...');
     const expertSummary = expertPanel && expertPanel.length > 0
       ? expertPanel.map((ep) =>
-          `- ${ep.expert_name} (${ep.archetype}): verdict=${ep.verdict}, confidence=${ep.confidence}\n  "${ep.one_line_take}"\n  Key arguments: ${ep.key_arguments.join('; ')}\n  Blind spot: ${ep.blind_spot}`
+          `- ${ep.expert_name} (${ep.archetype}): verdict=${ep.verdict}\n  "${ep.one_line_take}"\n  Key arguments: ${ep.key_arguments.join('; ')}\n  Blind spot: ${ep.blind_spot}`
         ).join('\n')
       : '';
 

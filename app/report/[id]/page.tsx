@@ -13,19 +13,10 @@ import { getVerdictColor, getVerdictLabel } from '@/lib/utils';
 import { downloadReportHTML } from '@/lib/download-report';
 import { Loader2, Download } from 'lucide-react';
 
-const GENERATION_STAGES = [
-  { label: 'Preparing', estimate: '~3s' },
-  { label: 'Running 10 expert analyses in parallel', estimate: '~80s' },
-  { label: 'Synthesizing verdict from expert conclusions', estimate: '~50s' },
-  { label: 'Finalizing report', estimate: '~3s' },
-];
-
 export default function ReportPage({ params }: { params: Promise<{ id: string }> }) {
   const [report, setReport] = useState<Report | null>(null);
   const [ideaId, setIdeaId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [generating, setGenerating] = useState(false);
-  const [stage, setStage] = useState(0);
   const [error, setError] = useState('');
 
   const loadReport = useCallback(async (id: string) => {
@@ -78,87 +69,6 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
     });
   }, [params, loadReport]);
 
-  // Auto-generate deep validation after basic roast loads (paid users only)
-  useEffect(() => {
-    if (!report || !ideaId || report.report_type !== 'basic_roast' || generating) return;
-
-    const checkAndGenerate = async () => {
-      const supabase = createClient();
-      const { data: existingDeep } = await supabase
-        .from('reports')
-        .select('*')
-        .eq('idea_id', ideaId)
-        .eq('report_type', 'deep_validation')
-        .single();
-
-      if (existingDeep) {
-        setReport(existingDeep);
-        return;
-      }
-
-      // Check if user has deep_validation credits before starting
-      setGenerating(true);
-      setStage(0);
-      const tStart = Date.now();
-      try {
-        setStage(1);
-        const t1 = Date.now();
-        const expertsRes = await fetch('/api/deep-validation/experts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ideaId }),
-        });
-
-        if (expertsRes.status === 402) {
-          // No credits — show CTA instead of auto-generating
-          setGenerating(false);
-          return;
-        }
-
-        const expertsData = await expertsRes.json();
-        console.log(`[Timing] Stage 1 (experts): ${((Date.now() - t1) / 1000).toFixed(1)}s`);
-        if (!expertsRes.ok) {
-          console.error('[Experts] API error:', expertsData);
-          setGenerating(false);
-          return;
-        }
-
-        setStage(2);
-        const t2 = Date.now();
-        const validateRes = await fetch('/api/deep-validation', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ideaId, expertPanel: expertsData.expertPanel }),
-        });
-
-        const validateData = await validateRes.json();
-        console.log(`[Timing] Stage 2 (synthesis): ${((Date.now() - t2) / 1000).toFixed(1)}s`);
-        console.log(`[Timing] Total: ${((Date.now() - tStart) / 1000).toFixed(1)}s`);
-        if (!validateRes.ok) {
-          console.error('[DeepValidation] API error:', validateData);
-          setGenerating(false);
-          return;
-        }
-
-        setStage(3);
-        if (validateData.report?.id) {
-          const { data: deepReport } = await supabase
-            .from('reports')
-            .select('*')
-            .eq('id', validateData.report.id)
-            .single();
-
-          if (deepReport) setReport(deepReport);
-        }
-      } catch (err) {
-        console.error('[DeepValidation] failed:', err);
-      } finally {
-        setGenerating(false);
-      }
-    };
-
-    checkAndGenerate();
-  }, [report, ideaId]);
 
   if (loading) {
     return (
@@ -185,31 +95,6 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
   return (
     <div className="py-12 sm:py-16">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-
-        {/* Deep validation progress banner */}
-        {generating && (
-          <div className="mb-8 rounded-[8px] border border-accent/30 bg-accent/5 px-5 py-4 shadow-sm">
-            <div className="flex items-center gap-3">
-              <Loader2 className="h-4 w-4 animate-spin text-accent" />
-              <div className="flex-1">
-                <p className="text-sm font-medium text-foreground">
-                  {GENERATION_STAGES[stage]?.label || 'Preparing'}...
-                </p>
-                <p className="mt-0.5 text-xs text-muted">Takes about 2 minutes total</p>
-              </div>
-            </div>
-            <div className="mt-3 flex gap-1.5">
-              {GENERATION_STAGES.map((s, i) => (
-                <div key={i} className="flex-1">
-                  <div className={`h-1.5 rounded-full transition-all duration-500 ${
-                    i < stage ? 'bg-accent' : i === stage ? 'bg-accent/40 animate-pulse' : 'bg-foreground/5'
-                  }`} />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         <VerdictCard
           verdict={isBasic ? undefined : report.verdict}
           overallScore={isBasic ? null : report.overall_score}
@@ -307,7 +192,7 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           </div>
         )}
 
-        {isBasic && ideaId && !generating && (
+        {isBasic && ideaId && (
           <div className="mt-8">
             <DeepValidationCTA reportId={report.id} ideaId={ideaId} />
           </div>
