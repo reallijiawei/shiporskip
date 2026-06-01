@@ -3,6 +3,27 @@ import { createServiceClient } from '@/lib/supabase-service';
 import getDeepSeek, { DEEPSEEK_MODEL } from '@/lib/deepseek';
 import { VIRAL_ANALYSIS_SYSTEM_PROMPT, buildViralAnalysisPrompt } from '@/lib/prompts';
 
+async function fetchPageContent(url: string): Promise<string> {
+  try {
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; ShipOrSkip/1.0)' },
+      signal: AbortSignal.timeout(10000),
+    });
+    const html = await res.text();
+    // Strip HTML tags, scripts, styles, collapse whitespace
+    const text = html
+      .replace(/<script[\s\S]*?<\/script>/gi, '')
+      .replace(/<style[\s\S]*?<\/style>/gi, '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 8000); // Limit to ~8K chars to stay within token budget
+    return text;
+  } catch {
+    return '';
+  }
+}
+
 export async function POST(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
   const secret = process.env.ADMIN_SECRET;
@@ -15,12 +36,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'URL is required' }, { status: 400 });
   }
 
+  // Fetch actual page content so AI doesn't guess
+  const pageContent = await fetchPageContent(url);
+
   const deepseek = getDeepSeek();
   const result = await deepseek.chat.completions.create({
     model: DEEPSEEK_MODEL,
     messages: [
       { role: 'system', content: VIRAL_ANALYSIS_SYSTEM_PROMPT },
-      { role: 'user', content: buildViralAnalysisPrompt(url) },
+      { role: 'user', content: buildViralAnalysisPrompt(url, pageContent) },
     ],
     response_format: { type: 'json_object' },
     temperature: 0.5,
@@ -71,7 +95,7 @@ export async function GET(request: NextRequest) {
   const supabase = createServiceClient();
   const { data, error } = await supabase
     .from('viral_products')
-    .select('id, name, url, description, product_type, category, tags, created_at')
+    .select('id, name, url, description, product_type, category, tags, analysis_json, created_at')
     .order('created_at', { ascending: false });
 
   if (error) {

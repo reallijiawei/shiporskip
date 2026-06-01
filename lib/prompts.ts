@@ -189,10 +189,11 @@ Rules:
 - tags should be lowercase, 1-2 words each, 5-10 tags total.
 - Focus on what a solo indie founder can actually replicate.`;
 
-export function buildViralAnalysisPrompt(url: string) {
+export function buildViralAnalysisPrompt(url: string, pageContent?: string) {
   return `Analyze this viral product and explain why it succeeded:
 
 URL: ${url}
+${pageContent ? `\n---\nPAGE CONTENT (this is the actual website text, use it to understand what the product does):\n${pageContent}\n---` : ''}
 
-Based on what you know about this product, provide a thorough viral growth analysis. Return JSON only.`;
+Based on the page content above (if provided) and what you know about this product, provide a thorough viral growth analysis. Return JSON only.`;
 }
