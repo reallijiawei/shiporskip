@@ -44,6 +44,19 @@ export interface MVPScope {
   cut_for_v1: string[];
 }
 
+export interface ViralLesson {
+  product_name: string;
+  product_url: string;
+  lesson: string;
+  relevance: string;
+}
+
+export interface ViralInsights {
+  section_type: 'pivot_suggestions' | 'optimization_tips';
+  intro: string;
+  lessons: ViralLesson[];
+}
+
 export interface ExpertOpinion {
   expert_id: string;
   expert_name: string;
@@ -71,6 +84,7 @@ export interface ReportContent {
   mvp_scope: MVPScope;
   expert_panel?: ExpertOpinion[];
   teaser_experts?: ExpertOpinion[];
+  viral_insights?: ViralInsights;
 }
 
 export interface Report {

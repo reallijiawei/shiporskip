@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase-server';
 import getDeepSeek, { DEEPSEEK_MODEL } from '@/lib/deepseek';
 import { DEEP_VALIDATION_SYSTEM_PROMPT, buildDeepValidationPrompt } from '@/lib/prompts';
 import { checkQuota, incrementUsage } from '@/lib/quota';
+import { getRelevantViralProducts, formatViralContext } from '@/lib/viral-kb';
 import type { ExpertOpinion } from '@/types/report';
 
 export async function POST(request: NextRequest) {
@@ -87,6 +88,10 @@ export async function POST(request: NextRequest) {
       ideaTimeline || undefined,
     ] as const;
 
+    // Fetch relevant viral products for knowledge base context
+    const viralProducts = await getRelevantViralProducts(ideaProduct, ideaDesc);
+    const viralContext = formatViralContext(viralProducts);
+
     // Build expert panel summary for scoring context
     const t0 = Date.now();
     console.log('[Validate] Starting main validation synthesis...');
@@ -101,7 +106,7 @@ export async function POST(request: NextRequest) {
       model: DEEPSEEK_MODEL,
       messages: [
         { role: 'system', content: DEEP_VALIDATION_SYSTEM_PROMPT },
-        { role: 'user', content: buildDeepValidationPrompt(...baseIdeaArgs, expertSummary, basicObjections) },
+        { role: 'user', content: buildDeepValidationPrompt(...baseIdeaArgs, expertSummary, basicObjections, viralContext) },
       ],
       response_format: { type: 'json_object' },
       temperature: 0.7,

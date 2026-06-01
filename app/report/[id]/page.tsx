@@ -8,6 +8,7 @@ import FailurePatterns from '@/components/FailurePatterns';
 import MarketEvidence from '@/components/MarketEvidence';
 import DeepValidationCTA from './DeepValidationCTA';
 import ExpertPanel from '@/components/ExpertPanel';
+import ViralInsights from '@/components/ViralInsights';
 import { Report } from '@/types/report';
 import { getVerdictColor, getVerdictLabel } from '@/lib/utils';
 import { downloadReportHTML } from '@/lib/download-report';
@@ -153,6 +154,12 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {content.viral_insights && (
+          <div className="mt-8">
+            <ViralInsights insights={content.viral_insights} />
           </div>
         )}
 

@@ -117,6 +117,30 @@ CREATE POLICY "Users can view own payments" ON payments
 CREATE POLICY "Service role can manage payments" ON payments
   FOR ALL USING (true);
 
+-- Viral products knowledge base
+CREATE TABLE IF NOT EXISTS viral_products (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  url TEXT NOT NULL,
+  name TEXT NOT NULL,
+  description TEXT NOT NULL,
+  product_type TEXT,
+  category TEXT,
+  tags TEXT[] DEFAULT '{}',
+  analysis_json JSONB NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_viral_products_product_type ON viral_products(product_type);
+CREATE INDEX idx_viral_products_tags ON viral_products USING GIN (tags);
+
+ALTER TABLE viral_products ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can read viral products" ON viral_products
+  FOR SELECT USING (true);
+
+CREATE POLICY "Service role can manage viral products" ON viral_products
+  FOR ALL USING (true);
+
 -- Function to increment quota
 CREATE OR REPLACE FUNCTION increment_quota(p_user_id UUID, p_month TEXT, p_field TEXT)
 RETURNS VOID AS $$

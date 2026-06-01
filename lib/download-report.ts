@@ -1,4 +1,4 @@
-import { Report, ReportContent, ExpertOpinion } from '@/types/report';
+import { Report, ReportContent, ExpertOpinion, ViralInsights as ViralInsightsType } from '@/types/report';
 import { getVerdictLabel } from '@/lib/utils';
 
 function expertCard(op: ExpertOpinion): string {
@@ -87,6 +87,17 @@ export function downloadReportHTML(report: Report) {
   ${isBasic && c.improvement_suggestions?.length ? `
   <h2>Improvement Suggestions</h2>
   ${c.improvement_suggestions.map((s, i) => `<div class="suggestion"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
+  ` : ''}
+
+  ${c.viral_insights?.lessons?.length ? `
+  <h2>${c.viral_insights.section_type === 'pivot_suggestions' ? 'If You Insist...' : 'What Winners Did Right'}</h2>
+  <p style="font-size:14px;color:#666;margin-bottom:12px;">${c.viral_insights.intro}</p>
+  ${c.viral_insights.lessons.map((l) => `
+    <div class="section">
+      <strong>${l.product_name}</strong>${l.product_url ? ` <a href="${l.product_url}" target="_blank" style="font-size:12px;">link</a>` : ''}
+      <p style="font-size:13px;margin:4px 0 0;">${l.lesson}</p>
+      <p style="font-size:12px;color:#888;margin:4px 0 0;">${l.relevance}</p>
+    </div>`).join('')}
   ` : ''}
 
   ${c.teaser_experts?.length ? `
