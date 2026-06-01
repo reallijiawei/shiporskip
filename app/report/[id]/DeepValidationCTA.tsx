@@ -142,7 +142,7 @@ export default function DeepValidationCTA({ reportId, ideaId, hasCredits }: Deep
       </h3>
       <p className="mt-3 text-background/50 max-w-md mx-auto">
         Get 10-expert panel analysis, failure patterns,
-        and MVP scope — powered by DeepSeek.
+        and MVP scope.
       </p>
       {showPrice && (
         <>
