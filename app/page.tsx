@@ -14,22 +14,22 @@ const STEPS = [
   },
   {
     step: '02',
-    title: 'Get a brutal verdict',
-    description: 'Our AI evaluates your idea with founder-inspired critique lenses and market signals.',
+    title: 'Get a brutal assessment',
+    description: 'Our AI tears apart your idea with expert thinking frameworks and market signals.',
   },
   {
     step: '03',
     title: 'Validate or kill it',
-    description: 'Build it if it passes. Kill it if it doesn\'t. No vague startup theory.',
+    description: 'Deep-dive with 10-expert panel analysis, or move on to the next idea.',
   },
 ];
 
 const INCLUDED = [
-  'A clear Build / Skip / Validate First verdict',
-  'Founder-inspired critique lenses',
+  'Brutal objections to your idea',
+  'Expert thinking framework analysis',
   'Market signal checks',
   'Failure pattern detection',
-  'Score breakdown across 7 dimensions',
+  '10-expert panel with consensus verdict',
   'MVP scope recommendations',
 ];
 
@@ -177,7 +177,7 @@ export default function Home() {
             Stop guessing. Start validating.
           </h2>
           <p className="mt-3 text-base text-background/60">
-            Get a brutal, honest verdict on your indie product idea in under 2 minutes.
+            Get a brutal, honest assessment of your indie product idea in under 2 minutes.
           </p>
           <Link
             href="/idea/new"

@@ -20,7 +20,7 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: 'ShipOrSkip - Brutally Validate Your Indie Product Idea',
   description:
-    'Get a brutal Build / Skip / Validate First verdict with market signals, founder-inspired critiques, and failure pattern detection before you waste weeks building.',
+    'Get a brutal quick assessment with expert thinking frameworks, market signals, and failure pattern detection before you waste weeks building.',
 };
 
 export default function RootLayout({

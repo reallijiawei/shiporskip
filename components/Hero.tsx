@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Gauge, Search, TriangleAlert } from 'lucide-react';
+import { ArrowRight, Gauge, AlertTriangle, Lightbulb } from 'lucide-react';
 
 export default function Hero() {
   return (
@@ -23,7 +23,7 @@ export default function Hero() {
 
           <p className="animate-fade-up delay-300 mt-6 max-w-2xl text-lg leading-8 text-muted">
             Most people will tell you your idea sounds interesting. We tell you whether it&apos;s
-            worth building. Get a Build / Skip / Validate First verdict with market signals
+            worth building. Get a brutal quick assessment with expert thinking frameworks
             and failure pattern detection.
           </p>
 
@@ -63,34 +63,38 @@ export default function Hero() {
 
         <div className="animate-fade-up delay-200 relative min-w-0">
           <div className="shell-panel overflow-hidden p-4 sm:p-5">
-            <div className="flex items-center justify-between border-b border-foreground/10 pb-4">
-              <div>
-                <p className="text-xs font-bold uppercase text-muted">Live verdict</p>
-                <p className="mt-1 font-display text-2xl font-bold">Validate First</p>
-              </div>
-              <div className="rounded-full bg-[var(--lime)] px-3 py-1 text-sm font-bold text-foreground">
-                72/100
-              </div>
+            <div className="border-b border-foreground/10 pb-4">
+              <p className="text-xs font-bold uppercase text-muted">Quick Assessment</p>
+              <p className="mt-2 font-display text-lg font-bold leading-snug">
+                AI habit tracker for smokers — decent idea, but the market is saturated with free alternatives.
+              </p>
             </div>
 
-            <div className="mt-5 rounded-[8px] bg-foreground p-5 text-background">
-              <p className="text-xs font-bold uppercase text-background/50">Risk memo</p>
-              <p className="mt-3 text-lg font-semibold leading-7">
-                Demand is plausible, but distribution is still an assumption. Test search intent
-                and one acquisition channel before writing production code.
-              </p>
+            <div className="mt-4 rounded-[8px] border-l-4 border-red-500 bg-foreground/5 p-4">
+              <p className="text-xs font-bold uppercase text-red-500">Brutal Objections</p>
+              <ul className="mt-2.5 space-y-2">
+                {[
+                  'Why would someone pay for this when iOS Health exists?',
+                  'Smoking cessation apps have <2% paid conversion rates.',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-foreground/70">
+                    <span className="mt-1 h-1.5 w-1.5 shrink-0 bg-red-400" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
 
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
               {[
-                { icon: Search, label: 'Demand', value: 'Strong' },
-                { icon: TriangleAlert, label: 'Risk', value: 'Channel' },
-                { icon: CheckCircle2, label: 'MVP', value: '7 days' },
+                { icon: Lightbulb, name: 'First-Principles', take: 'Core need is real, but delivery must differ.' },
+                { icon: AlertTriangle, name: 'Contrarian', take: 'Go niche — ex-smokers helping smokers.' },
+                { icon: Gauge, name: 'Growth Hacker', take: 'TikTok virality is the only viable channel.' },
               ].map((item) => (
-                <div key={item.label} className="rounded-[8px] border border-foreground/10 bg-card p-4">
-                  <item.icon className="h-5 w-5 text-accent" />
-                  <p className="mt-4 text-xs font-bold uppercase text-muted">{item.label}</p>
-                  <p className="mt-1 font-display text-xl font-bold">{item.value}</p>
+                <div key={item.name} className="rounded-[8px] border border-foreground/10 bg-card p-3">
+                  <item.icon className="h-4 w-4 text-accent" />
+                  <p className="mt-2 text-xs font-bold text-foreground">{item.name}</p>
+                  <p className="mt-1 text-[11px] leading-snug text-muted">&ldquo;{item.take}&rdquo;</p>
                 </div>
               ))}
             </div>
