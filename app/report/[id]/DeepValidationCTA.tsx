@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 
 const GENERATION_STAGES = [
@@ -13,11 +13,24 @@ const GENERATION_STAGES = [
 interface DeepValidationCTAProps {
   reportId: string;
   ideaId: string;
+  hasCredits?: boolean;
 }
 
-export default function DeepValidationCTA({ reportId, ideaId }: DeepValidationCTAProps) {
+export default function DeepValidationCTA({ reportId, ideaId, hasCredits }: DeepValidationCTAProps) {
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [showPrice, setShowPrice] = useState(hasCredits === false);
+
+  useEffect(() => {
+    if (hasCredits !== undefined) return; // already known
+    fetch('/api/quota')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.deep_validation_remaining > 0) setShowPrice(false);
+        else setShowPrice(true);
+      })
+      .catch(() => {});
+  }, [hasCredits]);
   const [stage, setStage] = useState(0);
   const [error, setError] = useState('');
 
@@ -34,7 +47,9 @@ export default function DeepValidationCTA({ reportId, ideaId }: DeepValidationCT
       });
 
       if (expertsRes.status === 402) {
-        // No credits — redirect to payment
+        // No credits — show price and redirect to payment
+        setShowPrice(true);
+        setLoading(false);
         const checkoutRes = await fetch('/api/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -123,8 +138,12 @@ export default function DeepValidationCTA({ reportId, ideaId }: DeepValidationCT
         Get 10-expert panel analysis, failure patterns,
         and MVP scope — powered by DeepSeek.
       </p>
-      <p className="mt-4 font-display text-4xl font-extrabold text-accent">$3</p>
-      <p className="mt-1 text-sm text-background/40">one-time per report</p>
+      {showPrice && (
+        <>
+          <p className="mt-4 font-display text-4xl font-extrabold text-accent">$3</p>
+          <p className="mt-1 text-sm text-background/40">one-time per report</p>
+        </>
+      )}
       <button
         onClick={handleGenerate}
         disabled={loading}
@@ -136,7 +155,7 @@ export default function DeepValidationCTA({ reportId, ideaId }: DeepValidationCT
             Creating checkout...
           </>
         ) : (
-          'Get Deep Validation — $3'
+          showPrice ? 'Get Deep Validation — $3' : 'Get Deep Validation'
         )}
       </button>
       {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
