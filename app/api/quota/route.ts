@@ -11,12 +11,14 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const [basic, deep] = await Promise.all([
+    const [basic, deep, userProfile] = await Promise.all([
       checkQuota(user.id, 'basic_roast'),
       checkQuota(user.id, 'deep_validation'),
+      supabase.from('users').select('plan').eq('id', user.id).single(),
     ]);
 
     return NextResponse.json({
+      plan: userProfile?.data?.plan || 'free',
       basic_roast_remaining: basic.remaining,
       deep_validation_remaining: deep.remaining,
     });

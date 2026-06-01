@@ -162,11 +162,11 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
                 <div key={opinion.expert_id} className="rounded-[8px] border border-foreground/10 bg-card/90 shadow-sm overflow-hidden">
                   <div className="h-1 bg-foreground/10" />
                   <div className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-display text-sm font-bold text-foreground truncate">
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <h4 className="font-display text-sm font-bold text-foreground">
                         {opinion.expert_name}'s thinking framework
                       </h4>
-                      <span className={`shrink-0 ml-2 pill-accent text-[10px] ${getVerdictColor(opinion.verdict)}`}>
+                      <span className={`shrink-0 pill-accent text-[10px] ${getVerdictColor(opinion.verdict)}`}>
                         {getVerdictLabel(opinion.verdict)}
                       </span>
                     </div>

@@ -20,14 +20,16 @@ export default function DeepValidationCTA({ reportId, ideaId, hasCredits }: Deep
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [showPrice, setShowPrice] = useState(hasCredits === false);
+  const [isFreePlan, setIsFreePlan] = useState(false);
 
   useEffect(() => {
-    if (hasCredits !== undefined) return; // already known
+    if (hasCredits !== undefined) return;
     fetch('/api/quota')
       .then((res) => res.json())
       .then((data) => {
         if (data.deep_validation_remaining > 0) setShowPrice(false);
         else setShowPrice(true);
+        if (data.plan === 'free') setIsFreePlan(true);
       })
       .catch(() => {});
   }, [hasCredits]);
@@ -159,6 +161,15 @@ export default function DeepValidationCTA({ reportId, ideaId, hasCredits }: Deep
         )}
       </button>
       {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+      {isFreePlan && (
+        <p className="mt-4 text-xs text-background/40">
+          Need more?{' '}
+          <a href="/pricing" className="underline hover:text-background/60">
+            Upgrade to Starter or Pro
+          </a>{' '}
+          for monthly deep validations.
+        </p>
+      )}
     </div>
   );
 }
