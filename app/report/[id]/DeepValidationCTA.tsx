@@ -20,7 +20,7 @@ export default function DeepValidationCTA({ reportId, ideaId, hasCredits }: Deep
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [showPrice, setShowPrice] = useState(hasCredits === false);
-  const [isFreePlan, setIsFreePlan] = useState(false);
+  const [plan, setPlan] = useState<string>('free');
 
   useEffect(() => {
     if (hasCredits !== undefined) return;
@@ -29,12 +29,14 @@ export default function DeepValidationCTA({ reportId, ideaId, hasCredits }: Deep
       .then((data) => {
         if (data.deep_validation_remaining > 0) setShowPrice(false);
         else setShowPrice(true);
-        if (data.plan === 'free') setIsFreePlan(true);
+        setPlan(data.plan || 'free');
       })
       .catch(() => {});
   }, [hasCredits]);
   const [stage, setStage] = useState(0);
   const [error, setError] = useState('');
+
+  const isPaidPlan = plan === 'starter' || plan === 'pro';
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -49,9 +51,15 @@ export default function DeepValidationCTA({ reportId, ideaId, hasCredits }: Deep
       });
 
       if (expertsRes.status === 402) {
-        // No credits — show price and redirect to payment
-        setShowPrice(true);
         setLoading(false);
+        setShowPrice(true);
+
+        // Starter/Pro users with exhausted credits — don't redirect to checkout
+        if (isPaidPlan) {
+          return;
+        }
+
+        // Free users — redirect to single purchase checkout
         const checkoutRes = await fetch('/api/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -144,15 +152,20 @@ export default function DeepValidationCTA({ reportId, ideaId, hasCredits }: Deep
         Get 10-expert panel analysis, failure patterns,
         and MVP scope.
       </p>
-      {showPrice && (
+      {showPrice && !isPaidPlan && (
         <>
           <p className="mt-4 font-display text-4xl font-extrabold text-accent">$3</p>
           <p className="mt-1 text-sm text-background/40">one-time per report</p>
         </>
       )}
+      {showPrice && isPaidPlan && (
+        <p className="mt-4 text-sm text-background/50">
+          You've used all your Deep Validations this month. Resets next month.
+        </p>
+      )}
       <button
         onClick={handleGenerate}
-        disabled={loading}
+        disabled={loading || (showPrice && isPaidPlan)}
         className="mt-6 inline-flex items-center gap-2 bg-accent px-8 py-4 text-base font-bold tracking-tight text-white transition-transform hover:scale-105 hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? (
@@ -160,12 +173,16 @@ export default function DeepValidationCTA({ reportId, ideaId, hasCredits }: Deep
             <Loader2 className="h-4 w-4 animate-spin" />
             Creating checkout...
           </>
+        ) : showPrice && isPaidPlan ? (
+          'No credits remaining'
+        ) : showPrice ? (
+          'Get Deep Validation — $3'
         ) : (
-          showPrice ? 'Get Deep Validation — $3' : 'Get Deep Validation'
+          'Get Deep Validation'
         )}
       </button>
       {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
-      {isFreePlan && (
+      {plan === 'free' && (
         <p className="mt-4 text-xs text-background/40">
           Need more?{' '}
           <a href="/pricing" className="underline hover:text-background/60">
