@@ -54,12 +54,7 @@ export default function DeepValidationCTA({ reportId, ideaId, hasCredits }: Deep
         setLoading(false);
         setShowPrice(true);
 
-        // Starter/Pro users with exhausted credits — don't redirect to checkout
-        if (isPaidPlan) {
-          return;
-        }
-
-        // Free users — redirect to single purchase checkout
+        // Free or Starter/Pro with exhausted credits — redirect to single purchase checkout
         const checkoutRes = await fetch('/api/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -152,36 +147,36 @@ export default function DeepValidationCTA({ reportId, ideaId, hasCredits }: Deep
         Get 10-expert panel analysis, failure patterns,
         and MVP scope.
       </p>
-      {showPrice && !isPaidPlan && (
+      {showPrice && (
         <>
           <p className="mt-4 font-display text-4xl font-extrabold text-accent">$3</p>
           <p className="mt-1 text-sm text-background/40">one-time per report</p>
         </>
       )}
-      {showPrice && isPaidPlan && (
-        <p className="mt-4 text-sm text-background/50">
-          You've used all your Deep Validations this month. Resets next month.
-        </p>
-      )}
       <button
         onClick={handleGenerate}
-        disabled={loading || (showPrice && isPaidPlan)}
+        disabled={loading}
         className="mt-6 inline-flex items-center gap-2 bg-accent px-8 py-4 text-base font-bold tracking-tight text-white transition-transform hover:scale-105 hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? (
           <>
             <Loader2 className="h-4 w-4 animate-spin" />
-            {showPrice && !isPaidPlan ? 'Creating checkout...' : 'Preparing...'}
+            {showPrice ? 'Creating checkout...' : 'Preparing...'}
           </>
-        ) : showPrice && isPaidPlan ? (
-          'No credits remaining'
-        ) : showPrice ? (
-          'Get Deep Validation — $3'
         ) : (
-          'Get Deep Validation'
+          showPrice ? 'Get Deep Validation — $3' : 'Get Deep Validation'
         )}
       </button>
       {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+      {showPrice && isPaidPlan && plan !== 'pro' && (
+        <p className="mt-4 text-xs text-background/40">
+          Monthly credits used up.{' '}
+          <a href="/pricing" className="underline hover:text-background/60">
+            Upgrade to Pro
+          </a>{' '}
+          for 10 deep validations/month.
+        </p>
+      )}
       {plan === 'free' && (
         <p className="mt-4 text-xs text-background/40">
           Need more?{' '}
