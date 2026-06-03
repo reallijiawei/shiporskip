@@ -171,7 +171,7 @@ export default function DeepValidationCTA({ reportId, ideaId, hasCredits }: Deep
         {loading ? (
           <>
             <Loader2 className="h-4 w-4 animate-spin" />
-            Creating checkout...
+            {showPrice && !isPaidPlan ? 'Creating checkout...' : 'Preparing...'}
           </>
         ) : showPrice && isPaidPlan ? (
           'No credits remaining'
