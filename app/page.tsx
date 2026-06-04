@@ -8,10 +8,9 @@ import {
   ArrowRight,
   CheckCircle2,
   ChevronDown,
-  CircleDollarSign,
-  Clock3,
+  BookOpenCheck,
+  BrainCircuit,
   Eye,
-  Hammer,
   Radar,
   Skull,
   Sparkles,
@@ -21,28 +20,29 @@ import {
 const STEPS = [
   {
     step: '01',
-    title: 'Paste the messy version',
-    description: 'No polished pitch needed. Describe the idea, target user, monetization, and how you think you will get traffic.',
+    title: 'Describe the product idea',
+    description: 'Give the raw idea, audience, use case, monetization angle, and any distribution assumptions you already have.',
   },
   {
     step: '02',
-    title: 'Get the objections first',
-    description: 'ShipOrSkip looks for weak demand, crowded positioning, bad distribution, unclear payment intent, and fragile MVP scope.',
+    title: 'Run it through expert mindsets',
+    description: 'The report applies multiple founder and investor thinking frameworks, then shows where they agree, disagree, and what each one misses.',
   },
   {
     step: '03',
-    title: 'Leave with a next test',
-    description: 'You get a verdict and a practical validation move: build now, narrow the niche, test demand, or skip cleanly.',
+    title: 'Apply winner patterns',
+    description: 'ShipOrSkip compares your idea against patterns from products that grew, then turns those patterns into concrete improvements for your case.',
   },
 ];
 
 const INCLUDED = [
   'Build / Skip / Validate First verdict',
-  'The objections a smart customer would raise',
-  'Market, SEO, distribution, and monetization scoring',
-  'Failure pattern detection before you write code',
-  '10-expert panel analysis in the Deep Report',
-  'MVP scope: must-have, nice-to-have, cut for V1',
+  'Overall score and 7-part score breakdown',
+  'Brutal objections and blind spots',
+  'What Winners Did Right pattern matching',
+  'Expert Panel with named thinking frameworks',
+  'Failure patterns and how to reduce them',
+  'Best Version of This Idea with concrete positioning advice',
 ];
 
 const EXCLUDED = [
@@ -53,34 +53,34 @@ const EXCLUDED = [
 
 const PAINS = [
   {
-    icon: Clock3,
-    title: 'You can lose a month to a polite lie.',
-    copy: 'The expensive part is not code. It is building for a fake buyer because everyone around you was too nice.',
+    icon: BrainCircuit,
+    title: 'One opinion is too fragile.',
+    copy: 'A single AI answer can sound confident and still miss the obvious. ShipOrSkip forces the idea through multiple expert frames.',
   },
   {
-    icon: CircleDollarSign,
-    title: 'Most ideas fail at payment intent.',
-    copy: 'ShipOrSkip forces the uncomfortable question: who pays, why now, and what cheaper substitute already exists?',
+    icon: BookOpenCheck,
+    title: 'Patterns beat vibes.',
+    copy: 'The report does not stop at critique. It maps your idea to tactics seen in products that actually grew.',
   },
   {
     icon: Radar,
-    title: 'Distribution is part of the product.',
-    copy: 'A good idea with no first channel is just a private hobby. The report grades how the idea reaches strangers.',
+    title: 'Improvement should be specific.',
+    copy: 'You get concrete suggestions like embeddable assets, paid PDF upgrades, SEO loops, or community submissions, depending on the idea.',
   },
 ];
 
 const REPORT_SECTIONS = [
-  { icon: Eye, title: 'Demand signal', copy: 'Is there visible pain, search intent, or community discussion?' },
-  { icon: Skull, title: 'Failure patterns', copy: 'Common traps like "too crowded", "free tool, bad business", or weak urgency.' },
-  { icon: Hammer, title: 'MVP scope', copy: 'What to build first, what to postpone, and what to cut entirely.' },
-  { icon: Sparkles, title: 'Better version', copy: 'A sharper positioning angle if the raw idea is too generic.' },
+  { icon: Eye, title: 'Score breakdown', copy: 'Demand, buildability, distribution, monetization, SEO potential, moat, and solo-founder fit.' },
+  { icon: Skull, title: 'Brutal objections', copy: 'The hard objections that would kill trust, traffic, revenue, or execution.' },
+  { icon: BrainCircuit, title: 'Expert panel', copy: 'Multiple named thinking frameworks, each with verdict, argument, and blind spot.' },
+  { icon: Sparkles, title: 'Best version', copy: 'A more focused version of the idea with sharper positioning and execution advice.' },
 ];
 
 const MAKER_RULES = [
-  'Charge the idea rent before it gets your time.',
-  'Prefer a painful niche over a huge vague market.',
-  'If distribution is hand-wavy, the idea is not ready.',
-  'A skip verdict is a win if it saves three weekends.',
+  'Do not trust one lens. Compare how different operators would judge the same idea.',
+  'Look for repeatable growth patterns from products that already worked.',
+  'Treat brutal objections as product requirements, not insults.',
+  'The best output is not encouragement. It is a better version of the idea.',
 ];
 
 const FAQ = [
@@ -138,8 +138,9 @@ export default function Home() {
                 Bad ideas do not feel bad at the start.
               </h2>
               <p className="mt-4 max-w-lg text-lg leading-8 text-muted">
-                They feel exciting, obvious, and &ldquo;only a weekend away.&rdquo; Then the weekend
-                becomes a month and the market stays silent.
+                Most idea validators stop at a generic verdict. Your actual report needs
+                to explain why experts disagree, what winners did right, and how to improve
+                the idea before you spend time building.
               </p>
             </div>
 
@@ -164,7 +165,7 @@ export default function Home() {
           <div className="mx-auto max-w-3xl text-center">
             <span className="pill-accent">How it works</span>
             <h2 className="mt-4 font-display text-3xl font-black tracking-tight text-foreground sm:text-5xl">
-              Three steps from fuzzy idea to honest decision.
+              From raw idea to expert-backed improvement plan.
             </h2>
           </div>
 
@@ -194,11 +195,12 @@ export default function Home() {
             <div>
               <span className="pill-accent">What you get</span>
               <h2 className="mt-4 font-display text-4xl font-black tracking-tight text-foreground sm:text-5xl">
-                A teardown, not a horoscope.
+                The report mirrors how serious operators think.
               </h2>
               <p className="mt-4 max-w-xl text-lg leading-8 text-muted">
-                The report is built for the moment before you open Cursor and start
-                coding. It turns a vague product idea into a decision you can act on.
+                It does not just say yes or no. It scores the idea, pressure-tests it
+                through expert frameworks, applies winner patterns, and produces a stronger
+                version of the concept.
               </p>
               <div className="mt-8 grid gap-3 sm:grid-cols-2">
                 {REPORT_SECTIONS.map((section) => (
@@ -213,26 +215,27 @@ export default function Home() {
 
             <div className="shell-panel overflow-hidden">
               <div className="border-b border-foreground/10 bg-foreground p-6 text-background">
-                <p className="text-xs font-black uppercase text-background/50">Deep report excerpt</p>
-                <p className="mt-3 font-display text-3xl font-black">Consensus: Validate First</p>
+                <p className="text-xs font-black uppercase text-background/50">Report excerpt</p>
+                <p className="mt-3 font-display text-3xl font-black">Consensus: Build Now</p>
                 <p className="mt-3 text-sm leading-6 text-background/62">
-                  Strong pain, weak wedge. Do not build the broad version. Test the
-                  narrower buyer with a paid waitlist or concierge MVP.
+                  Clear user pain and outdated competition make the idea worth building,
+                  while niche size, SEO dependency, and monetization uncertainty keep the
+                  score grounded.
                 </p>
               </div>
               <div className="grid gap-0 sm:grid-cols-2">
                 <div className="border-b border-foreground/10 p-5 sm:border-r sm:border-b-0">
-                  <p className="text-xs font-black uppercase text-red-600">Cut</p>
+                  <p className="text-xs font-black uppercase text-red-600">Expert blind spot</p>
                   <p className="mt-2 text-sm leading-6 text-muted">
-                    Generic dashboard, broad AI positioning, and any feature that does
-                    not prove payment intent.
+                    A strong UI can still be copied. The report flags where the moat is
+                    thin and how the business could break.
                   </p>
                 </div>
                 <div className="p-5">
-                  <p className="text-xs font-black uppercase text-green-700">Test</p>
+                  <p className="text-xs font-black uppercase text-green-700">Winner pattern</p>
                   <p className="mt-2 text-sm leading-6 text-muted">
-                    One buyer segment, one landing page, one hard CTA, one acquisition
-                    channel for seven days.
+                    Turn users into distribution by offering embeddable assets, shareable
+                    outputs, or community-curated submissions.
                   </p>
                 </div>
               </div>
@@ -246,9 +249,9 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
-              <span className="pill-accent">Founder rules</span>
+              <span className="pill-accent">Why it is useful</span>
               <h2 className="mt-4 font-display text-4xl font-black tracking-tight text-background sm:text-5xl">
-                The page is opinionated because the product is opinionated.
+                It gives you a better idea, not just a prettier score.
               </h2>
               <div className="mt-6 space-y-3">
                 {MAKER_RULES.map((rule) => (

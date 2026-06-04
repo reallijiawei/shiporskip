@@ -1,24 +1,23 @@
 import Link from 'next/link';
 import {
   ArrowRight,
-  BadgeDollarSign,
+  BookOpenCheck,
+  BrainCircuit,
   Flame,
-  Gauge,
-  Search,
-  ShieldAlert,
+  LineChart,
   Sparkles,
 } from 'lucide-react';
 
 const SAMPLE_OBJECTIONS = [
-  'Who is desperate enough to pay for this this week?',
-  'What distribution channel works before the product is polished?',
-  'What would make this 10x sharper than another AI wrapper?',
+  'SEO can work, but a single Google update could wipe out the whole growth engine.',
+  'A better UI is not a moat unless the output becomes the format users rely on.',
+  'Ads and affiliates are too weak unless paired with a direct paid upgrade.',
 ];
 
 const SIGNALS = [
-  { label: 'Speed', value: '< 2 min', icon: Gauge },
-  { label: 'Score', value: '7 lenses', icon: Search },
-  { label: 'Verdict', value: 'Build / Skip', icon: ShieldAlert },
+  { label: 'Panel', value: '10 experts', icon: BrainCircuit },
+  { label: 'Patterns', value: 'Winner library', icon: BookOpenCheck },
+  { label: 'Output', value: 'Concrete fixes', icon: LineChart },
 ];
 
 export default function Hero() {
@@ -32,17 +31,17 @@ export default function Hero() {
           <div className="animate-fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-card/85 px-3 py-1.5 shadow-sm">
             <Flame className="h-4 w-4 text-accent" />
             <span className="text-xs font-bold uppercase text-foreground/70">
-              For solo founders who ship, not fantasize
+              Expert frameworks + winner-pattern library
             </span>
           </div>
 
           <h1 className="animate-fade-up delay-100 max-w-5xl break-words font-display text-4xl font-black leading-[0.98] tracking-tight text-foreground sm:text-7xl lg:text-8xl">
-            Kill bad startup ideas before they kill your weekends.
+            Let 10 expert mindsets tear apart your idea before you build.
           </h1>
 
           <p className="animate-fade-up delay-200 mt-6 max-w-2xl text-lg font-semibold leading-8 text-muted sm:text-2xl">
-            Your friends say &ldquo;sounds cool.&rdquo; ShipOrSkip tells you if strangers would pay,
-            where the idea breaks, and what to test before you build.
+            ShipOrSkip scores your idea, surfaces brutal objections, compares it against
+            patterns from winning products, and gives you specific ways to improve it.
           </p>
 
           <div className="animate-fade-up delay-300 mt-8 flex flex-col gap-3 sm:flex-row">
@@ -50,14 +49,14 @@ export default function Hero() {
               href="/idea/new"
               className="btn-primary inline-flex w-[calc(100vw-2rem)] max-w-full items-center justify-center gap-2 px-8 py-4 text-base font-black tracking-tight sm:w-auto"
             >
-              Roast my idea
+              Analyze my idea
               <ArrowRight className="h-5 w-5" />
             </Link>
             <Link
               href="#sample-report"
               className="btn-secondary inline-flex w-[calc(100vw-2rem)] max-w-full items-center justify-center gap-2 px-7 py-4 text-base font-bold sm:w-auto"
             >
-              See the teardown
+              See report preview
             </Link>
           </div>
 
@@ -76,28 +75,28 @@ export default function Hero() {
           <div className="shell-panel w-[calc(100vw-2rem)] max-w-full overflow-hidden p-4 sm:w-auto sm:p-5">
             <div className="flex flex-col gap-4 border-b border-foreground/10 pb-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <p className="text-xs font-black uppercase text-muted">Sample verdict</p>
+                <p className="text-xs font-black uppercase text-muted">Sample report</p>
                 <h2 className="mt-2 font-display text-3xl font-black tracking-tight text-foreground">
-                  Validate First
+                  Build Now
                 </h2>
                 <p className="mt-2 max-w-md text-sm leading-6 text-muted">
-                  The pain is real. The first version is too broad. Win a tiny niche before
-                  writing the full app.
+                  Clear user pain, outdated competition, strong SEO potential. Validate
+                  monetization and traffic before expanding scope.
                 </p>
               </div>
               <div className="w-fit rounded-full bg-[var(--lime)] px-4 py-2 font-display text-xl font-black text-foreground">
-                71/100
+                70/100
               </div>
             </div>
 
             <div className="mt-4 rounded-[8px] bg-foreground p-5 text-background">
               <div className="flex items-center gap-2">
-                <BadgeDollarSign className="h-5 w-5 text-[var(--lime)]" />
-                <p className="text-xs font-black uppercase text-background/55">Will people pay?</p>
+                <BrainCircuit className="h-5 w-5 text-[var(--lime)]" />
+                <p className="text-xs font-black uppercase text-background/55">Expert panel consensus</p>
               </div>
               <p className="mt-3 text-lg font-bold leading-7">
-                Maybe, but only if the product saves a founder money or removes a painful
-                recurring task. &ldquo;Nice dashboard&rdquo; is not enough.
+                Majority of experts recommend building due to real pain and weak incumbents,
+                but flag niche size, SEO dependency, and monetization uncertainty.
               </p>
             </div>
 
@@ -115,11 +114,11 @@ export default function Hero() {
             <div className="mt-4 rounded-[8px] border border-foreground/10 bg-[var(--sky)]/16 p-4">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-accent" />
-                <p className="text-xs font-black uppercase text-muted">Best next test</p>
+                <p className="text-xs font-black uppercase text-muted">Concrete improvement</p>
               </div>
               <p className="mt-2 text-sm font-semibold leading-6 text-foreground">
-                Launch a one-page SEO test with a payment intent CTA. If nobody clicks,
-                do not build the app.
+                Start with one excellent calculator, add print-friendly output, then apply
+                proven winner patterns like embeddable assets and community submissions.
               </p>
             </div>
           </div>
