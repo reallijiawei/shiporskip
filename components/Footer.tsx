@@ -18,18 +18,24 @@ export default function Footer() {
             Brutally validate your indie product idea before you waste weeks building it.
           </p>
 
-          <div className="flex gap-6">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 sm:justify-end">
             <Link href="/pricing" className="text-sm text-background/55 transition-colors hover:text-accent">
               Pricing
             </Link>
             <Link href="/dashboard" className="text-sm text-background/55 transition-colors hover:text-accent">
               Dashboard
             </Link>
+            <Link href="/privacy" className="text-sm text-background/55 transition-colors hover:text-accent">
+              Privacy
+            </Link>
+            <Link href="/terms" className="text-sm text-background/55 transition-colors hover:text-accent">
+              Terms
+            </Link>
           </div>
         </div>
 
         <div className="mt-8 border-t border-background/10 pt-6 text-center text-xs text-background/35">
-          © {new Date().getFullYear()} ShipOrSkip. Not for VC pitch decks. Not for vague startup theory.
+          &copy; {new Date().getFullYear()} ShipOrSkip. Not for VC pitch decks. Not for vague startup theory.
         </div>
       </div>
     </footer>
