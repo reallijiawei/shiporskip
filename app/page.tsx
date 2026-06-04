@@ -4,38 +4,83 @@ import Hero from '@/components/Hero';
 import PricingTable from '@/components/PricingTable';
 import Link from 'next/link';
 import { useState } from 'react';
-import { ChevronDown, ArrowRight } from 'lucide-react';
+import {
+  ArrowRight,
+  CheckCircle2,
+  ChevronDown,
+  CircleDollarSign,
+  Clock3,
+  Eye,
+  Hammer,
+  Radar,
+  Skull,
+  Sparkles,
+  XCircle,
+} from 'lucide-react';
 
 const STEPS = [
   {
     step: '01',
-    title: 'Describe your idea',
-    description: 'Tell us what you want to build. The more detail, the better the roast.',
+    title: 'Paste the messy version',
+    description: 'No polished pitch needed. Describe the idea, target user, monetization, and how you think you will get traffic.',
   },
   {
     step: '02',
-    title: 'Get a brutal assessment',
-    description: 'Our AI tears apart your idea with expert thinking frameworks and market signals.',
+    title: 'Get the objections first',
+    description: 'ShipOrSkip looks for weak demand, crowded positioning, bad distribution, unclear payment intent, and fragile MVP scope.',
   },
   {
     step: '03',
-    title: 'Validate or kill it',
-    description: 'Deep-dive with 10-expert panel analysis, or move on to the next idea.',
+    title: 'Leave with a next test',
+    description: 'You get a verdict and a practical validation move: build now, narrow the niche, test demand, or skip cleanly.',
   },
 ];
 
 const INCLUDED = [
-  'Brutal objections to your idea',
-  'Expert thinking framework analysis',
-  'Market signal checks',
-  'Failure pattern detection',
-  '10-expert panel with consensus verdict',
-  'MVP scope recommendations',
+  'Build / Skip / Validate First verdict',
+  'The objections a smart customer would raise',
+  'Market, SEO, distribution, and monetization scoring',
+  'Failure pattern detection before you write code',
+  '10-expert panel analysis in the Deep Report',
+  'MVP scope: must-have, nice-to-have, cut for V1',
 ];
 
 const EXCLUDED = [
-  'Vague startup theory',
+  'Motivational founder therapy',
   'VC pitch deck advice',
+  'A 40-page business plan nobody reads',
+];
+
+const PAINS = [
+  {
+    icon: Clock3,
+    title: 'You can lose a month to a polite lie.',
+    copy: 'The expensive part is not code. It is building for a fake buyer because everyone around you was too nice.',
+  },
+  {
+    icon: CircleDollarSign,
+    title: 'Most ideas fail at payment intent.',
+    copy: 'ShipOrSkip forces the uncomfortable question: who pays, why now, and what cheaper substitute already exists?',
+  },
+  {
+    icon: Radar,
+    title: 'Distribution is part of the product.',
+    copy: 'A good idea with no first channel is just a private hobby. The report grades how the idea reaches strangers.',
+  },
+];
+
+const REPORT_SECTIONS = [
+  { icon: Eye, title: 'Demand signal', copy: 'Is there visible pain, search intent, or community discussion?' },
+  { icon: Skull, title: 'Failure patterns', copy: 'Common traps like "too crowded", "free tool, bad business", or weak urgency.' },
+  { icon: Hammer, title: 'MVP scope', copy: 'What to build first, what to postpone, and what to cut entirely.' },
+  { icon: Sparkles, title: 'Better version', copy: 'A sharper positioning angle if the raw idea is too generic.' },
+];
+
+const MAKER_RULES = [
+  'Charge the idea rent before it gets your time.',
+  'Prefer a painful niche over a huge vague market.',
+  'If distribution is hand-wavy, the idea is not ready.',
+  'A skip verdict is a win if it saves three weekends.',
 ];
 
 const FAQ = [
@@ -83,16 +128,44 @@ export default function Home() {
     <>
       <Hero />
 
-      {/* How It Works */}
-      <section id="how-it-works" className="pt-8 pb-16">
+      {/* Pain */}
+      <section className="pb-16 pt-4">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl">
-            <h2 className="animate-fade-up font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              How it works
+          <div className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
+            <div>
+              <span className="pill-accent">The real problem</span>
+              <h2 className="mt-4 max-w-xl font-display text-4xl font-black tracking-tight text-foreground sm:text-5xl">
+                Bad ideas do not feel bad at the start.
+              </h2>
+              <p className="mt-4 max-w-lg text-lg leading-8 text-muted">
+                They feel exciting, obvious, and &ldquo;only a weekend away.&rdquo; Then the weekend
+                becomes a month and the market stays silent.
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              {PAINS.map((pain) => (
+                <div key={pain.title} className="shell-panel p-5">
+                  <pain.icon className="h-6 w-6 text-accent" />
+                  <h3 className="mt-5 font-display text-xl font-black leading-tight text-foreground">
+                    {pain.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-muted">{pain.copy}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section id="how-it-works" className="border-y border-foreground/10 bg-card/45 py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="pill-accent">How it works</span>
+            <h2 className="mt-4 font-display text-3xl font-black tracking-tight text-foreground sm:text-5xl">
+              Three steps from fuzzy idea to honest decision.
             </h2>
-            <p className="animate-fade-up delay-100 mt-3 text-base text-muted">
-              Stop asking friends if your idea is good. They will be polite. We won&apos;t.
-            </p>
           </div>
 
           <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
@@ -104,7 +177,7 @@ export default function Home() {
                 <span className="rounded-full bg-foreground px-3 py-1 text-xs font-bold text-background">
                   {item.step}
                 </span>
-                <h3 className="mt-5 font-display text-xl font-bold text-foreground">
+                <h3 className="mt-5 font-display text-xl font-black text-foreground">
                   {item.title}
                 </h3>
                 <p className="mt-3 text-sm leading-6 text-muted">{item.description}</p>
@@ -114,37 +187,102 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Report */}
+      <section className="py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+            <div>
+              <span className="pill-accent">What you get</span>
+              <h2 className="mt-4 font-display text-4xl font-black tracking-tight text-foreground sm:text-5xl">
+                A teardown, not a horoscope.
+              </h2>
+              <p className="mt-4 max-w-xl text-lg leading-8 text-muted">
+                The report is built for the moment before you open Cursor and start
+                coding. It turns a vague product idea into a decision you can act on.
+              </p>
+              <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                {REPORT_SECTIONS.map((section) => (
+                  <div key={section.title} className="rounded-[8px] border border-foreground/10 bg-card/80 p-4">
+                    <section.icon className="h-5 w-5 text-accent" />
+                    <h3 className="mt-3 font-display text-lg font-black text-foreground">{section.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-muted">{section.copy}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="shell-panel overflow-hidden">
+              <div className="border-b border-foreground/10 bg-foreground p-6 text-background">
+                <p className="text-xs font-black uppercase text-background/50">Deep report excerpt</p>
+                <p className="mt-3 font-display text-3xl font-black">Consensus: Validate First</p>
+                <p className="mt-3 text-sm leading-6 text-background/62">
+                  Strong pain, weak wedge. Do not build the broad version. Test the
+                  narrower buyer with a paid waitlist or concierge MVP.
+                </p>
+              </div>
+              <div className="grid gap-0 sm:grid-cols-2">
+                <div className="border-b border-foreground/10 p-5 sm:border-r sm:border-b-0">
+                  <p className="text-xs font-black uppercase text-red-600">Cut</p>
+                  <p className="mt-2 text-sm leading-6 text-muted">
+                    Generic dashboard, broad AI positioning, and any feature that does
+                    not prove payment intent.
+                  </p>
+                </div>
+                <div className="p-5">
+                  <p className="text-xs font-black uppercase text-green-700">Test</p>
+                  <p className="mt-2 text-sm leading-6 text-muted">
+                    One buyer segment, one landing page, one hard CTA, one acquisition
+                    channel for seven days.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* What You Get */}
       <section className="border-y border-foreground/10 bg-foreground py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-display text-3xl font-bold tracking-tight text-background sm:text-4xl">
-              What you get
-            </h2>
-          </div>
+          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+            <div>
+              <span className="pill-accent">Founder rules</span>
+              <h2 className="mt-4 font-display text-4xl font-black tracking-tight text-background sm:text-5xl">
+                The page is opinionated because the product is opinionated.
+              </h2>
+              <div className="mt-6 space-y-3">
+                {MAKER_RULES.map((rule) => (
+                  <div key={rule} className="flex gap-3 text-background/78">
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[var(--lime)]" />
+                    <p className="text-sm font-semibold leading-6">{rule}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-          <div className="mx-auto mt-10 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="rounded-[8px] border border-background/10 bg-background/5 p-6">
-              <h3 className="font-display text-lg font-bold text-accent">Included</h3>
+              <h3 className="font-display text-lg font-black text-accent">Included</h3>
               <ul className="mt-5 space-y-3">
                 {INCLUDED.map((item) => (
                   <li key={item} className="flex items-start gap-3">
-                    <span className="mt-1.5 h-2.5 w-2.5 shrink-0 bg-accent" />
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
                     <span className="text-sm text-background/80">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
             <div className="rounded-[8px] border border-background/10 bg-background/5 p-6">
-              <h3 className="font-display text-lg font-bold text-background/40">Not included</h3>
+              <h3 className="font-display text-lg font-black text-background/40">Not included</h3>
               <ul className="mt-5 space-y-3">
                 {EXCLUDED.map((item) => (
                   <li key={item} className="flex items-start gap-3">
-                    <span className="mt-1.5 h-2.5 w-2.5 shrink-0 border-2 border-background/20" />
+                    <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-background/25" />
                     <span className="text-sm text-background/30 line-through">{item}</span>
                   </li>
                 ))}
               </ul>
+            </div>
             </div>
           </div>
         </div>

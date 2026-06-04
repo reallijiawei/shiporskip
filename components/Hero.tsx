@@ -1,106 +1,128 @@
 import Link from 'next/link';
-import { ArrowRight, Gauge, AlertTriangle, Lightbulb } from 'lucide-react';
+import {
+  ArrowRight,
+  BadgeDollarSign,
+  Flame,
+  Gauge,
+  Search,
+  ShieldAlert,
+  Sparkles,
+} from 'lucide-react';
+
+const SAMPLE_OBJECTIONS = [
+  'Who is desperate enough to pay for this this week?',
+  'What distribution channel works before the product is polished?',
+  'What would make this 10x sharper than another AI wrapper?',
+];
+
+const SIGNALS = [
+  { label: 'Speed', value: '< 2 min', icon: Gauge },
+  { label: 'Score', value: '7 lenses', icon: Search },
+  { label: 'Verdict', value: 'Build / Skip', icon: ShieldAlert },
+];
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden pt-10 pb-8 sm:pt-16 sm:pb-12">
-      <div className="absolute inset-x-0 top-0 h-28 bg-[linear-gradient(180deg,rgba(255,253,247,0.92),rgba(255,253,247,0))]" />
-      <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-[1.03fr_0.97fr] lg:px-8">
-        <div className="relative min-w-0">
-          <div className="animate-fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-card/80 px-3 py-1.5 shadow-sm">
-            <Gauge className="h-4 w-4 text-accent" />
+    <section className="relative overflow-hidden pb-14 pt-10 sm:pb-18 sm:pt-16">
+      <div className="absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(255,253,247,0.96),rgba(255,253,247,0))]" />
+      <div className="pointer-events-none absolute left-1/2 top-20 h-80 w-80 -translate-x-1/2 rounded-full bg-accent/12 blur-3xl" />
+
+      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:px-8">
+        <div className="min-w-0">
+          <div className="animate-fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-card/85 px-3 py-1.5 shadow-sm">
+            <Flame className="h-4 w-4 text-accent" />
             <span className="text-xs font-bold uppercase text-foreground/70">
-              Founder-grade idea triage
+              For solo founders who ship, not fantasize
             </span>
           </div>
 
-          <h1 className="animate-fade-up delay-100 max-w-4xl break-words font-display text-4xl font-bold leading-[1.02] tracking-tight text-foreground sm:text-7xl">
-            Validate your indie product idea
+          <h1 className="animate-fade-up delay-100 max-w-5xl break-words font-display text-4xl font-black leading-[0.98] tracking-tight text-foreground sm:text-7xl lg:text-8xl">
+            Kill bad startup ideas before they kill your weekends.
           </h1>
-          <p className="animate-fade-up delay-200 mt-4 max-w-2xl font-display text-xl font-semibold text-muted sm:text-3xl">
-            before you waste weeks building it.
+
+          <p className="animate-fade-up delay-200 mt-6 max-w-2xl text-lg font-semibold leading-8 text-muted sm:text-2xl">
+            Your friends say &ldquo;sounds cool.&rdquo; ShipOrSkip tells you if strangers would pay,
+            where the idea breaks, and what to test before you build.
           </p>
 
-          <p className="animate-fade-up delay-300 mt-6 max-w-2xl text-lg leading-8 text-muted">
-            Most people will tell you your idea sounds interesting. We tell you whether it&apos;s
-            worth building. Get a brutal quick assessment with expert thinking frameworks
-            and failure pattern detection.
-          </p>
-
-          <div className="animate-fade-up delay-400 mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="animate-fade-up delay-300 mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/idea/new"
-              className="btn-primary inline-flex w-full items-center justify-center gap-2 px-8 py-3.5 text-base font-bold tracking-tight sm:w-auto"
+              className="btn-primary inline-flex w-[calc(100vw-2rem)] max-w-full items-center justify-center gap-2 px-8 py-4 text-base font-black tracking-tight sm:w-auto"
             >
-              Validate Your Idea
-              <ArrowRight className="h-4 w-4" />
+              Roast my idea
+              <ArrowRight className="h-5 w-5" />
             </Link>
             <Link
-              href="#how-it-works"
-              className="btn-secondary inline-flex w-full items-center justify-center gap-2 px-6 py-3 text-base font-semibold sm:w-auto"
+              href="#sample-report"
+              className="btn-secondary inline-flex w-[calc(100vw-2rem)] max-w-full items-center justify-center gap-2 px-7 py-4 text-base font-bold sm:w-auto"
             >
-              How it works
+              See the teardown
             </Link>
           </div>
 
-          <div className="animate-fade-up delay-500 mt-10 flex flex-wrap items-center gap-3">
-            <span className="text-sm font-bold text-foreground/60">Try an example</span>
-            {[
-              'AI habit tracker for smokers',
-              'Directory of one-time purchase software',
-              'Chrome extension for saving Reddit posts',
-            ].map((example) => (
-              <Link
-                key={example}
-                href={`/idea/new?example=${encodeURIComponent(example)}`}
-                className="rounded-full border border-foreground/10 bg-card/75 px-3 py-1.5 text-sm text-muted transition-all hover:border-accent/50 hover:bg-card hover:text-foreground"
-              >
-                {example}
-              </Link>
+          <div className="animate-fade-up delay-400 mt-9 grid w-[calc(100vw-2rem)] max-w-2xl grid-cols-3 gap-2">
+            {SIGNALS.map((signal) => (
+              <div key={signal.label} className="rounded-[8px] border border-foreground/10 bg-card/75 p-3">
+                <signal.icon className="h-4 w-4 text-accent" />
+                <p className="mt-3 text-[11px] font-bold uppercase text-muted">{signal.label}</p>
+                <p className="mt-1 font-display text-lg font-black text-foreground">{signal.value}</p>
+              </div>
             ))}
           </div>
         </div>
 
-        <div className="animate-fade-up delay-200 relative min-w-0">
-          <div className="shell-panel overflow-hidden p-4 sm:p-5">
-            <div className="border-b border-foreground/10 pb-4">
-              <p className="text-xs font-bold uppercase text-muted">Quick Assessment</p>
-              <p className="mt-2 font-display text-lg font-bold leading-snug">
-                AI habit tracker for smokers — decent idea, but the market is saturated with free alternatives.
+        <div id="sample-report" className="animate-fade-up delay-200 relative min-w-0">
+          <div className="shell-panel w-[calc(100vw-2rem)] max-w-full overflow-hidden p-4 sm:w-auto sm:p-5">
+            <div className="flex flex-col gap-4 border-b border-foreground/10 pb-4 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="text-xs font-black uppercase text-muted">Sample verdict</p>
+                <h2 className="mt-2 font-display text-3xl font-black tracking-tight text-foreground">
+                  Validate First
+                </h2>
+                <p className="mt-2 max-w-md text-sm leading-6 text-muted">
+                  The pain is real. The first version is too broad. Win a tiny niche before
+                  writing the full app.
+                </p>
+              </div>
+              <div className="w-fit rounded-full bg-[var(--lime)] px-4 py-2 font-display text-xl font-black text-foreground">
+                71/100
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-[8px] bg-foreground p-5 text-background">
+              <div className="flex items-center gap-2">
+                <BadgeDollarSign className="h-5 w-5 text-[var(--lime)]" />
+                <p className="text-xs font-black uppercase text-background/55">Will people pay?</p>
+              </div>
+              <p className="mt-3 text-lg font-bold leading-7">
+                Maybe, but only if the product saves a founder money or removes a painful
+                recurring task. &ldquo;Nice dashboard&rdquo; is not enough.
               </p>
             </div>
 
-            <div className="mt-4 rounded-[8px] border-l-4 border-red-500 bg-foreground/5 p-4">
-              <p className="text-xs font-bold uppercase text-red-500">Brutal Objections</p>
-              <ul className="mt-2.5 space-y-2">
-                {[
-                  'Why would someone pay for this when iOS Health exists?',
-                  'Smoking cessation apps have <2% paid conversion rates.',
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-foreground/70">
-                    <span className="mt-1 h-1.5 w-1.5 shrink-0 bg-red-400" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-              {[
-                { icon: Lightbulb, name: 'First-Principles', take: 'Core need is real, but delivery must differ.' },
-                { icon: AlertTriangle, name: 'Contrarian', take: 'Go niche — ex-smokers helping smokers.' },
-                { icon: Gauge, name: 'Growth Hacker', take: 'TikTok virality is the only viable channel.' },
-              ].map((item) => (
-                <div key={item.name} className="rounded-[8px] border border-foreground/10 bg-card p-3">
-                  <item.icon className="h-4 w-4 text-accent" />
-                  <p className="mt-2 text-xs font-bold text-foreground">{item.name}</p>
-                  <p className="mt-1 text-[11px] leading-snug text-muted">&ldquo;{item.take}&rdquo;</p>
+            <div className="mt-4 grid gap-3">
+              {SAMPLE_OBJECTIONS.map((objection, index) => (
+                <div key={objection} className="flex gap-3 rounded-[8px] border border-foreground/10 bg-card p-4">
+                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-accent text-xs font-black text-white">
+                    {index + 1}
+                  </span>
+                  <p className="text-sm font-semibold leading-6 text-foreground/78">{objection}</p>
                 </div>
               ))}
             </div>
+
+            <div className="mt-4 rounded-[8px] border border-foreground/10 bg-[var(--sky)]/16 p-4">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-accent" />
+                <p className="text-xs font-black uppercase text-muted">Best next test</p>
+              </div>
+              <p className="mt-2 text-sm font-semibold leading-6 text-foreground">
+                Launch a one-page SEO test with a payment intent CTA. If nobody clicks,
+                do not build the app.
+              </p>
+            </div>
           </div>
-          <div className="absolute -right-4 -top-4 -z-10 h-28 w-28 rounded-full bg-[var(--sky)]/45 blur-2xl" />
-          <div className="absolute -bottom-5 left-8 -z-10 h-24 w-40 rounded-full bg-accent/20 blur-2xl" />
         </div>
       </div>
     </section>
