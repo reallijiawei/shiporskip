@@ -106,15 +106,31 @@ const MAKER_RULES = [
 const FAQ = [
   {
     question: 'Who is this for?',
-    answer: 'Solo founders, indie hackers, and makers building micro-SaaS, AI tools, directories, content sites, Chrome extensions, and small online products.',
+    answer: 'Solo founders, indie hackers, and makers who want a sharper pre-build review for micro-SaaS, AI tools, directories, content sites, Chrome extensions, calculators, and other small online products.',
   },
   {
     question: 'Who is this NOT for?',
-    answer: 'VC-backed startups, offline businesses, hardware, biotech, or anyone looking for a business plan generator.',
+    answer: 'It is not for offline businesses, hardware, biotech, regulated medical advice, or anyone looking for a polished pitch deck. It is a critique and improvement tool, not a business plan generator.',
   },
   {
-    question: 'Is the AI actually accurate?',
-    answer: 'It gives you a structured framework to evaluate your idea. It\'s not perfect, but it\'s better than asking your friends who will just say "sounds cool!"',
+    question: 'Will you steal or expose my idea data?',
+    answer: 'No. The product is built to analyze the idea you submit and generate your report, not to steal, publish, resell, or train a public idea database from your private submissions. Avoid entering passwords, API keys, or confidential customer data.',
+  },
+  {
+    question: 'How are the expert thinking models built?',
+    answer: 'We study public interviews, social posts, books, essays, shareholder letters, product decisions, reports, and other public materials, then distill recurring decision patterns into thinking models. The report uses those models as analytical lenses; it does not claim endorsement or direct involvement from any person.',
+  },
+  {
+    question: 'What is the winner-pattern library?',
+    answer: 'We manually collect and organize hundreds of successful product cases and growth patterns, including viral loops, SEO plays, paid upgrades, shareable outputs, community mechanics, pricing moves, and niche positioning tactics. The report uses that library to suggest improvements that match your specific idea.',
+  },
+  {
+    question: 'What do I actually get in a report?',
+    answer: 'You get a verdict, overall score, 7-part score breakdown, brutal objections, Expert Panel reasoning, failure patterns, winner-pattern suggestions, and a concrete best-version or pivot path when the original idea is weak.',
+  },
+  {
+    question: 'Should I treat the report as final truth?',
+    answer: 'No. Treat it as a structured pre-build review. It is designed to surface risks, blind spots, and improvement directions so you can validate faster with real users, payment intent, search demand, or a small launch test.',
   },
 ];
 
@@ -212,7 +228,7 @@ export default function Home() {
             <div>
               <span className="pill-accent">What you get</span>
               <h2 className="mt-4 font-display text-4xl font-black tracking-tight text-foreground sm:text-5xl">
-              The report shows the actual reasoning, not just the verdict.
+                The report shows the actual reasoning, not just the verdict.
               </h2>
               <p className="mt-4 max-w-xl text-lg leading-8 text-muted">
                 It does not just say yes or no. It scores the idea, pressure-tests it

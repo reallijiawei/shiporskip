@@ -17,7 +17,7 @@ const SAMPLE_OBJECTIONS = [
 const SIGNALS = [
   { label: 'Frameworks', value: '10 experts lenses', icon: BrainCircuit },
   { label: 'Patterns', value: 'Winner library', icon: BookOpenCheck },
-  { label: 'Output', value: 'Concrete fixes', icon: LineChart },
+  { label: 'Output', value: 'Actionable report', icon: LineChart },
 ];
 
 export default function Hero() {
@@ -51,12 +51,6 @@ export default function Hero() {
             >
               Analyze my idea
               <ArrowRight className="h-5 w-5" />
-            </Link>
-            <Link
-              href="#sample-report"
-              className="btn-secondary inline-flex w-[calc(100vw-2rem)] max-w-full items-center justify-center gap-2 px-7 py-4 text-base font-bold sm:w-auto"
-            >
-              See report preview
             </Link>
           </div>
 
