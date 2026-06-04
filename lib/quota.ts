@@ -1,5 +1,7 @@
 import { createClient } from './supabase-server';
 
+const DEV_EMAILS = ['jiaweili19960@gmail.com'];
+
 export function getCurrentMonth() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -55,6 +57,13 @@ export async function getOrCreateQuota(userId: string) {
 }
 
 export async function checkQuota(userId: string, type: 'basic_roast' | 'deep_validation') {
+  // Dev bypass
+  const supabase = await createClient();
+  const { data: user } = await supabase.from('users').select('email').eq('id', userId).single();
+  if (user?.email && DEV_EMAILS.includes(user.email)) {
+    return { allowed: true, remaining: 999 };
+  }
+
   const quota = await getOrCreateQuota(userId);
   if (!quota) return { allowed: false, remaining: 0 };
 
