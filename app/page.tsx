@@ -94,6 +94,18 @@ const PANEL_EXAMPLES = [
     take: 'Skip the AI calorie counter. Build a dead-simple paid photo food diary first and see if anyone pays before adding model costs.',
     blindSpot: 'People may pay for accountability and photo journaling, not calorie estimation. That is a different product.',
   },
+  {
+    name: "Charlie Munger's thinking framework",
+    verdict: 'Skip',
+    take: 'The idea sits in a bad incentive system: users want effortless accuracy, but the product can only offer probabilistic guesses and recurring disappointment.',
+    blindSpot: 'If the core habit is unpleasant, more features may just create more ways for users to quit.',
+  },
+  {
+    name: "Steve Jobs's thinking framework",
+    verdict: 'Reframe',
+    take: 'The product should not lead with calorie math. It needs a simple emotional promise, a beautiful daily ritual, and an output people understand instantly.',
+    blindSpot: 'A technically clever feature still fails if the first-use experience feels like homework.',
+  },
 ];
 
 const MAKER_RULES = [
@@ -274,7 +286,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="mt-2 grid gap-4 sm:grid-cols-2 lg:col-span-2 xl:grid-cols-4">
               {PANEL_EXAMPLES.map((example) => (
                 <div key={example.name} className="rounded-[8px] border border-foreground/10 bg-card/85 p-5">
                   <div className="flex items-start justify-between gap-3">
