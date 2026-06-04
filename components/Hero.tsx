@@ -9,13 +9,13 @@ import {
 } from 'lucide-react';
 
 const SAMPLE_OBJECTIONS = [
-  'SEO can work, but a single Google update could wipe out the whole growth engine.',
-  'A better UI is not a moat unless the output becomes the format users rely on.',
-  'Ads and affiliates are too weak unless paired with a direct paid upgrade.',
+  'Photo calorie estimation is inaccurate enough to destroy user trust.',
+  'MyFitnessPal, Noom, and Lose It already own the market and habits.',
+  'The real problem is behavior change, not another logging feature.',
 ];
 
 const SIGNALS = [
-  { label: 'Frameworks', value: '10 lenses', icon: BrainCircuit },
+  { label: 'Frameworks', value: '10 experts lenses', icon: BrainCircuit },
   { label: 'Patterns', value: 'Winner library', icon: BookOpenCheck },
   { label: 'Output', value: 'Concrete fixes', icon: LineChart },
 ];
@@ -31,12 +31,12 @@ export default function Hero() {
           <div className="animate-fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-card/85 px-3 py-1.5 shadow-sm">
             <Flame className="h-4 w-4 text-accent" />
             <span className="text-xs font-bold uppercase text-foreground/70">
-              Thinking frameworks + winner-pattern library
+              Expert thinking frameworks + winner-pattern library
             </span>
           </div>
 
           <h1 className="animate-fade-up delay-100 max-w-5xl break-words font-display text-4xl font-black leading-[0.98] tracking-tight text-foreground sm:text-7xl lg:text-8xl">
-            Run your idea through 10 proven thinking frameworks before you build.
+            Run your idea through 10 expert thinking frameworks before you build.
           </h1>
 
           <p className="animate-fade-up delay-200 mt-6 max-w-2xl text-lg font-semibold leading-8 text-muted sm:text-2xl">
@@ -77,26 +77,26 @@ export default function Hero() {
               <div>
                 <p className="text-xs font-black uppercase text-muted">Sample report</p>
                 <h2 className="mt-2 font-display text-3xl font-black tracking-tight text-foreground">
-                  Build Now
+                  Skip
                 </h2>
                 <p className="mt-2 max-w-md text-sm leading-6 text-muted">
-                  Clear user pain, outdated competition, strong SEO potential. Validate
-                  monetization and traffic before expanding scope.
+                  A photo calorie counting app faces saturated competition, shaky
+                  technical foundations, and a behavioral problem logging cannot solve.
                 </p>
               </div>
-              <div className="w-fit rounded-full bg-[var(--lime)] px-4 py-2 font-display text-xl font-black text-foreground">
-                70/100
+              <div className="w-fit rounded-full bg-red-500 px-4 py-2 font-display text-xl font-black text-white">
+                22/100
               </div>
             </div>
 
             <div className="mt-4 rounded-[8px] bg-foreground p-5 text-background">
               <div className="flex items-center gap-2">
                 <BrainCircuit className="h-5 w-5 text-[var(--lime)]" />
-                <p className="text-xs font-black uppercase text-background/55">Framework panel consensus</p>
+                <p className="text-xs font-black uppercase text-background/55">Expert panel consensus</p>
               </div>
               <p className="mt-3 text-lg font-bold leading-7">
-                Most frameworks point toward building due to real pain and weak incumbents,
-                but flag niche size, SEO dependency, and monetization uncertainty.
+                The panel overwhelmingly recommends skipping because of low defensibility,
+                intense competition, poor unit economics, and behavior-change risk.
               </p>
             </div>
 
@@ -117,8 +117,8 @@ export default function Hero() {
                 <p className="text-xs font-black uppercase text-muted">Concrete improvement</p>
               </div>
               <p className="mt-2 text-sm font-semibold leading-6 text-foreground">
-                Start with one excellent calculator, add print-friendly output, then apply
-                proven winner patterns like embeddable assets and community submissions.
+                If you insist, pivot toward a high-emotion niche, charge from day one,
+                and make progress summaries shareable enough to create distribution.
               </p>
             </div>
           </div>

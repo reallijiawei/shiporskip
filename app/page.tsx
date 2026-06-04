@@ -26,7 +26,7 @@ const STEPS = [
   {
     step: '02',
     title: 'Run it through thinking frameworks',
-    description: 'The report applies multiple founder and investor-style frameworks, then shows where those lenses agree, disagree, and what each one misses.',
+    description: 'Before analysis, ShipOrSkip studies interviews, social posts, books, reports, and public writing to distill each person\'s thinking model, then uses those models to examine your submitted idea.',
   },
   {
     step: '03',
@@ -36,7 +36,7 @@ const STEPS = [
   {
     step: '04',
     title: 'Get the full report',
-    description: 'You receive the verdict, score breakdown, brutal objections, framework panel, winner-pattern ideas, failure patterns, and best version of the idea.',
+    description: 'You receive the verdict, score breakdown, brutal objections, Expert Panel, winner-pattern ideas, failure patterns, and the best version or pivot path for the idea.',
   },
 ];
 
@@ -44,10 +44,10 @@ const INCLUDED = [
   'Build / Skip / Validate First verdict',
   'Overall score and 7-part score breakdown',
   'Brutal objections and blind spots',
-  'What Winners Did Right pattern matching',
-  'Framework Panel with multiple thinking lenses',
+  'If You Insist / What Winners Did Right pattern matching',
+  'Expert Panel with multiple thinking-framework lenses',
   'Failure patterns and how to reduce them',
-  'Best Version of This Idea with concrete positioning advice',
+  'Best Version, pivot, or concrete improvement path',
 ];
 
 const EXCLUDED = [
@@ -77,12 +77,27 @@ const PAINS = [
 const REPORT_SECTIONS = [
   { icon: Eye, title: 'Score breakdown', copy: 'Demand, buildability, distribution, monetization, SEO potential, moat, and solo-founder fit.' },
   { icon: Skull, title: 'Brutal objections', copy: 'The hard objections that would kill trust, traffic, revenue, or execution.' },
-  { icon: BrainCircuit, title: 'Framework panel', copy: 'Multiple thinking lenses, each with verdict, argument, and blind spot.' },
-  { icon: Sparkles, title: 'Best version', copy: 'A more focused version of the idea with sharper positioning and execution advice.' },
+  { icon: BrainCircuit, title: 'Expert panel', copy: 'Multiple thinking-framework lenses, each with verdict, argument, and blind spot.' },
+  { icon: Sparkles, title: 'Pivot path', copy: 'If the original idea is weak, the report shows what a stronger version could become.' },
+];
+
+const PANEL_EXAMPLES = [
+  {
+    name: "Elon Musk's framework",
+    verdict: 'Pivot',
+    take: 'Photo calorie counting breaks on first principles: a 2D image cannot reliably capture volume, density, hidden oil, or ingredients.',
+    blindSpot: 'Regulatory and health-liability risk can turn an inaccurate wellness feature into a serious business hazard.',
+  },
+  {
+    name: "Pieter Levels's thinking framework",
+    verdict: 'Validate First',
+    take: 'Skip the AI calorie counter. Build a dead-simple paid photo food diary first and see if anyone pays before adding model costs.',
+    blindSpot: 'People may pay for accountability and photo journaling, not calorie estimation. That is a different product.',
+  },
 ];
 
 const MAKER_RULES = [
-  'Do not trust one lens. Compare how different operators would judge the same idea.',
+  'Do not trust one lens. Compare how different thinking models judge the same idea.',
   'Look for repeatable growth patterns from products that already worked.',
   'Treat brutal objections as product requirements, not insults.',
   'The best output is not encouragement. It is a better version of the idea.',
@@ -100,10 +115,6 @@ const FAQ = [
   {
     question: 'Is the AI actually accurate?',
     answer: 'It gives you a structured framework to evaluate your idea. It\'s not perfect, but it\'s better than asking your friends who will just say "sounds cool!"',
-  },
-  {
-    question: 'Can I get a refund?',
-    answer: 'Yes, if you\'re not satisfied with your Deep Report, contact us within 7 days for a full refund.',
   },
 ];
 
@@ -201,12 +212,12 @@ export default function Home() {
             <div>
               <span className="pill-accent">What you get</span>
               <h2 className="mt-4 font-display text-4xl font-black tracking-tight text-foreground sm:text-5xl">
-                The report mirrors how serious operators think.
+              The report shows the actual reasoning, not just the verdict.
               </h2>
               <p className="mt-4 max-w-xl text-lg leading-8 text-muted">
                 It does not just say yes or no. It scores the idea, pressure-tests it
-                through founder and investor-style thinking frameworks, applies winner
-                patterns, and produces a stronger version of the concept.
+                through expert thinking-framework models, applies winner patterns, and
+                shows the stronger version, pivot path, or reason to skip.
               </p>
               <div className="mt-8 grid gap-3 sm:grid-cols-2">
                 {REPORT_SECTIONS.map((section) => (
@@ -222,29 +233,45 @@ export default function Home() {
             <div className="shell-panel overflow-hidden">
               <div className="border-b border-foreground/10 bg-foreground p-6 text-background">
                 <p className="text-xs font-black uppercase text-background/50">Report excerpt</p>
-                <p className="mt-3 font-display text-3xl font-black">Consensus: Build Now</p>
+                <p className="mt-3 font-display text-3xl font-black">Consensus: Skip</p>
                 <p className="mt-3 text-sm leading-6 text-background/62">
-                  Clear user pain and outdated competition make the idea worth building,
-                  while niche size, SEO dependency, and monetization uncertainty keep the
-                  score grounded.
+                  A photo calorie app scores 22/100 because the market is saturated,
+                  model accuracy is fragile, web delivery adds friction, and the real
+                  problem is behavior change.
                 </p>
               </div>
               <div className="grid gap-0 sm:grid-cols-2">
                 <div className="border-b border-foreground/10 p-5 sm:border-r sm:border-b-0">
-                  <p className="text-xs font-black uppercase text-red-600">Framework blind spot</p>
+                  <p className="text-xs font-black uppercase text-red-600">Failure pattern</p>
                   <p className="mt-2 text-sm leading-6 text-muted">
-                    A strong UI can still be copied. The report flags where the moat is
-                    thin and how the business could break.
+                    Chasing a shiny AI feature distracts from the emotional and habit
+                    problem that makes diet products churn.
                   </p>
                 </div>
                 <div className="p-5">
-                  <p className="text-xs font-black uppercase text-green-700">Winner pattern</p>
+                  <p className="text-xs font-black uppercase text-green-700">If you insist</p>
                   <p className="mt-2 text-sm leading-6 text-muted">
-                    Turn users into distribution by offering embeddable assets, shareable
-                    outputs, or community-curated submissions.
+                    Target a high-emotion sub-niche, charge early, and make weekly progress
+                    output shareable instead of betting on calorie estimation.
                   </p>
                 </div>
               </div>
+            </div>
+
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              {PANEL_EXAMPLES.map((example) => (
+                <div key={example.name} className="rounded-[8px] border border-foreground/10 bg-card/85 p-5">
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="font-display text-lg font-black text-foreground">{example.name}</h3>
+                    <span className="rounded-full bg-foreground px-3 py-1 text-xs font-black text-background">
+                      {example.verdict}
+                    </span>
+                  </div>
+                  <p className="mt-4 text-sm font-semibold leading-6 text-foreground/80">{example.take}</p>
+                  <p className="mt-4 text-xs font-black uppercase text-accent">Blind spot</p>
+                  <p className="mt-1 text-sm leading-6 text-muted">{example.blindSpot}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
