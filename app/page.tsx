@@ -25,13 +25,18 @@ const STEPS = [
   },
   {
     step: '02',
-    title: 'Run it through expert mindsets',
-    description: 'The report applies multiple founder and investor thinking frameworks, then shows where they agree, disagree, and what each one misses.',
+    title: 'Run it through thinking frameworks',
+    description: 'The report applies multiple founder and investor-style frameworks, then shows where those lenses agree, disagree, and what each one misses.',
   },
   {
     step: '03',
     title: 'Apply winner patterns',
     description: 'ShipOrSkip compares your idea against patterns from products that grew, then turns those patterns into concrete improvements for your case.',
+  },
+  {
+    step: '04',
+    title: 'Get the full report',
+    description: 'You receive the verdict, score breakdown, brutal objections, framework panel, winner-pattern ideas, failure patterns, and best version of the idea.',
   },
 ];
 
@@ -40,7 +45,7 @@ const INCLUDED = [
   'Overall score and 7-part score breakdown',
   'Brutal objections and blind spots',
   'What Winners Did Right pattern matching',
-  'Expert Panel with named thinking frameworks',
+  'Framework Panel with multiple thinking lenses',
   'Failure patterns and how to reduce them',
   'Best Version of This Idea with concrete positioning advice',
 ];
@@ -55,7 +60,7 @@ const PAINS = [
   {
     icon: BrainCircuit,
     title: 'One opinion is too fragile.',
-    copy: 'A single AI answer can sound confident and still miss the obvious. ShipOrSkip forces the idea through multiple expert frames.',
+    copy: 'A single AI answer can sound confident and still miss the obvious. ShipOrSkip forces the idea through multiple operator-grade thinking frames.',
   },
   {
     icon: BookOpenCheck,
@@ -72,7 +77,7 @@ const PAINS = [
 const REPORT_SECTIONS = [
   { icon: Eye, title: 'Score breakdown', copy: 'Demand, buildability, distribution, monetization, SEO potential, moat, and solo-founder fit.' },
   { icon: Skull, title: 'Brutal objections', copy: 'The hard objections that would kill trust, traffic, revenue, or execution.' },
-  { icon: BrainCircuit, title: 'Expert panel', copy: 'Multiple named thinking frameworks, each with verdict, argument, and blind spot.' },
+  { icon: BrainCircuit, title: 'Framework panel', copy: 'Multiple thinking lenses, each with verdict, argument, and blind spot.' },
   { icon: Sparkles, title: 'Best version', copy: 'A more focused version of the idea with sharper positioning and execution advice.' },
 ];
 
@@ -139,7 +144,8 @@ export default function Home() {
               </h2>
               <p className="mt-4 max-w-lg text-lg leading-8 text-muted">
                 Most idea validators stop at a generic verdict. Your actual report needs
-                to explain why experts disagree, what winners did right, and how to improve
+                to explain why different thinking frameworks disagree, what winners did
+                right, and how to improve
                 the idea before you spend time building.
               </p>
             </div>
@@ -165,11 +171,11 @@ export default function Home() {
           <div className="mx-auto max-w-3xl text-center">
             <span className="pill-accent">How it works</span>
             <h2 className="mt-4 font-display text-3xl font-black tracking-tight text-foreground sm:text-5xl">
-              From raw idea to expert-backed improvement plan.
+              From raw idea to report-backed improvement plan.
             </h2>
           </div>
 
-          <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
+          <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((item) => (
               <div
                 key={item.step}
@@ -199,8 +205,8 @@ export default function Home() {
               </h2>
               <p className="mt-4 max-w-xl text-lg leading-8 text-muted">
                 It does not just say yes or no. It scores the idea, pressure-tests it
-                through expert frameworks, applies winner patterns, and produces a stronger
-                version of the concept.
+                through founder and investor-style thinking frameworks, applies winner
+                patterns, and produces a stronger version of the concept.
               </p>
               <div className="mt-8 grid gap-3 sm:grid-cols-2">
                 {REPORT_SECTIONS.map((section) => (
@@ -225,7 +231,7 @@ export default function Home() {
               </div>
               <div className="grid gap-0 sm:grid-cols-2">
                 <div className="border-b border-foreground/10 p-5 sm:border-r sm:border-b-0">
-                  <p className="text-xs font-black uppercase text-red-600">Expert blind spot</p>
+                  <p className="text-xs font-black uppercase text-red-600">Framework blind spot</p>
                   <p className="mt-2 text-sm leading-6 text-muted">
                     A strong UI can still be copied. The report flags where the moat is
                     thin and how the business could break.

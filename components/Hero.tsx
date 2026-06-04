@@ -15,7 +15,7 @@ const SAMPLE_OBJECTIONS = [
 ];
 
 const SIGNALS = [
-  { label: 'Panel', value: '10 experts', icon: BrainCircuit },
+  { label: 'Frameworks', value: '10 lenses', icon: BrainCircuit },
   { label: 'Patterns', value: 'Winner library', icon: BookOpenCheck },
   { label: 'Output', value: 'Concrete fixes', icon: LineChart },
 ];
@@ -31,12 +31,12 @@ export default function Hero() {
           <div className="animate-fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-card/85 px-3 py-1.5 shadow-sm">
             <Flame className="h-4 w-4 text-accent" />
             <span className="text-xs font-bold uppercase text-foreground/70">
-              Expert frameworks + winner-pattern library
+              Thinking frameworks + winner-pattern library
             </span>
           </div>
 
           <h1 className="animate-fade-up delay-100 max-w-5xl break-words font-display text-4xl font-black leading-[0.98] tracking-tight text-foreground sm:text-7xl lg:text-8xl">
-            Let 10 expert mindsets tear apart your idea before you build.
+            Run your idea through 10 proven thinking frameworks before you build.
           </h1>
 
           <p className="animate-fade-up delay-200 mt-6 max-w-2xl text-lg font-semibold leading-8 text-muted sm:text-2xl">
@@ -92,10 +92,10 @@ export default function Hero() {
             <div className="mt-4 rounded-[8px] bg-foreground p-5 text-background">
               <div className="flex items-center gap-2">
                 <BrainCircuit className="h-5 w-5 text-[var(--lime)]" />
-                <p className="text-xs font-black uppercase text-background/55">Expert panel consensus</p>
+                <p className="text-xs font-black uppercase text-background/55">Framework panel consensus</p>
               </div>
               <p className="mt-3 text-lg font-bold leading-7">
-                Majority of experts recommend building due to real pain and weak incumbents,
+                Most frameworks point toward building due to real pain and weak incumbents,
                 but flag niche size, SEO dependency, and monetization uncertainty.
               </p>
             </div>
