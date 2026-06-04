@@ -6,14 +6,11 @@ import { Loader2, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const PRODUCT_TYPES = [
-  { value: 'website', label: 'Website' },
-  { value: 'saas', label: 'SaaS' },
-  { value: 'ai_tool', label: 'AI Tool' },
-  { value: 'directory', label: 'Directory' },
+  { value: 'web_app', label: 'Web App / SaaS' },
   { value: 'content_site', label: 'Content Site' },
-  { value: 'chrome_extension', label: 'Chrome Extension' },
+  { value: 'directory', label: 'Directory / Marketplace' },
   { value: 'mobile_app', label: 'Mobile App' },
-  { value: 'other', label: 'Other' },
+  { value: 'chrome_extension', label: 'Chrome Extension' },
 ];
 
 const MONETIZATION_PLANS = [
