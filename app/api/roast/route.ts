@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { description, targetUser, productType, monetizationPlan, distributionPlan, mvpTimeline, deleteAfterReport } = body;
+    const { description, targetUser, productType, monetizationPlan, distributionPlan, mvpTimeline } = body;
 
     if (!description?.trim()) {
       return NextResponse.json({ error: 'Description is required' }, { status: 400 });
@@ -163,21 +163,6 @@ export async function POST(request: NextRequest) {
     }
 
     await incrementUsage(user.id, 'basic_roast');
-
-    // If user opted in, scrub the idea text from the ideas table
-    if (deleteAfterReport) {
-      await supabase
-        .from('ideas')
-        .update({
-          description: '[deleted]',
-          target_user: null,
-          product_type: null,
-          monetization_plan: null,
-          distribution_plan: null,
-          mvp_timeline: null,
-        })
-        .eq('id', idea.id);
-    }
 
     return NextResponse.json({ report: { id: report.id } });
   } catch (error) {

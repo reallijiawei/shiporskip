@@ -61,8 +61,6 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
     distributionPlan: '',
     mvpTimeline: '',
   });
-  const [deleteAfterReport, setDeleteAfterReport] = useState(false);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -90,7 +88,6 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
           monetizationPlan: form.monetizationPlan || undefined,
           distributionPlan: form.distributionPlan || undefined,
           mvpTimeline: form.mvpTimeline || undefined,
-          deleteAfterReport,
         }),
       });
 
@@ -219,21 +216,7 @@ export default function IdeaInput({ initialExample, isLoggedIn }: IdeaInputProps
           </p>
         )}
 
-        <div className="mt-6 flex items-start gap-3 rounded-[8px] border border-foreground/10 bg-card/50 px-4 py-3">
-          <input
-            type="checkbox"
-            id="deleteAfterReport"
-            checked={deleteAfterReport}
-            onChange={(e) => setDeleteAfterReport(e.target.checked)}
-            className="mt-0.5 h-4 w-4 shrink-0 accent-accent"
-          />
-          <label htmlFor="deleteAfterReport" className="text-sm text-foreground/70 cursor-pointer">
-            <span className="font-semibold text-foreground">Delete my idea after generating the report.</span>{' '}
-            Your idea text will be permanently removed from our servers. The report itself is kept, but your original input cannot be recovered.
-          </label>
-        </div>
-
-        <p className="mt-3 text-center text-xs text-muted">
+        <p className="mt-4 text-center text-xs text-muted">
           Your idea is yours. We never share, sell, or use your submissions for anything other than generating your report.
         </p>
 
