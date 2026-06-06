@@ -57,7 +57,7 @@ function LoginForm() {
     return (
       <div className="shell-panel w-full max-w-md p-8 text-center">
         <span className="mx-auto grid h-10 w-10 place-items-center rounded-[8px] bg-accent font-black text-white">S</span>
-        <h2 className="mt-4 font-display text-2xl font-extrabold text-foreground">Check your email</h2>
+        <h1 className="mt-4 font-display text-2xl font-extrabold text-foreground">Check your email</h1>
         <p className="mt-2 text-sm text-muted">
           We sent a confirmation link to <strong className="text-foreground">{email}</strong>. Click the link to activate your account.
         </p>
@@ -69,9 +69,9 @@ function LoginForm() {
     <div className="shell-panel w-full max-w-md p-8">
       <div className="text-center">
         <span className="mx-auto grid h-10 w-10 place-items-center rounded-[8px] bg-accent font-black text-white">S</span>
-        <h2 className="mt-4 font-display text-2xl font-extrabold text-foreground">
+        <h1 className="mt-4 font-display text-2xl font-extrabold text-foreground">
           {mode === 'login' ? 'Welcome back' : 'Create your account'}
-        </h2>
+        </h1>
         <p className="mt-1 text-sm text-muted">
           {mode === 'login' ? 'Sign in to validate your ideas' : 'Start validating your indie product ideas'}
         </p>

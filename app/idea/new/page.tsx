@@ -1,6 +1,17 @@
 import IdeaInput from '@/components/IdeaInput';
 import { createClient } from '@/lib/supabase-server';
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
+
+export const metadata: Metadata = {
+  title: 'Validate a Product Idea - ShipOrSkip',
+  description:
+    'Submit an indie product idea to ShipOrSkip and generate a build, skip, or validate-first report with score breakdown, objections, and improvement paths.',
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 interface NewIdeaPageProps {
   searchParams: Promise<{ example?: string }>;
