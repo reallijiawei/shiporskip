@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Check, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -53,6 +54,7 @@ const plans = [
 ];
 
 export default function PricingTable() {
+  const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState('');
 
@@ -70,7 +72,7 @@ export default function PricingTable() {
       const data = await res.json();
 
       if (res.status === 401) {
-        window.location.href = '/login?redirectTo=/pricing';
+        router.push('/login?redirectTo=/pricing');
         return;
       }
 
@@ -79,7 +81,7 @@ export default function PricingTable() {
       }
 
       if (data.url) {
-        window.location.href = data.url;
+        window.location.assign(data.url);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
@@ -174,7 +176,12 @@ export default function PricingTable() {
       )}
 
       <p className="mt-6 text-center text-sm text-muted">
-        Or pay <span className="font-semibold text-foreground">$3 per Deep Validation</span> — no subscription needed.
+        Or pay <span className="font-semibold text-foreground">$3 per Deep Validation</span> - no subscription needed.
+      </p>
+      <p className="mt-3 text-center text-xs leading-6 text-muted">
+        Paid reports and plan credits are delivered inside your ShipOrSkip dashboard after checkout.
+        Subscriptions renew monthly until cancelled through the Creem customer portal from your receipt
+        or by contacting support.
       </p>
     </div>
   );

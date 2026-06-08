@@ -86,9 +86,28 @@ export default async function DashboardPage() {
               href="/pricing"
               className="self-center rounded-full border border-foreground/20 px-4 py-2 text-xs font-bold text-foreground transition-colors hover:border-foreground/40 hover:bg-foreground/5"
             >
-              Upgrade plan →
+              Upgrade plan -&gt;
             </Link>
           )}
+        </div>
+
+        <div className="mt-6 rounded-[8px] border border-foreground/10 bg-card/90 p-5 shadow-sm">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h2 className="font-display text-lg font-extrabold text-foreground">Billing and support</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
+                Need help with a report, refund, invoice, or subscription cancellation?
+                Email support@shiporskip.org. Subscription customers can also use the
+                Creem customer portal link included in the payment receipt.
+              </p>
+            </div>
+            <Link
+              href="/support"
+              className="w-fit rounded-full border border-foreground/20 px-4 py-2 text-xs font-bold text-foreground transition-colors hover:border-foreground/40 hover:bg-foreground/5"
+            >
+              Support
+            </Link>
+          </div>
         </div>
 
         <div className="mt-10">
@@ -133,7 +152,7 @@ export default async function DashboardPage() {
 
                         {report ? (
                           <span className="text-sm font-medium text-foreground/50 transition-colors group-hover:text-accent">
-                            View →
+                            View -&gt;
                           </span>
                         ) : (
                           <span className="text-sm text-muted">No report</span>

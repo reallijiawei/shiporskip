@@ -22,6 +22,9 @@ export default function Footer() {
             <Link href="/pricing" className="text-sm text-background/55 transition-colors hover:text-accent">
               Pricing
             </Link>
+            <Link href="/support" className="text-sm text-background/55 transition-colors hover:text-accent">
+              Support
+            </Link>
             <Link href="/dashboard" className="text-sm text-background/55 transition-colors hover:text-accent">
               Dashboard
             </Link>
@@ -35,7 +38,10 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 border-t border-background/10 pt-6 text-center text-xs text-background/35">
-          &copy; {new Date().getFullYear()} ShipOrSkip. Not for VC pitch decks. Not for vague startup theory.
+          <p>&copy; {new Date().getFullYear()} ShipOrSkip. Not for VC pitch decks. Not for vague startup theory.</p>
+          <p className="mt-2">
+            Customer support: <a href="mailto:support@shiporskip.org" className="text-background/60 hover:text-accent">support@shiporskip.org</a>
+          </p>
         </div>
       </div>
     </footer>

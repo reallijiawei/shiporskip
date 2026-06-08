@@ -99,7 +99,7 @@ const SECTIONS = [
     title: 'Changes and contact',
     body: [
       'We may update this Privacy Policy as the product changes. The updated date above shows when this page was last revised.',
-      'For privacy requests, contact us at contact@shiporskip.org.',
+      'For privacy requests or customer support, contact us at support@shiporskip.org. We aim to respond within 3 business days.',
     ],
   },
 ];

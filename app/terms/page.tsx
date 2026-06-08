@@ -47,7 +47,9 @@ const SECTIONS = [
     body: [
       'Paid plans, one-time reports, subscriptions, credits, quotas, and usage limits are shown in the product or checkout flow.',
       'Payments are handled by third-party payment processors. You authorize applicable charges when you purchase a paid plan or report.',
-      'Subscription plans may renew until cancelled. Cancellation stops future renewals but does not automatically refund past charges unless required by law or explicitly stated at checkout.',
+      'Subscription plans renew monthly until cancelled. You can cancel through the Creem customer portal link in your payment receipt or by contacting ShipOrSkip support.',
+      'Cancellation stops future renewals. Refund requests are reviewed case by case and past charges are not automatically refunded unless required by law or explicitly stated at checkout.',
+      'Paid reports and credits are delivered digitally inside your ShipOrSkip dashboard after checkout and successful payment confirmation.',
       'We may change pricing, plan limits, or included features for future billing periods with notice where required.',
     ],
   },
@@ -113,7 +115,7 @@ const SECTIONS = [
     title: 'Changes and contact',
     body: [
       'We may update these Terms as the product, pricing, or legal requirements change. The updated date above shows when this page was last revised.',
-      'For questions about these Terms, contact us at contact@shiporskip.org.',
+      'For questions about these Terms or customer support, contact us at support@shiporskip.org. We aim to respond within 3 business days.',
     ],
   },
 ];
