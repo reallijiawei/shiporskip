@@ -28,6 +28,21 @@ const SUPPORT_TOPICS = [
   },
 ];
 
+const AI_DISCLOSURE = [
+  {
+    label: 'Current AI provider',
+    value: 'DeepSeek API',
+  },
+  {
+    label: 'Current production report model',
+    value: 'deepseek-v4-pro',
+  },
+  {
+    label: 'What is sent for processing',
+    value: 'Submitted idea details, audience, product type, monetization notes, distribution assumptions, and related report inputs.',
+  },
+];
+
 export default function SupportPage() {
   return (
     <main className="min-h-screen">
@@ -82,6 +97,26 @@ export default function SupportPage() {
             >
               View pricing
             </Link>
+          </div>
+
+          <div className="shell-panel p-6">
+            <h2 className="font-display text-2xl font-black text-foreground">AI provider disclosure</h2>
+            <p className="mt-3 text-sm leading-7 text-muted">
+              ShipOrSkip uses third-party AI model processing to generate customer reports.
+              The current provider and model used for production reports are listed below.
+            </p>
+            <dl className="mt-5 grid gap-4">
+              {AI_DISCLOSURE.map((item) => (
+                <div key={item.label} className="rounded-[8px] border border-foreground/10 bg-card/80 p-4">
+                  <dt className="text-xs font-black uppercase text-muted">{item.label}</dt>
+                  <dd className="mt-2 text-sm font-semibold leading-6 text-foreground">{item.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="mt-5 text-sm leading-7 text-muted">
+              If the production provider or model changes, we will update this disclosure.
+              Reports are AI-assisted decision support and can be incomplete or wrong.
+            </p>
           </div>
         </div>
       </section>

@@ -32,7 +32,9 @@ const SECTIONS = [
   {
     title: 'AI processing',
     body: [
-      'ShipOrSkip uses AI model providers to analyze submitted ideas and generate reports. Your idea content and related inputs may be sent to those providers for processing.',
+      'ShipOrSkip uses DeepSeek API as its current AI model provider for customer report generation. The production report model currently used is deepseek-v4-pro.',
+      'Your submitted idea content, target audience, product type, monetization notes, distribution assumptions, and related report inputs may be sent to DeepSeek for processing so ShipOrSkip can generate the requested report.',
+      'We may update the provider or model used for report generation as the product changes. If the production provider or model changes, we will update this disclosure.',
       'Do not submit passwords, API keys, trade secrets, confidential customer data, regulated health data, financial account data, or anything you are not authorized to share.',
       'AI outputs can be incomplete or wrong. Reports are structured decision support for product validation, not legal, financial, investment, medical, or professional advice.',
     ],

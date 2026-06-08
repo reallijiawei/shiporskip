@@ -73,6 +73,7 @@ const SECTIONS = [
     title: 'Third-party services',
     body: [
       'ShipOrSkip depends on third-party services for hosting, authentication, database, analytics, payment processing, AI model processing, and other infrastructure.',
+      'For customer report generation, ShipOrSkip currently uses DeepSeek API with the deepseek-v4-pro model. Submitted idea details and related report inputs may be processed by that provider.',
       'Those third-party services may have their own terms and privacy practices. ShipOrSkip is not responsible for third-party services outside our control.',
     ],
   },

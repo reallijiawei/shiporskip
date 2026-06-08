@@ -133,6 +133,10 @@ const FAQ = [
     answer: 'We study public interviews, social posts, books, essays, shareholder letters, product decisions, reports, and other public materials, then distill recurring decision patterns into thinking models. The report uses those models as analytical lenses; it does not claim endorsement or direct involvement from any person.',
   },
   {
+    question: 'Which AI provider and model do you use?',
+    answer: 'ShipOrSkip currently sends submitted idea details to DeepSeek API for report generation and uses the deepseek-v4-pro model. If we change the provider or production model used for customer reports, we will update this disclosure.',
+  },
+  {
     question: 'What is the winner-pattern library?',
     answer: 'We manually collect and organize hundreds of successful product cases and growth patterns, including viral loops, SEO plays, paid upgrades, shareable outputs, community mechanics, pricing moves, and niche positioning tactics. The report uses that library to suggest improvements that match your specific idea.',
   },
